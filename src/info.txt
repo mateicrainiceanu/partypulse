@@ -1,0 +1,18 @@
+Conventions to use for this app
+
+
+// 
+
+=== HTTP ERROR CODES ===
+
+200 - OK
+201 - LOGGED IN
+
+403 - NEED TO LOG IN
+
+=========================
+
+Imlementations of legal
+===
+Accept of terms and conditions
+Use of cookies
