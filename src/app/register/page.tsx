@@ -4,10 +4,12 @@ import axios from "axios";
 import Link from "next/link";
 import React, {useContext, useState} from "react";
 import {UserContext} from "../UserContext";
+import {LoadingContext} from "../LoadingContext";
 
 function Register() {
 	const [formData, setFormData] = useState({fname: "", lname: "", uname: "", email: "", password: ""});
 	const [avalabile, setAvalabile] = useState(false);
+	const setLoading = useContext(LoadingContext);
 
 	const {user, setUser} = useContext(UserContext);
 
@@ -33,6 +35,8 @@ function Register() {
 			alert("username not avalabile");
 			return;
 		}
+
+		setLoading(true);
 
 		axios
 			.post("/api/register", formData)

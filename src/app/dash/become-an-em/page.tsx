@@ -5,11 +5,14 @@ import {useContext} from "react";
 import {UserContext} from "@/app/UserContext";
 import FormBtn from "@/components/FormBtn";
 import axios from "axios";
+import { LoadingContext } from "@/app/LoadingContext";
 
 function BecomeAnEm() {
 	const {user} = useContext(UserContext);
+	const setLoading = useContext(LoadingContext)
 
 	async function handleSubmit() {
+		setLoading(true);
 		await axios
 			.post("/api/partner", {ptype: 1})
 			.then((data) => {

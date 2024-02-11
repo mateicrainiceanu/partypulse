@@ -18,7 +18,8 @@
     "next-client-cookies": "^1.1.0",
     "react": "^18",
     "react-dom": "^18",
-    "react-icons": "^4.12.0"
+    "react-icons": "^4.12.0",
+    "react-spinners": "^0.13.8"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

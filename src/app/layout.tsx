@@ -4,6 +4,7 @@ import Navbar from "./AppNav";
 import "./globals.css";
 
 import UserProvider from "./UserContext";
+import LoadingProvider from "./LoadingContext";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -16,10 +17,12 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<UserProvider>
-					<Navbar />
-					<main className="mx-2">{children}</main>
-				</UserProvider>
+				<LoadingProvider>
+					<UserProvider>
+						<Navbar />
+						<main className="mx-2">{children}</main>
+					</UserProvider>
+				</LoadingProvider>
 			</body>
 		</html>
 	);

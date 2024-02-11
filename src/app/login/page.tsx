@@ -1,23 +1,29 @@
 "use client";
 import FormElement from "@/components/FormElement";
 import Link from "next/link";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import axios from "axios";
+import { LoadingContext } from "../LoadingContext";
 
 function Login() {
 	const [formData, setFormData] = useState({email: "", password: ""});
+	const setLoading = useContext(LoadingContext);
 
-    function handleChange(e: any){
-        setFormData(prevData => ({...prevData, [e.target.name]: e.target.value}));
-    }
+	function handleChange(e: any) {
+		setFormData((prevData) => ({...prevData, [e.target.name]: e.target.value}));
+	}
 
-	async function handeSubmit(){
-		await axios.post("/api/login", formData).then((response => {
-			window.location.replace("/dash")
-		})).catch((error) => {
-			alert(error.response.status + ": " + error.response.data);
-		});		
-	} 
+	async function handeSubmit() {
+		setLoading(true)
+		await axios
+			.post("/api/login", formData)
+			.then((response) => {
+				window.location.replace("/dash");
+			})
+			.catch((error) => {
+				alert(error.response.status + ": " + error.response.data);
+			});
+	}
 
 	return (
 		<main className="flex min-h-screen items-center mx-auto flex-col justify-center p-10 max-w-xl">

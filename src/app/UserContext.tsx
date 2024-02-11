@@ -1,7 +1,8 @@
 "use client";
 
-import React, {ReactNode, createContext, useEffect, useState} from "react";
+import React, {ReactNode, createContext, useContext, useState} from "react";
 import axios, {AxiosResponse} from "axios";
+import { LoadingContext } from "./LoadingContext";
 
 interface IUser {
 	id: number;
@@ -20,10 +21,11 @@ const UserContext = createContext(null as any);
 function UserProvider({children}: IChildren) {
 	const [user, setUser] = useState({id: 0, fname: "", lname: "", email: "", token: "", logged: false, tried:false});
 
+	const setLoading = useContext(LoadingContext)
+
 	async function getUserData(mandatory: boolean) {
-		console.log(mandatory);
-		
-		console.log("getUserData - started");
+
+		setLoading(true);
 		
 		await axios
 			.get("/api/user")
@@ -36,6 +38,7 @@ function UserProvider({children}: IChildren) {
 				}
 				return;
 			});
+		setLoading(false);
 	}
 
 	return (

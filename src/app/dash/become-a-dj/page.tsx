@@ -4,14 +4,16 @@ import React, {useContext, useState} from "react";
 import FormElement from "@/components/FormElement";
 import FormBtn from "@/components/FormBtn";
 import axios from "axios";
+import {LoadingContext} from "@/app/LoadingContext";
 
 function BecomeDJ() {
 	const {user} = useContext(UserContext);
 	const [username, setUsername] = useState("");
 	const [avalabile, setAvalabile] = useState(false);
+	const setLoading = useContext(LoadingContext);
 
 	async function handleChange(e: any) {
-        const newuname = e.target!.value.replaceAll(" ", "");
+		const newuname = e.target!.value.replaceAll(" ", "");
 		setUsername(newuname);
 
 		await axios
@@ -25,10 +27,11 @@ function BecomeDJ() {
 	}
 
 	async function handleSubmit() {
-        if (!avalabile) {
-            alert("username not avalabile")
-            return
-        }
+		if (!avalabile) {
+			alert("username not avalabile");
+			return;
+		}
+		setLoading(true);
 
 		await axios
 			.post("/api/partner", {username: "dj_" + username, ptype: 2})

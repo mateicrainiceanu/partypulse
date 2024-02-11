@@ -52,7 +52,7 @@ const Navbar = () => {
 
 	return (
 		<>
-			<div className="flex justify-between items-center w-full h-20 px-4 text-white sticky-top my-2 nav">
+			<div className="flex justify-between items-center w-full h-20 px-4 text-white sticky top-0 my-2 nav ">
 				<div>
 					<Link href="/">
 						<Image draggable={false} src="/logo_white.png" width="100" height="100" alt="logo" />
