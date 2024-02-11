@@ -12,16 +12,15 @@ function Login() {
     }
 
 	async function handeSubmit(){
-		const response = await axios.post("/api/login", formData).catch((error) => {
+		await axios.post("/api/login", formData).then((response => {
+			window.location.replace("/dash")
+		})).catch((error) => {
 			alert(error.response.status + ": " + error.response.data);
-		});
-
-		console.log(response);
-		
+		});		
 	} 
 
 	return (
-		<main className="flex min-h-screen items-center mx-auto flex-col justify-center p-24 max-w-xl">
+		<main className="flex min-h-screen items-center mx-auto flex-col justify-center p-10 max-w-xl">
 			<div className="text-center">
 				<h2 className="text-3xl font-bold font-sans my-10">Login</h2>
 				<FormElement name="email" type="email" label="Email" handleChange={handleChange} value={formData.email} />

@@ -1,19 +1,22 @@
 "use client";
 
-import React, {useEffect} from "react";
-import axios from "axios";
+import React, {useContext, useEffect} from "react";
+import {UserContext} from "../UserContext";
 
 function Dash() {
+	const {user, setUser, getUserData} = useContext(UserContext);
+
 	useEffect(() => {
-        console.log(getUserData());
-    }, []);
+		getUserData();
+	});
 
-	async function getUserData() {
-		const response = await axios.get("/api/user");
-		console.log(response.data);
-	}
-
-	return <div>Dash</div>;
+	return (
+		<div>
+			<h1>User</h1>
+			<span>{user.fname}</span>
+			<span>{user.email}</span>
+		</div>
+	);
 }
 
 export default Dash;
