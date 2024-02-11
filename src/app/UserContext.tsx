@@ -18,33 +18,25 @@ interface IChildren {
 const UserContext = createContext(null as any);
 
 function UserProvider({children}: IChildren) {
-	const [user, setUser] = useState({id: 0, fname: "", lname: "", email: "", token: "", logged: false});
+	const [user, setUser] = useState({id: 0, fname: "", lname: "", email: "", token: "", logged: false, tried:false});
 
 	async function getUserData(mandatory: boolean) {
-		await axios.get("/api/user").then((response) => {
-			setUser({...(response as AxiosResponse).data, logged: true});
-		}).catch((error) => {
-			if (mandatory) {
-				window.location.replace("/login");
-			}
-			return
-		});
-	}
+		console.log(mandatory);
 		
-
-	// async function isUserLoggedIn() {
-	// 	var answ
-	// 	await axios.get("/api/user").then(response => {
-	// 		if (response.status=200){
-	// 			answ = true
-	// 		}
-	// 	}).catch((error) => {
-	// 		answ = false
-	// 	});
-	// 	console.log(answ);
-
-	// 	return answ;
-	// }
+		console.log("getUserData - started");
+		
+		await axios
+			.get("/api/user")
+			.then((response) => {
+				setUser({...(response as AxiosResponse).data, logged: true, tried:true});
+			})
+			.catch((error) => {
+				if (mandatory) {
+					window.location.replace("/login");
+				}
+				return;
+			});
+	}
 
 	return (
 		<>

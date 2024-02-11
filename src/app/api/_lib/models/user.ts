@@ -55,6 +55,19 @@ class User {
         `
         return db.execute(sql);
     }
+
+    static update(id: number, fieldName: string, newValue:string) {
+        let sql = `
+        UPDATE users SET ${fieldName} = '${newValue}' WHERE id = ${id}; `
+        return db.execute(sql);
+    }
+
+    static findByUserName(uname: string) {
+        let sql = `
+        SELECT * FROM users WHERE uname = '${uname}';
+        `
+        return db.execute(sql)
+    }
 }
 
 export default User;

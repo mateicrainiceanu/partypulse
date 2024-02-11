@@ -4,12 +4,8 @@ import React, {useContext, useEffect} from "react";
 import {UserContext} from "../UserContext";
 
 function Dash() {
-	const {user, setUser, getUserData} = useContext(UserContext);
-
-	useEffect(() => {
-		getUserData();
-	});
-
+	const {user} = useContext(UserContext);
+	
 	return (
 		<div>
 			<h1>User</h1>

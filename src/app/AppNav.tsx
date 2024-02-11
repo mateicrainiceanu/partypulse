@@ -14,7 +14,8 @@ const Navbar = () => {
 		if (!user.logged){
 			getUserData()
 		}
-	}, [user])
+		//eslint-disable-next-line
+	}, [])
 
 	const links = [
 		{

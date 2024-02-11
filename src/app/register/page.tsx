@@ -7,14 +7,33 @@ import {UserContext} from "../UserContext";
 
 function Register() {
 	const [formData, setFormData] = useState({fname: "", lname: "", uname: "", email: "", password: ""});
+	const [avalabile, setAvalabile] = useState(false);
 
 	const {user, setUser} = useContext(UserContext);
 
-	function handleChange(e: any) {
-		setFormData((prevData) => ({...prevData, [e.target.name]: e.target.value}));
+	async function handleChange(e: any) {
+		if (e.target.name === "uname") {
+			const username = e.target.value.replaceAll(" ", "");
+			await axios
+				.post("/api/username-check", {username: username})
+				.then((response) => {
+					setAvalabile(true);
+				})
+				.catch((error) => {
+					setAvalabile(false);
+				});
+			setFormData((prevData) => ({...prevData, uname: username}));
+		} else {
+			setFormData((prevData) => ({...prevData, [e.target.name]: e.target.value}));
+		}
 	}
 
 	function handleRegister() {
+		if (!avalabile) {
+			alert("username not avalabile");
+			return;
+		}
+
 		axios
 			.post("/api/register", formData)
 			.then((response) => {
@@ -52,6 +71,7 @@ function Register() {
 							value={formData.lname}
 						/>
 						<FormElement name="uname" type="name" label="Username" handleChange={handleChange} value={formData.uname} />
+						<p>Avalabile: {avalabile ? "YES" : "NO"}</p>
 					</div>
 					<div className="md:basis-1/2 basis-full px-2 flex justify-center items-center">
 						<div className="">
