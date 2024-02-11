@@ -1,6 +1,5 @@
 import { ChangePassword } from './ChangePassword';
 import React from "react";
-import FormElement from "@/components/FormElement";
 import ChangeEmail from './ChangeEmail';
 
 export default function Settings() {
