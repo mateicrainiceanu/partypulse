@@ -1,7 +1,8 @@
-"use client"
+"use client";
 import React, {MouseEventHandler, useState} from "react";
 import FormElement from "@/components/FormElement";
 import FormBtn from "@/components/FormBtn";
+import axios from "axios";
 
 export function ChangePassword() {
 	const [passwordData, setPasswordData] = useState({oldPassword: "", newPassword: "", checkPssw: ""});
@@ -10,13 +11,21 @@ export function ChangePassword() {
 		setPasswordData((prevData) => ({...prevData, [e.target.name]: e.target.value}));
 	}
 
-	function handleSubmit(e: any) {
+	async function handleSubmit(e: any) {
 		//handle ChangePssw Logic
-    if (passwordData.newPassword === passwordData.checkPssw){
-
-    } else {
-      alert("Passwords must match")
-    }
+		if (passwordData.newPassword === passwordData.checkPssw) {
+			await axios
+				.post("/api/change-ps", {newPassword: passwordData.newPassword})
+				.then((data) => {
+					alert("OK");
+					setPasswordData({oldPassword: "", newPassword: "", checkPssw: ""});
+				})
+				.catch((error) => {
+					alert("There was an error" + error);
+				});
+		} else {
+			alert("Passwords must match");
+		}
 	}
 
 	return (
@@ -38,7 +47,7 @@ export function ChangePassword() {
 				type="password"
 				name="checkPssw"
 				label="Check Password"
-				value={passwordData.oldPassword}
+				value={passwordData.checkPssw}
 				handleChange={handleChange}></FormElement>
 			<FormBtn onClick={handleSubmit} name="Change"></FormBtn>
 		</>

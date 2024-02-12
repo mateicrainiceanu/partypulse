@@ -19,4 +19,4 @@ export async function GET(req: NextRequest) {
     } else {
         return new NextResponse("UserNotLoggedIn", {status: 403})
     }
-    }
+}
