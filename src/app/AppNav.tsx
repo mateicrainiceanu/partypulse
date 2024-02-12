@@ -32,19 +32,19 @@ const Navbar = () => {
 		},
 		{
 			id: 3,
-			title: !user.logged ? "login" : "logout",
+			title: !user.logged ? "Login" : "Logout",
 			link: !user.logged ? "/login" : "/logout",
 			needsLogIn: false,
 		},
 		{
 			id: 4,
-			title: "dash",
+			title: "Dash",
 			link: "/dash",
 			needsLogIn: true,
 		},
 		{
 			id: 5,
-			title: "settings",
+			title: "Settings",
 			link: "/dash/settings",
 			needsLogIn: true,
 		},

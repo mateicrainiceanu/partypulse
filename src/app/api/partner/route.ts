@@ -16,8 +16,10 @@ export async function POST(req: NextRequest) {
         const user = getUserFromToken(token)
         if (user.id) {
             var warnings = 0
-            const [result1] = (await User.update(user.id, "role", ptype)) as Array<RowDataPacket>
-            warnings += result1.warningStatus
+            if (ptype) {
+                const [result1] = (await User.update(user.id, "role", ptype)) as Array<RowDataPacket>
+                warnings += result1.warningStatus
+            }
             if (username) {
                 const [result2] = (await User.update(user.id, "uname", username)) as Array<RowDataPacket>
                 warnings += result2.warningStatus

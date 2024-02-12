@@ -4,6 +4,7 @@ import React from "react";
 import ChangeEmail from "./ChangeEmail";
 import FormBtn from "@/components/FormBtn";
 import Link from "next/link";
+import ChangeProfile from "./ChangeProfile";
 
 export default function Settings() {
 	return (
@@ -14,6 +15,7 @@ export default function Settings() {
 				<h2 className="text-xl text-center mt-2 mb-1 font-mono text-violet-300">Change email</h2>
 				<ChangeEmail></ChangeEmail>
 				<h2 className="text-xl text-center mt-2 mb-1 font-mono text-violet-300">Profile</h2>
+				<ChangeProfile />
 				<h3 className="text-xl text-center mt-2 mb-1 font-mono text-violet-300">City</h3>
 				<hr className="my-5" />
 				<div className="py-10">
