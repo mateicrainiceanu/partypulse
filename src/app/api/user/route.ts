@@ -5,8 +5,10 @@ import User from "../_lib/models/user";
 import { RowDataPacket } from "mysql2";
 
 export async function GET(req: NextRequest) {
+    console.log("GET USER : " + new Date(Date.now()));
+    
     const token = cookies().get("token")?.value
- 
+
     if (token){
         const user = getUserFromToken(token)
         if (user.id){

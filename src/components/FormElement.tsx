@@ -6,7 +6,7 @@ interface Props {
     type: string;
     label: string
 	handleChange: (e: any) => void;
-	value: string;
+	value: string | number;
 }
 
 function FormElement({name, type, label, handleChange, value}: Props) {
@@ -26,3 +26,4 @@ function FormElement({name, type, label, handleChange, value}: Props) {
 }
 
 export default FormElement;
+

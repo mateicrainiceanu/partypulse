@@ -8,6 +8,7 @@ interface User {
     lname: string,
     uname: string,
     email: string,
+    role?:number,
     password: string,
     hash: string
 }

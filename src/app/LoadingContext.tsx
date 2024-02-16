@@ -10,7 +10,7 @@ interface IChildren {
 }
 
 function LoadingProvider({children}: IChildren) {
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	return (
 		<>
