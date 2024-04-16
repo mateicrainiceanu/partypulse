@@ -33,9 +33,7 @@ function UserProvider({children}: IChildren) {
 				setUser({...(response as AxiosResponse).data, logged: true});
 				setTried(true);
 			})
-			.catch((error) => {
-				console.log("here");
-				
+			.catch((error) => {				
 				setTried(true);
 
 				if (mandatory) {

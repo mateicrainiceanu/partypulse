@@ -54,6 +54,11 @@ class Location {
         return db.execute(sql)
     }
 
+    static deleteUserAccess(uid: string, locid: string) {
+        let sql = `DELETE from users_locations WHERE locationId=${locid} AND userId=${uid}`
+        return db.execute(sql)
+    }
+
 
 
 }

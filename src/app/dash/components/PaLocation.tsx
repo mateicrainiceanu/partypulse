@@ -18,8 +18,6 @@ function PaLocation() {
 		await axios
 			.get("/api/partner/locations")
 			.then((response) => {
-				console.log(response);
-
 				setLocations(response.data.locations);
 			})
 			.catch((error) => {
@@ -40,6 +38,7 @@ function PaLocation() {
 				<NewLocation
 					close={() => {
 						setNewloc(false);
+						getData()
 					}}
 				/>
 			)}

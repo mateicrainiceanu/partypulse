@@ -4,7 +4,7 @@ import {IoSettingsSharp} from "react-icons/io5";
 function LocationSmView({locationData, showManage}: {locationData: {name:string, id:number, adress:string}, showManage?: boolean}) {
 	return (
 		<div
-			className=" relative w-full bg-yellow-400 hover:bg-yellow-300 rounded-xl my-2 text-black text-left p-3 "
+			className=" relative w-full bg-yellow-300 hover:bg-yellow-200 rounded-xl my-2 text-black text-left p-3 "
 			onClick={() => {}}>
 			<h3 className="font-bold font-mono">{locationData.name}</h3>
 			<p className="italic">{locationData.adress}</p>

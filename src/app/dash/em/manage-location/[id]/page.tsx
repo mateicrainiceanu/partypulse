@@ -6,6 +6,8 @@ import FormElement from "@/components/FormElement";
 import FormBtn from "@/components/FormBtn";
 import Map from "@/components/Map";
 import {LoadingContext} from "@/app/LoadingContext";
+import AddUser from "./AddUser";
+import EditUsers from "./EditUsers";
 
 function ManageLocation({params}: {params: {id: string}}) {
 	const locationid = params.id;
@@ -54,6 +56,7 @@ function ManageLocation({params}: {params: {id: string}}) {
 			.then((response) => {
 				setLoading(false);
 				alert("ok");
+				window.location.replace("/dash/em");
 			})
 			.catch((error) => {
 				setLoading(false);
@@ -109,6 +112,22 @@ function ManageLocation({params}: {params: {id: string}}) {
 						{locationData.useForAdress === "adress" && <Map q={locationData.adress + " ," + locationData.city} />}
 						{locationData.useForAdress === "coordinates" && <Map q={locationData.lat + "," + locationData.lon} />}
 						{locationData.useForAdress === "locname" && <Map q={locationData.name + "," + locationData.city} />}
+					</div>
+				</div>
+				<div className="w-full">
+					<h1 className="text-center font-bold font-mono text-xl">Manage users</h1>
+					<p className="italic font-mono text-sm text-center">
+						See and edit the managers that have admin rights to this location.
+					</p>
+					<div className="flex flex-wrap my-4">
+						<div className="w-full lg:w-1/2 p-5">
+							<h2 className="text-lg font-mono text-center">Add users</h2>
+							<AddUser id={params.id}></AddUser>
+						</div>
+						<div className="w-full lg:w-1/2 p-5">
+							<h2 className="text-lg font-mono text-center">Edit users</h2>
+							<EditUsers id={params.id}></EditUsers>
+						</div>
 					</div>
 				</div>
 			</div>

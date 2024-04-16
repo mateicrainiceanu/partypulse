@@ -26,8 +26,6 @@ export default async function GET(req: NextRequest) {
 
             locidsstring = locidsstring.substring(0, locidsstring.length - 2);
 
-            console.log(locidsstring);
-
             const [locations] = (await Location.getFromIds(locidsstring)) as Array<RowDataPacket>
 
             return NextResponse.json({ locations: locations })

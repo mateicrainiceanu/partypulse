@@ -10,8 +10,6 @@ function PaEvents() {
 			<FormBtn
 				name="New"
 				onClick={() => {
-					localStorage.setItem("prevUrl", window.location.pathname);
-					console.log(window.location.pathname);
 				}}></FormBtn>
 			<EventsView></EventsView>
 		</div>

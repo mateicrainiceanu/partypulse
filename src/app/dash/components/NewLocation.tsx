@@ -32,11 +32,11 @@ function NewLocation({close}: IProps) {
 		await axios
 			.post("/api/partner/locations", {...locData, useForAdress: selected})
 			.then((data) => {
-				console.log(data);
 				close();
 			})
 			.catch((error) => {
 				alert("error" + error);
+				close();
 			});
 	}
 
