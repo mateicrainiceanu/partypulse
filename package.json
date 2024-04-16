@@ -24,7 +24,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^4.12.0",
-    "react-spinners": "^0.13.8"
+    "react-spinners": "^0.13.8",
+    "styled-components": "^6.1.8"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
