@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 import { RowDataPacket } from "mysql2";
 
 export async function POST(req: NextRequest) {
-    const {q} = await req.json()
+    const {q, role, seeSelf} = await req.json()
 
 
     const token = cookies().get("token")?.value
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         const user = getUserFromToken(token)
         if (user.id) {
 
-            const [response] = (await User.getPartners(user.id, q)) as Array<RowDataPacket>
+            const [response] = (await User.getPartners(user.id, q, role, seeSelf)) as Array<RowDataPacket>
             
             return NextResponse.json(response.map((user: User) => user.uname))
 

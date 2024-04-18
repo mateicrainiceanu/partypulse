@@ -71,9 +71,13 @@ class User {
         return db.execute(sql)
     }
 
-    static getPartners(uid: number, q: string) {
+    static getPartners(uid: number, q: string, role?: number, seeSelf?: boolean) {
         let sql = `
-        SELECT uname FROM users WHERE (uname LIKE '${q}%' OR email LIKE '%${q}%') AND role != 0 AND id != ${uid};`
+        SELECT uname FROM users 
+        WHERE (uname LIKE '%${q}%' OR email LIKE '%${q}%') 
+        AND ${role ? "role = " + role : "role != 0"}  
+        ${seeSelf ? "" : "AND id != " + uid};`
+
         return db.execute(sql);
     }
 
@@ -87,19 +91,20 @@ class User {
     }
 
     static async getId(uname: string) {
-        let sql = `SELECT id FROM users WHERE uname = '${uname}';`
+
+        let sql = `SELECT id FROM users WHERE uname = '${uname}'};`
         const [response] = (await db.execute(sql)) as Array<RowDataPacket>
         return response[0].id
     }
 
-    static async getLocations(locid: number) {        
+    static async getLocations(locid: number) {
         let sql = `SELECT * FROM users_locations WHERE locationId = ${locid};`
         let [res] = await db.execute(sql) as Array<RowDataPacket>;
-        
+
         var userIdString: string = ""
-        res.map((usercoresp: { userId: number }) => {userIdString += usercoresp.userId + ", "})
-        
-        let sql2 = `SELECT id, uname FROM users WHERE id IN (${userIdString.substring(0, userIdString.length - 2) })`
+        res.map((usercoresp: { userId: number }) => { userIdString += usercoresp.userId + ", " })
+
+        let sql2 = `SELECT id, uname FROM users WHERE id IN (${userIdString.substring(0, userIdString.length - 2)})`
         return db.execute(sql2)
     }
 }

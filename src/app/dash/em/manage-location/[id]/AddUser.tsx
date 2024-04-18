@@ -38,16 +38,17 @@ function AddUser({id}: {id: string}) {
 							setFieldVal(value);
 						}
 					}}
+					filterOptions={(options)=>options}
 					renderInput={(params) => (
 						<TextField
 							{...params}
 							variant="filled"
-							label="username"
+							label="username or email"
 							onChange={(e: any) => {
 								getoptions(e.target.value);
 							}}
 						/>
-					)}></Autocomplete>
+					)}/>
 			</div>
 			<div className="w-1/4 px-2">
 				<button className="bg-purple-500 hover:bg-purple-400 w-full h-full rounded-lg text-xl" onClick={addUser}>

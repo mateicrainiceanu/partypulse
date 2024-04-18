@@ -59,6 +59,13 @@ class Location {
         return db.execute(sql)
     }
 
+    static getContaining(name: string) {
+        let sql = `SELECT id, name FROM locations WHERE 
+        name LIKE "%${name}%" AND 
+        private = 0;`        
+        return db.execute(sql);
+    }
+
 
 
 }

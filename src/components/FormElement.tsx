@@ -4,7 +4,7 @@ import {TextField} from "@mui/material";
 
 interface Props {
 	name: string;
-	type: string;
+	type?: string;
 	label: string;
 	handleChange: (e: any) => void;
 	value: string | number;
@@ -14,10 +14,10 @@ function FormElement({name, type, label, handleChange, value}: Props) {
 	return (
 		<div className="my-2">
 			<TextField
-				variant="filled"
+				variant={"filled"}
 				label={label}
 				name={name}
-				type={type}
+				type={type ? type : "text"}
 				className="w-full bg-white rounded-lg "
 				value={value}
 				onChange={handleChange}></TextField>

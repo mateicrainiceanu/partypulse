@@ -1,9 +1,9 @@
 .table-container {
-    max-height: 50vh;
-    min-height:20vh ;
+    max-height: 30vh;
+    min-height: 20vh;
     /* Set the maximum height for the table */
     overflow-y: auto;
-    position:relative;
+    position: relative;
     /* Enable vertical scrolling */
 }
 
@@ -18,3 +18,4 @@ thead {
     position: sticky;
     top: 0;
 }
+
