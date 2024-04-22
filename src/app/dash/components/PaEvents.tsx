@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
 import FormBtn from "@/components/FormBtn";
-import EventsView from "./EventsView";
+import Events from "./Events";
 import NewEvent from "./NewEvent";
 
 function PaEvents() {
@@ -23,7 +23,7 @@ function PaEvents() {
 					}}
 				/>
 			)}
-			<EventsView></EventsView>
+			<Events />
 		</div>
 	);
 }

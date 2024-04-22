@@ -92,7 +92,7 @@ class User {
 
     static async getId(uname: string) {
 
-        let sql = `SELECT id FROM users WHERE uname = '${uname}'};`
+        let sql = `SELECT id FROM users WHERE uname = '${uname}';`
         const [response] = (await db.execute(sql)) as Array<RowDataPacket>
         return response[0].id
     }
@@ -106,6 +106,25 @@ class User {
 
         let sql2 = `SELECT id, uname FROM users WHERE id IN (${userIdString.substring(0, userIdString.length - 2)})`
         return db.execute(sql2)
+    }
+
+    static async addEventRelation(userId: number, eventId: number, reltype: number) {
+        let [check] = await db.execute(`SELECT * FROM users_events WHERE userId = ${userId} AND eventId = ${eventId} AND reltype = ${reltype};`) as Array<RowDataPacket>
+        if (check.length === 0) {
+            let sql = `INSERT INTO users_events (userId, eventId, reltype) VALUES (${userId}, ${eventId}, ${reltype});`
+            return (db.execute(sql))
+        }
+    }
+
+    static async getDjsForId(eventId: number) {
+
+        let [djsrelations] = await db.execute(`SELECT * FROM users_events WHERE eventId = ${eventId} AND reltype=2;`) as Array<RowDataPacket>
+
+        return await djsrelations.map(async (djrel: { userId: number }) => {
+            const response = await db.execute(`SELECT uname FROM users WHERE id = ${djrel.userId}; `) as Array<RowDataPacket>[0]
+
+            return response[0][0].uname
+        })
     }
 }
 

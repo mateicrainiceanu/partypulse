@@ -1,3 +1,4 @@
+import { RowDataPacket } from "mysql2";
 import { db } from "../config/db"
 
 interface Location {
@@ -34,6 +35,11 @@ class Location {
         return db.execute(sql);
     }
 
+    static async privateLoc(name: string, adress: string) {
+        let sql = `INSERT INTO locations (name, adress, useForAdress, city, private) VALUES ('${name}', '${adress}', 'adress', '', 1)`
+        return (await db.execute(sql) as Array<RowDataPacket>)[0].insertId
+    }
+
     static getFromIds(idrange: string) {
         let sql = `
         SELECT * FROM locations WHERE id IN (${idrange});`
@@ -62,7 +68,7 @@ class Location {
     static getContaining(name: string) {
         let sql = `SELECT id, name FROM locations WHERE 
         name LIKE "%${name}%" AND 
-        private = 0;`        
+        private = 0;`
         return db.execute(sql);
     }
 

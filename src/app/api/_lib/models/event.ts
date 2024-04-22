@@ -1,6 +1,8 @@
+import { RowDataPacket } from "mysql2";
 import { db } from "../config/db";
 
 interface Events {
+    id?: number;
     name: string;
     privateev: boolean;
     date: string;
@@ -38,10 +40,32 @@ class Events {
         INSERT INTO events (name, privateev, dateStart, duration) VALUES (
             '${this.name}',
             ${this.privateev ? 1 : 0},
-            '${this.date+" "+this.time}:00',
+            '${this.date + " " + this.time}:00',
             ${duration}
         );`
         return db.execute(sql);
+    }
+
+    static setLocation(eventId: number, locId: number) {
+        let sql = `INSERT INTO events_locations (eventId, locationId) VALUES (${eventId}, ${locId});`
+        return db.execute(sql);
+    }
+
+    static async getForUser(id: number) {
+        const [eventsIds] = await db.execute(`SELECT * FROM users_events WHERE userId = ${id};`) as Array<RowDataPacket>
+        
+        var query = ''
+        
+        eventsIds.map((ev: { eventId: number }) => {
+            query += (ev.eventId + ", ")
+        })
+        
+        const [events] = await db.execute(`SELECT * FROM events WHERE id IN (${query.substring(0, query.length - 2)}) ORDER BY id DESC;`);
+        return events;
+    }
+    
+    static getLocId(eventId: number){
+        return db.execute(`SELECT * FROM events_locations WHERE eventId = ${eventId};`) as Promise<Array<RowDataPacket>>
     }
 }
 

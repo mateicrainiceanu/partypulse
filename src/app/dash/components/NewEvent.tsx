@@ -42,20 +42,32 @@ function NewEvent({close}: {close: any}) {
 					<div className="flex text-left flex-wrap">
 						<div className="w-full">
 							<span>Date</span>
-							<FormElement label="" name="date" type={"date"} value={eventData.date} handleChange={handleChange} />
+							<input
+								className="w-full p-2 rounded-lg my-2 text-black"
+								name="date"
+								type={"date"}
+								value={eventData.date}
+								onChange={handleChange}
+							/>
 						</div>
 						<div className="w-1/2 pr-1">
 							<span>Time</span>
-							<FormElement label="" name="time" type="time" value={eventData.time} handleChange={handleChange} />
+							<input
+								className="w-full p-2 rounded-lg my-2 text-black"
+								name="time"
+								type="time"
+								value={eventData.time}
+								onChange={handleChange}
+							/>
 						</div>
 						<div className="w-1/2 pl-1">
 							<span>Duration</span>
-							<FormElement
-								label=""
+							<input
+								className="w-full p-2 rounded-lg my-2 text-black"
 								name="duration"
 								type="time"
 								value={eventData.duration}
-								handleChange={handleChange}
+								onChange={handleChange}
 							/>
 						</div>
 					</div>
