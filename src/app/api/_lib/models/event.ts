@@ -48,7 +48,7 @@ class Events {
         return db.execute(sql);
     }
 
-    async update(id: number){
+    async update(id: number) {
         const dur = this.duration
         const duration = Number(dur.split(":")[0]) + ((Number(dur.split(":")[1])) * (10 / 6) / 100)
 
@@ -90,7 +90,7 @@ class Events {
         return db.execute(`SELECT * FROM events WHERE id = ${eventId}`)
     }
 
-    static async getFullForId (id: number | string) {
+    static async getFullForId(id: number | string) {
         const [events] = await Events.getForId(Number(id)) as Array<RowDataPacket>
 
         const event = events[0]
@@ -102,6 +102,10 @@ class Events {
         const djsToReturn = await Promise.all(djs);
 
         return { ...event, djs: djsToReturn, location: location[0].name, locationId: location[0].id }
+    }
+
+    static deleteForId(id: number) {
+        return db.execute(`DELETE FROM events WHERE id = ${id};`)
     }
 }
 

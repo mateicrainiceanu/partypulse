@@ -153,6 +153,20 @@ function ManageEvent({params}: {params: {id: number}}) {
 					</div>
 				</div>
 				<FormBtn name="Save Changes" onClick={handleSave}></FormBtn>
+				<button
+					className="w-full p-1 bg-red-500 hover:bg-red-400 rounded-lg"
+					onClick={() => {
+						axios
+							.delete("/api/event/" + params.id)
+							.then((_) => {
+								window.location.replace("/dash/em");
+							})
+							.catch((_) => {
+								alert("ERR");
+							});
+					}}>
+					Delete
+				</button>
 			</div>
 		</div>
 	);
