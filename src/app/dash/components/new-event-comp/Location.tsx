@@ -6,7 +6,6 @@ import FormElement from "@/components/FormElement";
 export function Location({eventData, setEventData}: any) {
 	const [locationSearch, setLocationSearch] = useState("");
 	const [options, setOptions] = useState([]);
-	const [customLocation, setCustomLocation] = useState(false);
 
 	useEffect(handleUpdatePublicLocation, [locationSearch]);
 
@@ -41,7 +40,7 @@ export function Location({eventData, setEventData}: any) {
 				<Autocomplete
 					className="bg-white rounded-lg"
 					options={options}
-					onChange={(e: any) => {						
+					onChange={(e: any) => {
 						const idx = e.target.dataset.optionIndex;
 						const id = (options[idx] as {name: string; label: string; id: number}).id;
 						setEventData((prev: any) => ({...prev, locName: e.target.innerText, locId: id}));

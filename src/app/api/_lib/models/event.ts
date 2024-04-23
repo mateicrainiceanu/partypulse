@@ -1,5 +1,7 @@
 import { RowDataPacket } from "mysql2";
 import { db } from "../config/db";
+import Location from "./location";
+import User from "./user";
 
 interface Events {
     id?: number;
@@ -46,26 +48,60 @@ class Events {
         return db.execute(sql);
     }
 
+    async update(id: number){
+        const dur = this.duration
+        const duration = Number(dur.split(":")[0]) + ((Number(dur.split(":")[1])) * (10 / 6) / 100)
+
+        let sql = `UPDATE events SET
+        name = '${this.name}',
+        privateev = ${this.privateev ? 1 : 0},
+        dateStart =  '${this.date + " " + this.time}:00',
+        duration = ${duration}
+        WHERE id = ${id};
+        `
+        return db.execute(sql);
+    }
+
     static setLocation(eventId: number, locId: number) {
-        let sql = `INSERT INTO events_locations (eventId, locationId) VALUES (${eventId}, ${locId});`
+        let sql = `UPDATE events SET locationId = ${locId} WHERE id = ${eventId};`
         return db.execute(sql);
     }
 
     static async getForUser(id: number) {
         const [eventsIds] = await db.execute(`SELECT * FROM users_events WHERE userId = ${id};`) as Array<RowDataPacket>
-        
+
         var query = ''
-        
+
         eventsIds.map((ev: { eventId: number }) => {
             query += (ev.eventId + ", ")
         })
-        
-        const [events] = await db.execute(`SELECT * FROM events WHERE id IN (${query.substring(0, query.length - 2)}) ORDER BY id DESC;`);
-        return events;
+
+        if (query.length > 0) {
+            const [events] = await db.execute(`SELECT * FROM events WHERE id IN (${query.substring(0, query.length - 2)}) ORDER BY id DESC;`);
+            return events;
+        } else { return [] }
     }
-    
-    static getLocId(eventId: number){
+
+    static getLocId(eventId: number) {
         return db.execute(`SELECT * FROM events_locations WHERE eventId = ${eventId};`) as Promise<Array<RowDataPacket>>
+    }
+
+    static getForId(eventId: number) {
+        return db.execute(`SELECT * FROM events WHERE id = ${eventId}`)
+    }
+
+    static async getFullForId (id: number | string) {
+        const [events] = await Events.getForId(Number(id)) as Array<RowDataPacket>
+
+        const event = events[0]
+
+        const [location] = await Location.getFromIds(`${event.locationId}`) as Array<RowDataPacket>
+
+        const djs = await User.getDjsForId(event.id)
+
+        const djsToReturn = await Promise.all(djs);
+
+        return { ...event, djs: djsToReturn, location: location[0].name, locationId: location[0].id }
     }
 }
 

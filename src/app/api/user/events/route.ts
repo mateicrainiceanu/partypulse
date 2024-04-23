@@ -21,16 +21,14 @@ export async function GET(req: NextRequest) {
 
             const updatedEv = await events.map(async (event: any) => {                
 
-                const [locRel] = await Events.getLocId(event.id)
-
-                const [location] = await Location.getFromIds(`${locRel[0].locationId}`) as Array<RowDataPacket>
+                const [location] = await Location.getFromIds(`${event.locationId}`) as Array<RowDataPacket>
 
                 const djs = await User.getDjsForId(event.id)
                 
                 const djsToReturn = await Promise.all(djs);
 
                 return ({ ...event, djs: djsToReturn, location: location[0].name, locationId: location[0].id })
-            })
+            });
 
             const answ = await Promise.all(updatedEv)
 
