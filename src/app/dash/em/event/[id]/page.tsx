@@ -4,12 +4,12 @@ import {LoadingContext} from "@/app/LoadingContext";
 import axios from "axios";
 import React, {useContext, useEffect, useState} from "react";
 import FormElement from "@/components/FormElement";
-import moment from "moment";
 import {Switch} from "@mui/material";
 import {DJSelector} from "@/app/dash/components/new-event-comp/DJSelector";
 import {Location} from "@/app/dash/components/new-event-comp/Location";
 import FormBtn from "@/components/FormBtn";
 import {parseEventForView} from "@/app/dash/_lib/data-manager";
+import UpdateStauts from "./UpdateStauts";
 
 function ManageEvent({params}: {params: {id: number}}) {
 	const [data, setData] = useState({
@@ -23,6 +23,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 		time: "00:00",
 		duration: "00:00",
 		privateev: false,
+		status: 0,
 	});
 
 	const [edit, setEdit] = useState(false);
@@ -70,6 +71,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 			<div className="mx-auto max-w-xl my-2">
 				{data.id != 0 && (
 					<EventView
+						status={data.status}
 						id={data.id}
 						name={data.name}
 						date={data.dateStart}
@@ -79,6 +81,8 @@ function ManageEvent({params}: {params: {id: number}}) {
 					/>
 				)}
 			</div>
+
+			<UpdateStauts data={data} setData={setData} />
 
 			<div className="max-w-3xl mx-auto">
 				<h2 className="text-center font-mono text-white text-xl mt-3">Edit Data</h2>

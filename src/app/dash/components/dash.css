@@ -4,3 +4,7 @@
 .sel:hover{
     background-color: blueviolet;
 }
+
+.MuiPaginationItem-text{
+    color:white;
+}

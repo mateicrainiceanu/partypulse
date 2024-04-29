@@ -18,6 +18,3 @@ function Map({q}:IProps) {
 }
 
 export default Map;
-
-
-//${String(locData.lat)},${String(locData.lon)}

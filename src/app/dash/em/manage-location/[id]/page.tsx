@@ -28,7 +28,7 @@ function ManageLocation({params}: {params: {id: string}}) {
 	}, []);
 
 	async function getData() {
-		await axios.get("/api/location/" + locationid).then((response) => {
+		await axios.get("/api/location/" + locationid).then((response) => {			
 			setLocationData(response.data);
 		});
 	}

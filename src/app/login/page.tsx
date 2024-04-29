@@ -22,6 +22,7 @@ function Login() {
 			})
 			.catch((error) => {
 				alert(error.response.status + ": " + error.response.data);
+				setLoading(false)
 			});
 	}
 

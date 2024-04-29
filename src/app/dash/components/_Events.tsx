@@ -1,3 +1,5 @@
+//NOT CURRENTLY USED
+
 import axios from "axios";
 import React, {useContext, useEffect, useState} from "react";
 import EventView from "./EventView";
@@ -15,7 +17,7 @@ function Events() {
 				setEvents(response.data);
 				setTimeout(() => {
 					setLoading(false);
-				},100);
+				}, 100);
 			})
 			.catch((error) => {
 				alert("There was an error");
@@ -26,17 +28,23 @@ function Events() {
 	return (
 		<div>
 			{events.length != 0 &&
-				events.map((event: {id: number; name: string; location: string; dateStart: string; djs: Array<string>}, i) => (
-					<EventView
-						showManage={true}
-						name={event.name}
-						location={event.location}
-						id={event.id}
-						date={event.dateStart}
-						djs={event.djs}
-						key={i}
-					/>
-				))}
+				events.map(
+					(
+						event: {id: number; name: string; location: string; dateStart: string; djs: Array<string>; status: number},
+						i
+					) => (
+						<EventView
+							showManage={true}
+							status={event.status}
+							name={event.name}
+							location={event.location}
+							id={event.id}
+							date={event.dateStart}
+							djs={event.djs}
+							key={i}
+						/>
+					)
+				)}
 		</div>
 	);
 }

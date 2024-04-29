@@ -4,9 +4,13 @@ import PaLocation from "../components/PaLocation";
 
 function EMDashHome() {
 	return (
-		<div className="text-center">
-			<PaEvents />
-			<PaLocation />
+		<div className="text-center flex flex-wrap">
+			<div className="w-full lg:w-2/3 p-5">
+				<PaEvents />
+			</div>
+			<div className="w-full lg:w-1/3 p-2">
+				<PaLocation />
+			</div>
 		</div>
 	);
 }

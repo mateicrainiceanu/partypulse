@@ -70,15 +70,27 @@ class Events {
     static async getForUser(id: number) {
         const [eventsIds] = await db.execute(`SELECT * FROM users_events WHERE userId = ${id};`) as Array<RowDataPacket>
 
+        const [userLocations] = await db.execute(`SELECT locationId FROM users_locations WHERE userId = ${id};`) as Array<RowDataPacket>
+
+        var locQuery = ""
+
+        userLocations.map((rel: { locationId: number }) => {
+            locQuery += rel.locationId + ", "
+        })
+
         var query = ''
 
         eventsIds.map((ev: { eventId: number }) => {
             query += (ev.eventId + ", ")
         })
 
-        if (query.length > 0) {
-            const [events] = await db.execute(`SELECT * FROM events WHERE id IN (${query.substring(0, query.length - 2)}) ORDER BY id DESC;`);
-            return events;
+        if (query.length > 0 || locQuery.length > 0) {
+            const [events1] = await db.execute(`SELECT * FROM events WHERE
+            ${query.length > 0 ? `id IN (${query.substring(0, query.length - 2)})` : ""} 
+            ${query.length > 0 && locQuery.length > 0 ? "OR" : ""}
+            ${locQuery.length > 0 ? `locationId IN (${locQuery.substring(0, locQuery.length - 2)})` : ""} 
+            ORDER BY dateStart ASC;`);
+            return events1;
         } else { return [] }
     }
 
@@ -88,6 +100,10 @@ class Events {
 
     static getForId(eventId: number) {
         return db.execute(`SELECT * FROM events WHERE id = ${eventId}`)
+    }
+
+    static getForLocations(locString: number) {
+        return db.execute(`SELECT * FROM events WHERE locationId IN (${locString})`);
     }
 
     static async getFullForId(id: number | string) {
@@ -101,11 +117,20 @@ class Events {
 
         const djsToReturn = await Promise.all(djs);
 
-        return { ...event, djs: djsToReturn, location: location[0].name, locationId: location[0].id }
+        return { ...event, djs: djsToReturn, location: location[0].name, locationData: location[0], locationId: location[0].id }
     }
 
     static deleteForId(id: number) {
+        db.execute(`DELETE FROM user_events WHERE eventId = ${id};`)
         return db.execute(`DELETE FROM events WHERE id = ${id};`)
+    }
+
+    static changeStatus(id: number, newStatus: number) {
+        return db.execute(`UPDATE events SET status = ${newStatus} WHERE id = ${id}`)
+    }
+
+    static getUsersPermission(eventId: number, userId: number) {
+        return (db.execute(`SELECT reltype FROM users_events WHERE eventId = ${eventId} AND userId = ${userId} ORDER BY reltype DESC;`))
     }
 }
 
