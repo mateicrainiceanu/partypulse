@@ -3,13 +3,13 @@ import FormElement from "@/components/FormElement";
 import FormBtn from "@/components/FormBtn";
 import {UserContext} from "@/app/UserContext";
 import axios from "axios";
-import { LoadingContext } from "@/app/LoadingContext";
+import {LoadingContext} from "@/app/LoadingContext";
 
 function ChangeProfile() {
 	const {user, getUserData} = useContext(UserContext);
-	const [data, setData] = useState({uname: ""});
+	const [data, setData] = useState({uname: "", donations: ""});
 	const [avalabile, setAvalabile] = useState(false);
-    const setLoading = useContext(LoadingContext)
+	const setLoading = useContext(LoadingContext);
 
 	useEffect(() => {
 		if (user.id != 0) {
@@ -31,18 +31,19 @@ function ChangeProfile() {
 	}
 
 	async function handleSumbit(e: any) {
-        setLoading(true);
-        await axios.post("/api/partner", {username: data.uname}).then(data => {
-            alert("ok");
-            getUserData();
-            
-        }).catch(error => {
-            alert("error")
-        })
+		setLoading(true);
+		await axios
+			.post("/api/partner", {username: data.uname, donations: data.donations})
+			.then((data) => {
+				alert("ok");
+				getUserData();
+			})
+			.catch((error) => {
+				alert("error");
+			});
 
-        setLoading(false);
-
-    }
+		setLoading(false);
+	}
 
 	return (
 		<div>
@@ -53,6 +54,12 @@ function ChangeProfile() {
 				value={data.uname}
 				handleChange={handleChange}></FormElement>
 			{user.uname !== data.uname && <p className="text-center">Avalabile: {avalabile ? "YES" : "NO"}</p>}
+			<FormElement
+				label="Donations Page URL"
+				name="donations"
+				type="text"
+				value={data.donations}
+				handleChange={handleChange}></FormElement>
 			<FormBtn onClick={handleSumbit} name="Update"></FormBtn>
 		</div>
 	);

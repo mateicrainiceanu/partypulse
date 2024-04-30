@@ -2,7 +2,6 @@ import { RowDataPacket } from "mysql2";
 import { db } from "../config/db";
 import Location from "./location";
 import User from "./user";
-
 interface Events {
     id?: number;
     name: string;
@@ -22,7 +21,7 @@ class Events {
         this.name = obj.name;
         this.privateev = obj.privateev;
         this.date = obj.date;
-        this.time = obj.time;
+        this.time = obj.time.substring(0, 5);
         this.duration = obj.duration;
         this.djs = obj.djs;
         this.customLoc = obj.customLoc;
@@ -106,7 +105,7 @@ class Events {
         return db.execute(`SELECT * FROM events WHERE locationId IN (${locString})`);
     }
 
-    static async getFullForId(id: number | string) {
+    static async getFullForId(id: number | string, userId?: number) {
         const [events] = await Events.getForId(Number(id)) as Array<RowDataPacket>
 
         const event = events[0]
@@ -117,7 +116,13 @@ class Events {
 
         const djsToReturn = await Promise.all(djs);
 
-        return { ...event, djs: djsToReturn, location: location[0].name, locationData: location[0], locationId: location[0].id }
+        var userHasRightToManage
+
+        if (userId) {
+            userHasRightToManage = (await Events.getUsersPermission(id as number, userId) as Array<RowDataPacket>)[0][0].reltype | 0;
+        }
+
+        return { ...event, djs: djsToReturn, location: location[0].name, locationData: location[0], locationId: location[0].id, userHasRightToManage }
     }
 
     static deleteForId(id: number) {
@@ -130,7 +135,11 @@ class Events {
     }
 
     static getUsersPermission(eventId: number, userId: number) {
-        return (db.execute(`SELECT reltype FROM users_events WHERE eventId = ${eventId} AND userId = ${userId} ORDER BY reltype DESC;`))
+        return (db.execute(`SELECT reltype FROM users_events WHERE eventId = ${eventId} AND userId = ${userId} AND reltype != 0 ORDER BY reltype ASC;`))
+    }
+
+    static updateField(id: number, field: string, value: string | number) {
+        return db.execute(`UPDATE events SET ${field} = '${value}' WHERE id = ${id};`) as Promise<Array<RowDataPacket>>
     }
 }
 

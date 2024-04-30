@@ -19,7 +19,7 @@ interface IChildren {
 const UserContext = createContext(null as any);
 
 function UserProvider({children}: IChildren) {
-	const [user, setUser] = useState({id: 0, fname: "", lname: "", email: "", token: "", logged: false});
+	const [user, setUser] = useState({id: 0, fname: "", lname: "", email: "", token: "", logged: false, donations:""});
 	const [tried, setTried] = useState(false);
 
 	const setLoading = useContext(LoadingContext);

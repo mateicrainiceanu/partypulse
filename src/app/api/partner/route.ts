@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 import { RowDataPacket } from "mysql2";
 
 export async function POST(req: NextRequest) {
-    const { username, ptype } = await req.json();
+    const { username, ptype, donations } = await req.json();
 
 
     const token = cookies().get("token")?.value
@@ -23,6 +23,10 @@ export async function POST(req: NextRequest) {
             if (username) {
                 const [result2] = (await User.update(user.id, "uname", username)) as Array<RowDataPacket>
                 warnings += result2.warningStatus
+            }
+            if (donations) {
+                const [result3] = (await User.update(user.id, "donations", donations)) as Array<RowDataPacket>
+                warnings += result3.warningStatus
             }
             if (warnings === 0) {
                 return new NextResponse("OK", { status: 200 })
