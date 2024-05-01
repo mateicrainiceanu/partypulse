@@ -2,8 +2,8 @@
 
 import React, {useContext, useEffect} from "react";
 import {UserContext} from "../UserContext";
-import MiniBar from "./components/MiniBar";
-import UserDash from "./components/user/UserDash";
+import MiniBar from "./_components/MiniBar";
+import UserDash from "./_components/user/UserDash";
 
 function Dash() {
 	const {user} = useContext(UserContext);

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import MiniBar from "../components/MiniBar";
-import PaEvents from "../components/PaEvents";
+import MiniBar from "../_components/MiniBar";
+import PaEvents from "../_components/PaEvents";
 
 function DJDash() {
 	return (

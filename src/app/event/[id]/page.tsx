@@ -4,7 +4,7 @@ import axios from "axios";
 import React, {useContext, useEffect, useState} from "react";
 import moment from "moment";
 import {parseEventForView} from "@/app/dash/_lib/data-manager";
-import LocationXlView from "@/app/dash/components/LocationXlView";
+import LocationXlView from "@/app/dash/_components/LocationXlView";
 import DJView from "@/components/DJView";
 import StatusPointer from "@/components/StatusPointer";
 import UpdateStauts from "@/app/dash/em/event/[id]/UpdateStauts";

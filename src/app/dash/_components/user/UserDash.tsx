@@ -4,7 +4,7 @@ import BottomBar from "./BottomBar";
 
 import Home from "./pages/Home";
 import SearchPage from "./pages/SearchPage";
-import Events from "./pages/Events";
+import EventsView from "./pages/EventsView";
 import Locations from "./pages/Locations";
 import Live from "./pages/Live";
 
@@ -17,7 +17,7 @@ function UserDash() {
 			<div className="p-3 mb-10">
 				{view === "home" && <Home />}
 				{view === "search" && <SearchPage />}
-				{view === "events" && <Events />}
+				{view === "events" && <EventsView />}
 				{view === "locations" && <Locations />}
 				{view === "live" && <Live />}
 			</div>

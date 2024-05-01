@@ -17,23 +17,31 @@ export async function GET(req: NextRequest) {
     if (token) {
         const user = getUserFromToken(token)
         if (user.id) {
-            const events = await Events.getForUser(user.id) as Array<RowDataPacket>            
+            const [events] = await Events.getIdsForUser(user.id) as Array<RowDataPacket>
 
-            const updatedEv = await events.map(async (event: any) => {                
+            var wereIds: Array<number> = []
 
-                const [location] = await Location.getFromIds(`${event.locationId}`) as Array<RowDataPacket>
+            const updatedEv = await events.map(async (event: any) => {
+                var uq = true;
 
-                const djs = await User.getDjsForId(event.id)
-                
-                const djsToReturn = await Promise.all(djs);
+                wereIds.map((id: number) => {
+                    if (id == event.eventId) {
+                        uq = false;
+                    }
+                })
 
-                return ({ ...event, djs: djsToReturn, location: location[0].name, locationId: location[0].id })
+                wereIds.push(event.eventId)
+
+                if (uq) {
+                    return await Events.getFullForId(event.eventId, user.id);
+                } else { return null }
+
             });
 
             const answ = await Promise.all(updatedEv)
 
-            return NextResponse.json(answ)
-            
+            return NextResponse.json(answ.filter((answ: any) => answ != null))
+
         } else {
             return new NextResponse("UserNotLoggedIn", { status: 403 })
         }

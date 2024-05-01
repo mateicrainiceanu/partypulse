@@ -66,6 +66,10 @@ class Events {
         return db.execute(sql);
     }
 
+    static getIdsForUser(id: number) {
+        return db.execute(`SELECT eventId FROM users_events WHERE userId = ${id};`) as Promise<Array<RowDataPacket>>
+    }
+
     static async getForUser(id: number) {
         const [eventsIds] = await db.execute(`SELECT * FROM users_events WHERE userId = ${id};`) as Array<RowDataPacket>
 
@@ -83,11 +87,11 @@ class Events {
             query += (ev.eventId + ", ")
         })
 
-        if (query.length > 0 || locQuery.length > 0) {
+        if (query != "" || locQuery != "") {
             const [events1] = await db.execute(`SELECT * FROM events WHERE
-            ${query.length > 0 ? `id IN (${query.substring(0, query.length - 2)})` : ""} 
-            ${query.length > 0 && locQuery.length > 0 ? "OR" : ""}
-            ${locQuery.length > 0 ? `locationId IN (${locQuery.substring(0, locQuery.length - 2)})` : ""} 
+            ${query != "" ? `id IN (${query.substring(0, query.length - 2)})` : ""} 
+            ${query != "" && locQuery != "" ? "OR" : ""}
+            ${locQuery != "" ? `locationId IN (${locQuery.substring(0, locQuery.length - 2)})` : ""} 
             ORDER BY dateStart ASC;`);
             return events1;
         } else { return [] }
@@ -106,26 +110,45 @@ class Events {
     }
 
     static async getFullForId(id: number | string, userId?: number) {
-        const [events] = await Events.getForId(Number(id)) as Array<RowDataPacket>
+        const [events] = await Events.getForId(Number(id)) as Array<RowDataPacket>        
+        if (events.length > 0) {
 
-        const event = events[0]
+            const event = events[0]
 
-        const [location] = await Location.getFromIds(`${event.locationId}`) as Array<RowDataPacket>
+            const [location] = await Location.getFromIds(`${event.locationId}`) as Array<RowDataPacket>
 
-        const djs = await User.getDjsForId(event.id)
+            const djs = await User.getDjsForId(event.id)
 
-        const djsToReturn = await Promise.all(djs);
+            const djsToReturn = await Promise.all(djs);
 
-        var userHasRightToManage = 0
+            var userHasRightToManage = 0
+            var liked = false;
+            var coming = false;
+            var there = false;
 
-        if (userId) {
-            let [result] = (await Events.getUsersPermission(id as number, userId) as Array<RowDataPacket>)
-            if (result.length > 0) {
-                userHasRightToManage = result[0].reltype;
+            if (userId) {
+                let [result] = (await Events.getUsersPermission(id as number, userId) as Array<RowDataPacket>)
+
+                if (result.length > 0) {
+                    userHasRightToManage = result[0].reltype;
+                    result.map(({ reltype }: { reltype: number }) => {
+                        if (reltype == 3) {
+                            there = true
+                        }
+                        if (reltype == 4) {
+                            coming = true
+                        }
+                        if (reltype == 5) {
+                            liked = true
+                        }
+                    })
+                }
             }
-        }
 
-        return { ...event, djs: djsToReturn, location: location[0].name, locationData: location[0], locationId: location[0].id, userHasRightToManage }
+            return { ...event, djs: djsToReturn, location: location[0].name, locationData: location[0], locationId: location[0].id, userHasRightToManage, there, coming, liked }
+        } else {
+            return null
+        }
     }
 
     static deleteForId(id: number) {
@@ -148,6 +171,15 @@ class Events {
     static searchByName(q: string) {
         return db.execute(`SELECT id FROM events WHERE name LIKE '%${q}%' AND privateev = 0;`)
     }
+
+    static reaction(uid: number, eid: number, type: number, value: boolean) {
+        if (value) {
+            return db.execute(`INSERT INTO users_events (userId, eventId, reltype) VALUES (${uid}, ${eid}, ${type});`) as Promise<Array<RowDataPacket>>
+        } else {
+            return db.execute(`DELETE FROM users_events WHERE userId = ${uid} AND eventId = ${eid} AND reltype = ${type};`) as Promise<Array<RowDataPacket>>
+        }
+    }
+
 }
 
 export default Events;

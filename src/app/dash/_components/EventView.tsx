@@ -1,4 +1,5 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
+import Link from "next/link";
 import moment from "moment";
 
 import {MdDateRange} from "react-icons/md";
@@ -8,8 +9,9 @@ import {IoSettingsSharp} from "react-icons/io5";
 import {BsCircleFill} from "react-icons/bs";
 import {UserContext} from "@/app/UserContext";
 
-import { FaHeart, FaHandFist, FaHandPeace} from "react-icons/fa6";
+import {FaHeart, FaHandFist, FaHandPeace} from "react-icons/fa6";
 import {CgMoreVertical} from "react-icons/cg";
+import axios from "axios";
 
 function EventView({
 	id,
@@ -19,6 +21,9 @@ function EventView({
 	djs,
 	showManage,
 	status,
+	there,
+	coming, 
+	liked
 }: {
 	id: number;
 	name: string;
@@ -27,8 +32,14 @@ function EventView({
 	djs: Array<string>;
 	showManage: boolean;
 	status: number;
+	there: boolean;
+	coming: boolean;
+	liked: boolean
 }) {
 	const {user} = useContext(UserContext);
+
+	const [tliked, setTLiked] = useState(liked);
+	const [tcoming, setTComing] = useState(coming);
 
 	var str = "";
 	djs.map((dj) => {
@@ -46,8 +57,14 @@ function EventView({
 		return djable;
 	}
 
+	function reacted(name: string, value: boolean) {		
+		axios.post("/api/event/reaction", {eventId: id, name: name === "like" ? 5 : 4, value: value}).then((res) => {
+			console.log(res);
+		});
+	}
+
 	return (
-		<div className="w-full rounded-xl bg-black">
+		<div className="w-full rounded-xl bg-gray-900">
 			<div className=" bg-slate-800 hover:bg-slate-900 text-left p-4 rounded-xl my-2 relative">
 				<div className="absolute right-2 top-2 flex">
 					{djable() && (
@@ -108,11 +125,35 @@ function EventView({
 					</div>
 				</div>
 			</div>
-			<div className="p-3 flex text-2xl gap-4 justify-center">
-				<FaHandFist />
-				<FaHandPeace />
-				<FaHeart />
-				<CgMoreVertical />
+			<div className="p-3 flex text-2xl gap-10 justify-center">
+				<Link href={"/event/" + id}>
+					<CgMoreVertical />
+				</Link>
+				<button
+					name="participating"
+					onClick={() => {
+						reacted("participating", !tcoming);
+						setTComing((prev) => {
+							return !prev;
+						});
+					}}>
+					{tcoming ? (
+						<FaHandPeace className="text-green-500" />
+					) : (
+						<FaHandFist className="text-white hover:text-gray-300" />
+					)}
+				</button>
+				<button
+					name="like"
+					className={tliked ? "text-red-500 hover:text-red-400" : "text-white hover:text-gray-300"}
+					onClick={() => {
+						reacted("like", !tliked);
+						setTLiked((prev) => {
+							return !prev;
+						});
+					}}>
+					<FaHeart />
+				</button>
 			</div>
 		</div>
 	);

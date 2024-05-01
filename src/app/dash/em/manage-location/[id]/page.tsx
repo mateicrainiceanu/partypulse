@@ -1,7 +1,7 @@
 "use client";
 import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
-import LocationSmView from "@/app/dash/components/LocationSmView";
+import LocationSmView from "@/app/dash/_components/LocationSmView";
 import FormElement from "@/components/FormElement";
 import FormBtn from "@/components/FormBtn";
 import Map from "@/components/Map";
@@ -28,7 +28,7 @@ function ManageLocation({params}: {params: {id: string}}) {
 	}, []);
 
 	async function getData() {
-		await axios.get("/api/location/" + locationid).then((response) => {			
+		await axios.get("/api/location/" + locationid).then((response) => {
 			setLocationData(response.data);
 		});
 	}

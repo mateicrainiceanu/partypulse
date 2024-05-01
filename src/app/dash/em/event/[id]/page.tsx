@@ -1,12 +1,12 @@
 "use client";
-import EventView from "@/app/dash/components/EventView";
+import EventView from "@/app/dash/_components/EventView";
 import {LoadingContext} from "@/app/LoadingContext";
 import axios from "axios";
 import React, {useContext, useEffect, useState} from "react";
 import FormElement from "@/components/FormElement";
 import {Switch} from "@mui/material";
-import {DJSelector} from "@/app/dash/components/new-event-comp/DJSelector";
-import {Location} from "@/app/dash/components/new-event-comp/Location";
+import {DJSelector} from "@/app/dash/_components/new-event-comp/DJSelector";
+import {Location} from "@/app/dash/_components/new-event-comp/Location";
 import FormBtn from "@/components/FormBtn";
 import {parseEventForView} from "@/app/dash/_lib/data-manager";
 import UpdateStauts from "./UpdateStauts";

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import MiniBar from "../components/MiniBar";
+import MiniBar from "../_components/MiniBar";
 import EMDashHome from "./EMDashHome";
 
 function EMDash() {
