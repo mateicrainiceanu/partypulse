@@ -3,6 +3,8 @@ import User from "../_lib/models/user";
 import { cookies } from "next/headers";
 import { getUserFromToken } from "../_lib/token";
 import Location from "../_lib/models/location";
+import Events from "../_lib/models/event";
+import { RowDataPacket } from "mysql2";
 
 export async function POST(req: NextRequest) {
     const { searchQuery, category } = await req.json()
@@ -10,7 +12,7 @@ export async function POST(req: NextRequest) {
     const url = new URL(req.url)
     const tok = url.searchParams.get("token")
     const token = cookies().get("token")?.value || tok
-    var userId
+    var userId: number | undefined
     if (token) {
         const user = getUserFromToken(token)
         if (user.id) { userId = user.id }
@@ -24,6 +26,20 @@ export async function POST(req: NextRequest) {
     if (category === "locations" && searchQuery != "") {
         const [result] = await Location.findFromString(searchQuery);
         return NextResponse.json({ category: "locations", results: result })
+    }
+
+    if (category === "events" && searchQuery != "") {
+        const [ids] = await Events.searchByName(searchQuery) as Array<RowDataPacket>;
+
+        const res = await ids.map(async (evid: { id: number }) => {
+            const fullEvent = await Events.getFullForId(evid.id, userId)
+            return fullEvent;
+        })
+
+        const full = await Promise.all(res)
+        
+  
+        return NextResponse.json({ category: "events", results: full })
     }
 
 

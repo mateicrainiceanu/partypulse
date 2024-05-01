@@ -4,6 +4,7 @@ import {FormControl, Select, MenuItem, InputLabel} from "@mui/material";
 import Users from "./SearchPageComp/Users";
 import axios from "axios";
 import Locations from "./SearchPageComp/Locations";
+import Events from "../../_Events";
 
 function SearchPage() {
 	var startCategory = localStorage.getItem("category") || "users";
@@ -43,7 +44,7 @@ function SearchPage() {
 					// searchQuery: e.target.name === "searchQuery" ? e.target.value : searchData.searchQuery,
 				})
 				.then((response) => {
-					if (response.data.category == searchData.category) {
+					if (response.data.category == searchData.category) {						
 						setResponseData(response.data.results);
 					}
 				});
@@ -80,6 +81,7 @@ function SearchPage() {
 
 			{searchData.category === "users" && <Users users={responseData} />}
 			{searchData.category === "locations" && <Locations locations={responseData} />}
+			{searchData.category === "events" && <Events givenEvents={responseData} />}
 		</div>
 	);
 }

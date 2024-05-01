@@ -116,10 +116,13 @@ class Events {
 
         const djsToReturn = await Promise.all(djs);
 
-        var userHasRightToManage
+        var userHasRightToManage = 0
 
         if (userId) {
-            userHasRightToManage = (await Events.getUsersPermission(id as number, userId) as Array<RowDataPacket>)[0][0].reltype | 0;
+            let [result] = (await Events.getUsersPermission(id as number, userId) as Array<RowDataPacket>)
+            if (result.length > 0) {
+                userHasRightToManage = result[0].reltype;
+            }
         }
 
         return { ...event, djs: djsToReturn, location: location[0].name, locationData: location[0], locationId: location[0].id, userHasRightToManage }
@@ -140,6 +143,10 @@ class Events {
 
     static updateField(id: number, field: string, value: string | number) {
         return db.execute(`UPDATE events SET ${field} = '${value}' WHERE id = ${id};`) as Promise<Array<RowDataPacket>>
+    }
+
+    static searchByName(q: string) {
+        return db.execute(`SELECT id FROM events WHERE name LIKE '%${q}%' AND privateev = 0;`)
     }
 }
 

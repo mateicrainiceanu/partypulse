@@ -14,7 +14,7 @@ function UserDash() {
 
 	return (
 		<div>
-			<div className="p-3">
+			<div className="p-3 mb-10">
 				{view === "home" && <Home />}
 				{view === "search" && <SearchPage />}
 				{view === "events" && <Events />}
