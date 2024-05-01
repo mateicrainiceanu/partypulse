@@ -38,3 +38,11 @@ html {
   z-index: 5;
   background-color: black;
 }
+
+.MuiPaginationItem-text {
+  color: white;
+}
+
+.MuiPaginationItem-text .MuiPagionationItem-root{ 
+    color: white;
+}

@@ -3,7 +3,6 @@ import Events from "../../_lib/models/event";
 import { DELETE } from './delete'
 import { cookies } from "next/headers";
 import { getUserFromToken } from "../../_lib/token";
-import { RowDataPacket } from "mysql2";
 
 export async function GET(req: NextRequest, { params }: { params: { id: number } }) {
 

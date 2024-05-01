@@ -81,6 +81,11 @@ class User {
         return db.execute(sql);
     }
 
+    static getFromUname(uname: string, userId?: number) {
+        return db.execute(`SELECT uname, role FROM users 
+        WHERE (uname LIKE '%${uname}%' OR email LIKE '%${uname}%') ${userId ? "AND id != " + userId : ""};`)
+    }
+
     static async addLocation(uid: number, locid: number) {
         let sql1 = `SELECT * FROM users_locations WHERE userId = ${uid} AND locationId = ${locid};`
         let [res] = await db.execute(sql1) as Array<RowDataPacket>

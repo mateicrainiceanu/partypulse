@@ -74,9 +74,7 @@ function DjView({params}: {params: {id: number}}) {
 		updateData({genreVote: data.genreVote == 0 ? 1 : 0});
 	}
 
-	async function handleSuggestionsUpdate(_: any, val: boolean) {
-        console.log(val ? 1 : 0);
-        
+	async function handleSuggestionsUpdate(_: any, val: boolean) {        
 		updateData({msuggestions: val ? 1 : 0});
 	}
 
@@ -84,7 +82,6 @@ function DjView({params}: {params: {id: number}}) {
 		axios
 			.patch("/api/partner/event", {id: data.id, ...obj})
 			.then((response) => {
-                console.log(response.data.msuggestions);
 				setData(parseEventForView(response.data));
 			})
 			.catch((err) => {

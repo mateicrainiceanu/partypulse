@@ -45,7 +45,7 @@ function EventView({
 
 	return (
 		<div className="w-full bg-slate-800 hover:bg-slate-900 text-left p-4 rounded-xl my-2 relative">
-			<div className="absolute right-2 top-2 flex z-50">
+			<div className="absolute right-2 top-2 flex">
 				{djable() && (
 					<button
 						className="relative mx-1 border-2 border-fuchsia-500 hover:bg-fuchsia-500 hover:border-fuchsia-500 text-gray-500 hover:text-white rounded-3xl p-2"

@@ -72,6 +72,11 @@ class Location {
         return db.execute(sql);
     }
 
+    static findFromString(q: string) {
+        let sql = `SELECT * FROM locations WHERE name LIKE '%${q}%';`
+        return db.execute(sql) as Promise<Array<RowDataPacket>>
+    }
+
 
 
 }

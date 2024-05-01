@@ -3,12 +3,17 @@
 import React, {useContext, useEffect} from "react";
 import {UserContext} from "../UserContext";
 import MiniBar from "./components/MiniBar";
-import UserDash from "./components/UserDash";
+import UserDash from "./components/user/UserDash";
 
 function Dash() {
 	const {user} = useContext(UserContext);
 
-	return <div>{user.role != 0 ? <MiniBar fselected="user"></MiniBar> : <UserDash />}</div>;
+	return (
+		<div>
+			{user.role != 0 && <MiniBar fselected="user"></MiniBar>}
+			<UserDash></UserDash>
+		</div>
+	);
 }
 
 export default Dash;

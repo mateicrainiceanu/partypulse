@@ -11,7 +11,7 @@ function LocationXlView({
 	return (
 		<div className="w-max-xl my-2">
 			<div className="rounded-xl bg-yellow-300 p-2 text-black font-mono">
-				<h3 className="font-bold">{data.name}</h3>
+				<h3 className="font-bold text-center text-xl">{data.name}</h3>
 				<hr className="border-black my-2" />
 				<div className="text-left">
 					{data.adress && (
