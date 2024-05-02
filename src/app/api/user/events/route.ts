@@ -4,20 +4,20 @@ import { getUserFromToken } from "../../_lib/token";
 
 import Events from "../../_lib/models/event";
 import { RowDataPacket } from "mysql2";
-import User from "../../_lib/models/user";
-import Location from "../../_lib/models/location";
+
 
 export async function GET(req: NextRequest) {
     const url = new URL(req.url)
 
     const tok = url.searchParams.get("token")
+    const onlyManaged = url.searchParams.get("onlyManaged")
 
     const token = cookies().get("token")?.value || tok
 
     if (token) {
         const user = getUserFromToken(token)
         if (user.id) {
-            const [events] = await Events.getIdsForUser(user.id) as Array<RowDataPacket>
+            const [events] = await Events.getIdsForUser(user.id, onlyManaged == "true") as Array<RowDataPacket>
 
             var wereIds: Array<number> = []
 

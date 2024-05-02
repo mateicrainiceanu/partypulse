@@ -22,10 +22,10 @@ class Relationship {
         return db.execute(sql);
     }
 
-    static async getLocForUser(userid: number) {
+    static async getLocForUser(userid: number, reltype: number) {
         let sql = `
-        SELECT locationId FROM users_locations WHERE userId=${userid};
-        `
+        SELECT * FROM users_locations WHERE userId=${userid}
+        AND reltype = ${reltype};`
         return (await db.execute(sql)) as Array<RowDataPacket>
     };
 }

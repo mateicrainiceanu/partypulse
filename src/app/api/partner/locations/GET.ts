@@ -6,29 +6,43 @@ import Location from "../../_lib/models/location";
 import { RowDataPacket } from "mysql2";
 
 export default async function GET(req: NextRequest) {
-    const token = cookies().get("token")?.value
+
+    const url = new URL(req.url)
+    const token = cookies().get("token")?.value || url.searchParams.get("token")
+
+    const onlyManaged = url.searchParams.get("onlyManaged")
 
     if (token) {
         const user = getUserFromToken(token)
         if (user.id) {
 
-            const result = await Relationship.getLocForUser(user.id);
+            const [rels] = await Relationship.getLocForUser(user.id, (onlyManaged == "true" ? 1 : 0));
 
-            var locidsstring = "";
-
-            if (result[0].length === 0) {
+            if (rels[0].length === 0) {
                 return NextResponse.json({ locations: [] })
             }
 
-            result[0].forEach((element: any) => {
-                locidsstring += element.locationId + ", "
-            });
+            var wereIds: Array<number> = []
 
-            locidsstring = locidsstring.substring(0, locidsstring.length - 2);
+            const locations = rels.map(async (rel: any) => {
+                var uq = true;
 
-            const [locations] = (await Location.getFromIds(locidsstring)) as Array<RowDataPacket>
+                wereIds.map((id: number) => {
+                    if (id == rel.locationId) {
+                        uq = false;
+                    }
+                })
 
-            return NextResponse.json({ locations: locations })
+                wereIds.push(rel.locationId)
+
+                if (uq) {
+                    return await Location.getFullLocation(rel.locationId, user.id)
+                } else { return null }
+            })
+
+            const readyLoc = await Promise.all(locations)
+
+            return NextResponse.json({ locations: readyLoc.filter((loc: any) => loc != null) })
 
         } else {
             return new NextResponse("UserNotLoggedIn", { status: 403 })
@@ -38,3 +52,21 @@ export default async function GET(req: NextRequest) {
         return new NextResponse("UserNotLoggedIn", { status: 403 })
     }
 }
+
+// const result = await Relationship.getLocForUser(user.id);
+
+// var locidsstring = "";
+
+// if (result[0].length === 0) {
+//     return NextResponse.json({ locations: [] })
+// }
+
+// result[0].forEach((element: any) => {
+//     locidsstring += element.locationId + ", "
+// });
+
+// locidsstring = locidsstring.substring(0, locidsstring.length - 2);
+
+// const [locations] = (await Location.getFromIds(locidsstring)) as Array<RowDataPacket>
+
+// return NextResponse.json({ locations: locations })

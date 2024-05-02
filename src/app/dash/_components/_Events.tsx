@@ -9,9 +9,9 @@ import {Pagination} from "@mui/material";
 function Events({
 	givenEvents,
 	filter,
-	needPagination,
+	onlyManaged,
 }: {
-	needPagination?: boolean;
+	onlyManaged?: boolean;
 	filter?: string;
 	givenEvents?: Array<{
 		id: number;
@@ -34,10 +34,8 @@ function Events({
 		if (!givenEvents) {
 			setLoading(true);
 			axios
-				.get("/api/user/events")
+				.get("/api/user/events" + (onlyManaged ? "?onlyManaged=true" : ""))
 				.then((response) => {
-					console.log(response.data);
-
 					setEvents(response.data);
 					setTimeout(() => {
 						setLoading(false);
@@ -68,18 +66,19 @@ function Events({
 										there: boolean;
 										coming: boolean;
 										liked: boolean;
+										userHasRightToManage?: number;
 									},
 									i
 								) => (
 									<EventView
-										showManage={true}
+										showManage={event.userHasRightToManage == 1 || event.userHasRightToManage == 2}
 										status={event.status}
 										name={event.name}
 										location={event.location}
 										id={event.id}
 										date={event.dateStart}
 										djs={event.djs}
-										key={(pg-1)*showOnPg+i}
+										key={(pg - 1) * showOnPg + i}
 										there={event.there}
 										coming={event.coming}
 										liked={event.liked}
@@ -115,12 +114,13 @@ function Events({
 											there: boolean;
 											coming: boolean;
 											liked: boolean;
+											userHasRightToManage?: number;
 										},
 										i
 									) => (
-										<div key={(pg-1)*showOnPg+i}>
+										<div key={(pg - 1) * showOnPg + i}>
 											<EventView
-												showManage={true}
+												showManage={event.userHasRightToManage == 1 || event.userHasRightToManage == 2}
 												status={event.status}
 												name={event.name}
 												location={event.location}

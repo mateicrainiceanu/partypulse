@@ -77,8 +77,62 @@ class Location {
         return db.execute(sql) as Promise<Array<RowDataPacket>>
     }
 
+    static async reaction(uid: number, locid: number, liked: boolean) {
+        if (liked) {
+            let sql1 = `SELECT * FROM users_locations WHERE userId = ${uid} AND locationId = ${locid} AND reltype = 0;`
+            let [res] = await db.execute(sql1) as Array<RowDataPacket>
+            if (!res.length) {
+                let sql = `INSERT INTO users_locations (userId, locationId, reltype) VALUES (${uid}, ${locid}, 0);`
+                return db.execute(sql);
+            }
+        } else {
+            return await db.execute(`DELETE FROM users_locations WHERE userId = ${uid} AND locationId = ${locid} AND reltype = 0`) as Array<RowDataPacket>
+        }
+    }
+
+    static async getFullLocation(id: number, uid?: number) {
+        let sql = `SELECT * FROM locations WHERE id = ${id};`
+        let [locations] = await db.execute(sql) as Array<RowDataPacket>
+
+        if (locations.length && uid) {
+            const location = locations[0];
+            let [rels] = await db.execute(`SELECT * FROM users_locations WHERE locationId = ${id} AND userId = ${uid};`) as Array<RowDataPacket>
+            var userHasRightToManage = false
+            var liked = false
+            rels.map((rel: { reltype: number }) => {
+                if (rel.reltype === 0) {
+                    liked = true
+                }
+                if (rel.reltype === 1) {
+                    userHasRightToManage = true
+                }
+            })
+            return { ...location, userHasRightToManage, liked }
+        } else { return null }
+    }
+
+    static async getUsersPermission(locid?: number, uid?: number) {
+        if (locid && uid) {
 
 
+            let [rels] = await db.execute(`SELECT * FROM users_locations WHERE locationId = ${locid} AND userId = ${uid};`) as Array<RowDataPacket>
+            var userHasRightToManage = false
+            var liked = false
+            rels.map((rel: { reltype: number }) => {
+                if (rel.reltype === 0) {
+                    liked = true
+                }
+                if (rel.reltype === 1) {
+                    userHasRightToManage = true
+                }
+            })
+            return { userHasRightToManage, liked }
+        } else {
+            return { userHasRightToManage: false, liked: false }
+        }
+    }
 }
+
+
 
 export default Location;

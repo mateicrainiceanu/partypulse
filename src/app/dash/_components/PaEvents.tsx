@@ -40,7 +40,7 @@ function PaEvents() {
 				/>
 			)}
 
-			<Events filter={search}></Events>
+			<Events filter={search} onlyManaged></Events>
 		</div>
 	);
 }

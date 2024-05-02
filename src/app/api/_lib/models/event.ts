@@ -66,36 +66,39 @@ class Events {
         return db.execute(sql);
     }
 
-    static getIdsForUser(id: number) {
-        return db.execute(`SELECT eventId FROM users_events WHERE userId = ${id};`) as Promise<Array<RowDataPacket>>
+    static getIdsForUser(id: number, onlyManaged?: boolean) {
+        let sql = `SELECT eventId FROM users_events WHERE userId = ${id}`
+        sql += onlyManaged ? ` AND (reltype = 1 OR reltype = 2);` : ";"
+
+        return db.execute(sql) as Promise<Array<RowDataPacket>>
     }
 
-    static async getForUser(id: number) {
-        const [eventsIds] = await db.execute(`SELECT * FROM users_events WHERE userId = ${id};`) as Array<RowDataPacket>
+    // static async getEventIdsForUser(id: number, onlyManaged:boolean) {
+    //     const [eventsIds] = await db.execute(`SELECT * FROM users_events WHERE userId = ${id};`) as Array<RowDataPacket>
 
-        const [userLocations] = await db.execute(`SELECT locationId FROM users_locations WHERE userId = ${id};`) as Array<RowDataPacket>
+    //     const [userLocations] = await db.execute(`SELECT locationId FROM users_locations WHERE userId = ${id};`) as Array<RowDataPacket>
 
-        var locQuery = ""
+    //     var locQuery = ""
 
-        userLocations.map((rel: { locationId: number }) => {
-            locQuery += rel.locationId + ", "
-        })
+    //     userLocations.map((rel: { locationId: number }) => {
+    //         locQuery += rel.locationId + ", "
+    //     })
 
-        var query = ''
+    //     var query = ''
 
-        eventsIds.map((ev: { eventId: number }) => {
-            query += (ev.eventId + ", ")
-        })
+    //     eventsIds.map((ev: { eventId: number }) => {
+    //         query += (ev.eventId + ", ")
+    //     })
 
-        if (query != "" || locQuery != "") {
-            const [events1] = await db.execute(`SELECT * FROM events WHERE
-            ${query != "" ? `id IN (${query.substring(0, query.length - 2)})` : ""} 
-            ${query != "" && locQuery != "" ? "OR" : ""}
-            ${locQuery != "" ? `locationId IN (${locQuery.substring(0, locQuery.length - 2)})` : ""} 
-            ORDER BY dateStart ASC;`);
-            return events1;
-        } else { return [] }
-    }
+    //     if (query != "" || locQuery != "") {
+    //         const [events1] = await db.execute(`SELECT * FROM id WHERE
+    //         ${query != "" ? `id IN (${query.substring(0, query.length - 2)})` : ""} 
+    //         ${query != "" && locQuery != "" ? "OR" : ""}
+    //         ${locQuery != "" ? `locationId IN (${locQuery.substring(0, locQuery.length - 2)})` : ""} 
+    //         ORDER BY dateStart ASC;`);
+    //         return events1;
+    //     } else { return [] }
+    // }
 
     static getLocId(eventId: number) {
         return db.execute(`SELECT * FROM events_locations WHERE eventId = ${eventId};`) as Promise<Array<RowDataPacket>>
@@ -110,7 +113,7 @@ class Events {
     }
 
     static async getFullForId(id: number | string, userId?: number) {
-        const [events] = await Events.getForId(Number(id)) as Array<RowDataPacket>        
+        const [events] = await Events.getForId(Number(id)) as Array<RowDataPacket>
         if (events.length > 0) {
 
             const event = events[0]
@@ -130,7 +133,7 @@ class Events {
                 let [result] = (await Events.getUsersPermission(id as number, userId) as Array<RowDataPacket>)
 
                 if (result.length > 0) {
-                    userHasRightToManage = result[0].reltype;
+                    userHasRightToManage = (result[0].reltype == 1 || result[0].reltype == 2 ? result[0].reltype : 0);
                     result.map(({ reltype }: { reltype: number }) => {
                         if (reltype == 3) {
                             there = true

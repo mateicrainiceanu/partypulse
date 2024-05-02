@@ -23,7 +23,7 @@ function EventView({
 	status,
 	there,
 	coming, 
-	liked
+	liked,
 }: {
 	id: number;
 	name: string;
@@ -34,7 +34,7 @@ function EventView({
 	status: number;
 	there: boolean;
 	coming: boolean;
-	liked: boolean
+	liked: boolean;
 }) {
 	const {user} = useContext(UserContext);
 

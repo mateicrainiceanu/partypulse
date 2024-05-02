@@ -9,7 +9,7 @@ function EMDashHome() {
 				<PaEvents />
 			</div>
 			<div className="w-full lg:w-1/3 p-2">
-				<PaLocation />
+				<PaLocation pa />
 			</div>
 		</div>
 	);
