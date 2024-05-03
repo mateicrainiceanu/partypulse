@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import ConfirmAttendance from "./LiveComponents/ConfirmAttendance";
 
 function Live() {
-  return (
-    <div>Live</div>
-  )
+	return (
+		<div>
+			<ConfirmAttendance></ConfirmAttendance>
+		</div>
+	);
 }
 
-export default Live
+export default Live;

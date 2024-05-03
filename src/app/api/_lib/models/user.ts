@@ -2,6 +2,7 @@ import { db } from "../config/db";
 import bcrypt from 'bcrypt';
 import { saltRounds } from "../types";
 import { RowDataPacket } from "mysql2";
+import Events from "./event";
 
 interface User {
     id?: number,
@@ -130,6 +131,56 @@ class User {
 
             return response[0][0].uname
         })
+    }
+
+    static addCode(uid: number, code: string) {
+        return db.execute(`INSERT INTO codes (usedFor, itemId, code) VALUES('user' , ${uid}, '${code}');`)
+    }
+
+    static async validateCode(uid: number, code: string) {
+
+        let [codeRes] = await db.execute(`SELECT * FROM codes WHERE code = '${code}';`) as Array<RowDataPacket>;
+
+        var evId = 0;
+
+        if (codeRes[0].usedFor == "user") {
+            let userId = codeRes[0].itemId;
+            let [foundEv] = await db.execute(`SELECT * FROM users_events WHERE userId = ${userId} AND (reltype = 1 OR reltype = 2);`) as Array<RowDataPacket>
+            if (foundEv.length) {
+                let q = ""
+                foundEv.map((ev: { eventId: number }) => {
+                    q += ev.eventId + ", "
+                })
+                if (q != "") {
+                    let [events] = await db.execute(`SELECT id FROM events WHERE id IN (${q.substring(0, q.length - 2)}) AND status = 1;`) as Array<RowDataPacket>
+                    if (events.length) {
+                        evId = events[0].id
+                    }
+                }
+            }
+        } else {
+            let locid = codeRes[0].itemId;
+            let [foundEv] = await db.execute(`SELECT id FROM events WHERE locationId = ${locid} AND status = 1;`) as Array<RowDataPacket>
+            if (foundEv.length) {
+                evId = foundEv[0].id
+            }
+        }
+
+        if (evId != 0) {
+            await User.addEventRelation(uid, evId, 3) as Array<RowDataPacket>
+            return Events.getFullForId(evId, uid)
+        } else {
+            return null;
+        }
+
+    }
+
+    static getCodes(uid: number) {
+        return db.execute(`SELECT * FROM codes WHERE usedFor = 'user' AND itemId = ${uid};`)
+    }
+
+    static deleteCode(codeId: string) {
+        return db.execute(`DELETE FROM codes WHERE id = '${codeId}';`)
     }
 }
 

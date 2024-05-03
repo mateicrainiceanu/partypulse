@@ -131,6 +131,10 @@ class Location {
             return { userHasRightToManage: false, liked: false }
         }
     }
+
+    static addCode(locid: number, code: string) {
+        return db.execute(`INSERT INTO codes (usedFor, itemId, code) VALUES('location' , ${locid}, '${code}');`)
+    }
 }
 
 

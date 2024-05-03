@@ -78,7 +78,7 @@ function Events({
 										id={event.id}
 										date={event.dateStart}
 										djs={event.djs}
-										key={(pg - 1) * showOnPg + i}
+										key={event.id}
 										there={event.there}
 										coming={event.coming}
 										liked={event.liked}
@@ -127,7 +127,7 @@ function Events({
 												id={event.id}
 												date={event.dateStart}
 												djs={event.djs}
-												key={i}
+												key={event.id}
 												there={event.there}
 												coming={event.coming}
 												liked={event.liked}

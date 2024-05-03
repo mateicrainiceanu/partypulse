@@ -74,7 +74,7 @@ function DjView({params}: {params: {id: number}}) {
 		updateData({genreVote: data.genreVote == 0 ? 1 : 0});
 	}
 
-	async function handleSuggestionsUpdate(_: any, val: boolean) {        
+	async function handleSuggestionsUpdate(_: any, val: boolean) {
 		updateData({msuggestions: val ? 1 : 0});
 	}
 
