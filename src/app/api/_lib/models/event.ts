@@ -31,8 +31,6 @@ class Events {
     }
 
     async save() {
-
-        // const date = new Date(this.date + " " + this.time)
         const dur = this.duration
         const duration = Number(dur.split(":")[0]) + ((Number(dur.split(":")[1])) * (10 / 6) / 100)
 
@@ -66,12 +64,16 @@ class Events {
         return db.execute(sql);
     }
 
-    static getIdsForUser(id: number, onlyManaged?: boolean) {
+    static getIdsForUser(id: number, onlyManaged?: boolean, there?: boolean) {
         let sql = `SELECT eventId FROM users_events WHERE userId = ${id}`
-        sql += onlyManaged ? ` AND (reltype = 1 OR reltype = 2);` : ";"
+        sql += onlyManaged ? ` AND (reltype = 1 OR reltype = 2);` : ""
+        sql += there ? ` AND reltype = 3 ORDER BY id DESC;` : ""
+        sql += ";"
 
         return db.execute(sql) as Promise<Array<RowDataPacket>>
     }
+
+
 
     // static async getEventIdsForUser(id: number, onlyManaged:boolean) {
     //     const [eventsIds] = await db.execute(`SELECT * FROM users_events WHERE userId = ${id};`) as Array<RowDataPacket>
