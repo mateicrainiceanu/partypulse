@@ -23,6 +23,7 @@
     "next": "14.0.4",
     "next-client-cookies": "^1.1.0",
     "next-qrcode": "^2.5.1",
+    "querystring": "^0.2.1",
     "random-string-alphanumeric-generator": "^0.12.2",
     "react": "^18",
     "react-dom": "^18",
