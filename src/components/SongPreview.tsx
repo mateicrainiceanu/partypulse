@@ -1,13 +1,32 @@
 import React from "react";
-import Image from "next/image";
 
-export interface Song {name: String; artists: String; image: {url: string}}
+export interface Song {
+	id: string;
+	title: String;
+	artists: String;
+	imgsrc: string;
+}
 
-function SongPreview({songData}: {songData: Song}) {
+function SongPreview({songData, start}: {songData: Song; start: (id: string) => void}) {
 	return (
-		<div className="w-full flex my-2 hover:bg-gray-800">
-			<img src={songData.image.url} alt="Album cover" width={50} height={50}></img>
-			<span className="my-auto mx-5">{songData.name + " - " + songData.artists}</span>
+		<div
+			className="w-full flex my-2 hover:bg-gray-800 p-3"
+			onClick={() => {
+				start(songData.id);
+			}}>
+			<img src={songData.imgsrc} alt="Album cover" width={50} height={50}></img>
+			<span className="my-auto mx-5">{songData.title + " - " + songData.artists}</span>
+		</div>
+	);
+}
+export function SongLgPreview({songData}: {songData: Song}) {
+	return (
+		<div className="w-full my-2 p-3">
+			<div className="w-full">
+				<img src={songData.imgsrc} alt="Album cover" width={200} height={200} className="mx-auto"></img>
+			</div>
+			<h4 className="my-3 text-center mx-auto font-mono text-bold">{songData.title + " - " + songData.artists}</h4>
+
 		</div>
 	);
 }

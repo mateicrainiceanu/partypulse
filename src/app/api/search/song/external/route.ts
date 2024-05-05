@@ -22,13 +22,15 @@ export async function POST(req: NextRequest) {
 
             return {
                 id: track.id,
-                name: track.name,
+                title: track.name,
+                imgsrc: track.album.images[0].url,
                 image: {
                     url: track.album.images[0].url,
                     height: track.album.images[0].height,
                     width: track.album.images[0].width,
                 },
-                artists: artists.substring(0, artists.length - 2)
+                artists: artists.substring(0, artists.length - 2),
+                spotifyURL: track.external_urls.spotify
             }
         })
 

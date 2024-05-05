@@ -8,12 +8,14 @@ interface Props {
 	label: string;
 	handleChange: (e: any) => void;
 	value: string | number;
+	noAutoComplete?: boolean;
 }
 
-function FormElement({name, type, label, handleChange, value}: Props) {
+function FormElement({name, type, label, handleChange, value, noAutoComplete}: Props) {
 	return (
 		<div className="my-2">
 			<TextField
+				autoComplete={`${noAutoComplete ? false : true}`}
 				variant={"filled"}
 				label={label}
 				name={name}

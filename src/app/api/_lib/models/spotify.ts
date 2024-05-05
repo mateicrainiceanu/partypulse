@@ -11,7 +11,8 @@ export interface Track {
     album: {
         images: Array<{ height: number, width: number, url: string }>
     },
-    artists: Array<{name:string}>
+    artists: Array<{ name: string }>,
+    external_urls: { spotify: string }
 }
 
 class Spotify {
