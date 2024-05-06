@@ -42,14 +42,16 @@ function UserProvider({children}: IChildren) {
 			email: getCookie("email") || "",
 			token: getCookie("token") || "",
 			logged: getCookie("fname") != undefined ? true : false,
+			role: Number(getCookie("role")) || 0,
 			donations: getCookie("donations") || "",
 		};
 
 		setUser(startUser);
-		
-		if (getCookie("userId") == "" && getCookie("token") != "") {
+
+		if ((getCookie("userId") == undefined || getCookie("userId") == "") && getCookie("token") != "") {
 			getUserData(false);
 		}
+		setLoading(false);
 	}, []);
 
 	async function getUserData(mandatory: boolean) {

@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import BottomBar from "./BottomBar";
 
 import Home from "./pages/Home";
@@ -9,8 +9,12 @@ import Locations from "./pages/Locations";
 import Live from "./pages/Live";
 
 function UserDash() {
-	const startStr = window.localStorage.getItem("view") || "home";
+	const startStr = "home";
 	const [view, setView] = useState(startStr);
+
+	useEffect(() => {
+		if (localStorage.getItem("view") != null) setView(localStorage.getItem("view") || startStr);
+	}, []);
 
 	return (
 		<div>

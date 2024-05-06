@@ -16,7 +16,8 @@ function Register() {
 	async function handleChange(e: any) {
 		if (e.target.name === "uname") {
 			const username = e.target.value.replaceAll(" ", "");
-			await axios
+			setFormData((prevData) => ({...prevData, uname: username}));
+			axios
 				.post("/api/username-check", {username: username})
 				.then((response) => {
 					setAvalabile(true);
@@ -24,7 +25,6 @@ function Register() {
 				.catch((error) => {
 					setAvalabile(false);
 				});
-			setFormData((prevData) => ({...prevData, uname: username}));
 		} else {
 			setFormData((prevData) => ({...prevData, [e.target.name]: e.target.value}));
 		}

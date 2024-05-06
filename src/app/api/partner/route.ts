@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
                 warnings += result3.warningStatus
             }
             if (warnings === 0) {
-                const [updatedUser] = await User.findById(user.id) as RowDataPacket[0]
+                const [updatedUser] = (await User.findById(user.id) as RowDataPacket[][])[0]                
                 cookies().set("token", token)
                 cookies().set("userId", updatedUser.id)
                 cookies().set("uname", updatedUser.uname)
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
                 cookies().set("role", updatedUser.role)
                 cookies().set("email", updatedUser.email)
                 cookies().set("donations", updatedUser.donations)
-                return NextResponse.json({...updatedUser, hash: "xxx"})
+                return NextResponse.json({ ...updatedUser, hash: "xxx" })
             } else {
                 return new NextResponse("Error", { status: 500 })
             }
