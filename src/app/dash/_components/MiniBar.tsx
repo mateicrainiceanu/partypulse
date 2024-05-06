@@ -10,7 +10,8 @@ interface IProps {
 
 function MiniBar({fselected}: IProps) {
 	const [selected, setSelected] = useState(fselected);
-	const {user} = useContext(UserContext);
+	const {user} = useContext(UserContext);	
+	
 	return (
 		<div>
 			<div className="w-full">
@@ -18,7 +19,7 @@ function MiniBar({fselected}: IProps) {
 				{SelectBtn("em", selected, setSelected)}
 				{SelectBtn("dj", selected, setSelected)}
 
-				<span className="mx-2">{user.fname}</span>
+				<span className="mx-2">{user.uname}</span>
 
 				<hr className="text-white" />
 			</div>

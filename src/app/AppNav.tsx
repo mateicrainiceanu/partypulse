@@ -8,14 +8,7 @@ import {UserContext} from "./UserContext";
 
 const Navbar = () => {
 	const [nav, setNav] = useState(false);
-	const {user, getUserData} = useContext(UserContext);
-
-	useEffect(()=>{
-		if (!user.logged){
-			getUserData()
-		}
-		//eslint-disable-next-line
-	}, [])
+	const {user} = useContext(UserContext);
 
 	const links = [
 		{

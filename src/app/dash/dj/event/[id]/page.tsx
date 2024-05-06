@@ -31,7 +31,7 @@ function DjView({params}: {params: {id: number}}) {
 	const [updated, setUpdated] = useState(true);
 
 	const setLoading = useContext(LoadingContext);
-	const {user, setUser, getUserData} = useContext(UserContext);
+	const {user, setUser} = useContext(UserContext);
 
 	useEffect(() => {
 		setLoading(true);

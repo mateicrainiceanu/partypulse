@@ -6,7 +6,7 @@ import axios from "axios";
 import {LoadingContext} from "@/app/LoadingContext";
 
 function ChangeProfile() {
-	const {user, getUserData} = useContext(UserContext);
+	const {user, setUser, getUserData} = useContext(UserContext);
 	const [data, setData] = useState({uname: "", donations: ""});
 	const [avalabile, setAvalabile] = useState(false);
 	const setLoading = useContext(LoadingContext);
@@ -36,7 +36,7 @@ function ChangeProfile() {
 			.post("/api/partner", {username: data.uname, donations: data.donations})
 			.then((data) => {
 				alert("ok");
-				getUserData();
+				setUser(data.data);
 			})
 			.catch((error) => {
 				alert("error");

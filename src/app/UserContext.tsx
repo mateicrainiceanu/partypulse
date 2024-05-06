@@ -1,9 +1,10 @@
 "use client";
 
-import React, {ReactNode, createContext, useContext, useState} from "react";
+import React, {ReactNode, createContext, useContext, useEffect, useState} from "react";
 import axios, {AxiosResponse} from "axios";
 import {LoadingContext} from "./LoadingContext";
-
+import {getCookie} from "cookies-next";
+import {start} from "repl";
 interface IUser {
 	id: number;
 	fname: string;
@@ -19,10 +20,38 @@ interface IChildren {
 const UserContext = createContext(null as any);
 
 function UserProvider({children}: IChildren) {
-	const [user, setUser] = useState({id: 0, fname: "", lname: "", email: "", token: "", logged: false, donations:""});
+	const [user, setUser] = useState({
+		id: 0,
+		fname: "",
+		lname: "",
+		uname: "",
+		email: "",
+		token: "",
+		logged: false,
+		donations: "",
+	});
 	const [tried, setTried] = useState(false);
 
 	const setLoading = useContext(LoadingContext);
+
+	useEffect(() => {
+		const startUser = {
+			id: Number(getCookie("userId")) || 0,
+			fname: getCookie("fname") || "",
+			lname: getCookie("lname") || "",
+			uname: getCookie("uname") || "",
+			email: getCookie("email") || "",
+			token: getCookie("token") || "",
+			logged: getCookie("fname") != undefined ? true : false,
+			donations: getCookie("donations") || "",
+		};
+
+		setUser(startUser);
+		
+		if (getCookie("userId") == "" && getCookie("token") != "") {
+			getUserData(false);
+		}
+	}, []);
 
 	async function getUserData(mandatory: boolean) {
 		setLoading(true);
@@ -33,7 +62,7 @@ function UserProvider({children}: IChildren) {
 				setUser({...(response as AxiosResponse).data, logged: true});
 				setTried(true);
 			})
-			.catch((error) => {				
+			.catch((error) => {
 				setTried(true);
 
 				if (mandatory) {

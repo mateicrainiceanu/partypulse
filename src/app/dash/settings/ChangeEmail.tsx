@@ -20,7 +20,7 @@ function ChangeEmail() {
 				handleChange={(e) => {
 					setEmail(e.target.value);
 				}}/>
-            <FormBtn name="Get Verifiaction Email" onClick={handle}/>
+            <FormBtn name="Get Verification Email" onClick={handle}/>
 		</>
 	);
 }
