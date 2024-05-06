@@ -9,6 +9,7 @@ import Link from "next/link";
 import {Switch} from "@mui/material";
 import {BsCheckCircleFill} from "react-icons/bs";
 import {UserContext} from "@/app/UserContext";
+import LiveEventUpdates from "./LiveEventUpdates";
 
 function DjView({params}: {params: {id: number}}) {
 	const [data, setData] = useState({
@@ -149,7 +150,9 @@ function DjView({params}: {params: {id: number}}) {
 					</div>
 				)}
 			</div>
-			<div className="w-full md:w-2/3"></div>
+			<div className="w-full md:w-2/3">
+				<LiveEventUpdates evid={params.id} />
+			</div>
 		</div>
 	);
 }

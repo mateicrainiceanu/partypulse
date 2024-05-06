@@ -185,6 +185,17 @@ class Events {
         }
     }
 
+    static async getMusicSuggestions(evId: number) {
+        const [suggestions] = await db.execute(`SELECT * FROM requests WHERE eventId = ${evId}`) as RowDataPacket[];
+
+        const data = await suggestions.map(async (suggestion: { songId: number, userId: number, status: number }) => {
+            let [song] = (await db.execute(`SELECT * FROM songs WHERE id = ${suggestion.songId};`) as RowDataPacket[][])[0]
+            return { ...suggestion, song }
+        })
+
+        return await Promise.all(data)
+    }
+
 }
 
 export default Events;
