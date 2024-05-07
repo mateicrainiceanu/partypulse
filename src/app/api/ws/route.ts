@@ -1,4 +1,5 @@
 import Events from '../_lib/models/event';
+import SongRequest from '../_lib/models/songRequest';
 
 export async function SOCKET(
     client: import('ws').WebSocket,
@@ -14,13 +15,15 @@ export async function SOCKET(
     client.on('message', async message => {
         let data = JSON.parse(message.toString());
 
-        if (data.evId) {
+        if (data.evId)
             evId = data.evId;
-        }
-        if (data.token) {
-            token = data.token;
-        }
 
+        if (data.token)
+            token = data.token;
+
+        if (data.reqId && data.newStatus) 
+            await SongRequest.changeReqStatus(data.reqId, data.newStatus)
+        
         let suggestions = []
 
         if (evId) {

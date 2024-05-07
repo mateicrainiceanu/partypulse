@@ -10,7 +10,7 @@ export interface Song {
 function SongPreview({songData, start, djView}: {songData: Song; start?: (id: string) => void; djView?: boolean}) {
 	return (
 		<div
-			className={"w-full flex hover:bg-gray-800 " + (djView ? "px-3" : "p-3 my-2")}
+			className={"w-full flex  " + (djView ? "px-3" : "p-3 my-2 hover:bg-gray-800")}
 			onClick={() => {
 				if (start) {
 					start(songData.id);

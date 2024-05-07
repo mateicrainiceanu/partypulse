@@ -193,6 +193,8 @@ class Events {
             return { ...suggestion, song }
         })
 
+        //MAYBE ADD SORT FOR EACH SONG TO NOT APPEAR TWICE
+
         return await Promise.all(data)
     }
 
