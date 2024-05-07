@@ -4,10 +4,12 @@ import Link from "next/link";
 import React, {useContext, useState} from "react";
 import axios from "axios";
 import { LoadingContext } from "../LoadingContext";
+import { AlertContext } from "../AlertContext";
 
 function Login() {
 	const [formData, setFormData] = useState({email: "", password: ""});
 	const setLoading = useContext(LoadingContext);
+	const {handleAxiosError} = useContext(AlertContext)
 
 	function handleChange(e: any) {
 		setFormData((prevData) => ({...prevData, [e.target.name]: e.target.value}));
@@ -21,7 +23,7 @@ function Login() {
 				window.location.replace("/dash");
 			})
 			.catch((error) => {
-				alert(error.response.status + ": " + error.response.data);
+				handleAxiosError(error)
 				setLoading(false)
 			});
 	}

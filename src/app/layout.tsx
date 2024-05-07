@@ -3,6 +3,7 @@ import {Inter} from "next/font/google";
 import Navbar from "./AppNav";
 import "./globals.css";
 
+import AlertProvider from "./AlertContext";
 import UserProvider from "./UserContext";
 import LoadingProvider from "./LoadingContext";
 
@@ -19,8 +20,10 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
 			<body className={inter.className}>
 				<LoadingProvider>
 					<UserProvider>
-						<Navbar />
-						<main className="mx-2">{children}</main>
+						<AlertProvider>
+							<Navbar />
+							<main className="mx-2">{children}</main>
+						</AlertProvider>
 					</UserProvider>
 				</LoadingProvider>
 			</body>

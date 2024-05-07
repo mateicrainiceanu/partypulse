@@ -12,13 +12,9 @@ interface IUser {
 	token: string;
 }
 
-interface IChildren {
-	children: ReactNode;
-}
-
 const UserContext = createContext(null as any);
 
-function UserProvider({children}: IChildren) {
+function UserProvider({children}: {children: ReactNode}) {
 	const [user, setUser] = useState({
 		id: 0,
 		fname: "",
@@ -65,7 +61,6 @@ function UserProvider({children}: IChildren) {
 			})
 			.catch((error) => {
 				setTried(true);
-
 				if (mandatory) {
 					window.location.replace("/login");
 				}

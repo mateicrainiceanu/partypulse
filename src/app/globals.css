@@ -46,3 +46,8 @@ html {
 .MuiPaginationItem-text .MuiPagionationItem-root{ 
     color: white;
 }
+
+.css-ki1hdl-MuiAlert-action {
+  padding: 0 !important;
+  margin:0 2%;
+}

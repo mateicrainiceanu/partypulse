@@ -86,7 +86,7 @@ function LiveEventUpdates({evid}: {evid: number}) {
 					</p>
 				</div>
 				<div className="mt-2">
-					<div className="mx-2 flex gap-3">
+					<div className="mx-2 flex gap-3 flex-wrap">
 						<button
 							className={
 								"rounded-t-lg py-2 px-3 text-black " +

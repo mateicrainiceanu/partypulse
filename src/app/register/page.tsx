@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, {useContext, useState} from "react";
 import {UserContext} from "../UserContext";
 import {LoadingContext} from "../LoadingContext";
+import {AlertContext} from "../AlertContext";
 
 function Register() {
 	const [formData, setFormData] = useState({fname: "", lname: "", uname: "", email: "", password: ""});
@@ -12,6 +13,7 @@ function Register() {
 	const setLoading = useContext(LoadingContext);
 
 	const {user, setUser} = useContext(UserContext);
+	const {handleAxiosError, dialogToUser} = useContext(AlertContext);
 
 	async function handleChange(e: any) {
 		if (e.target.name === "uname") {
@@ -19,10 +21,10 @@ function Register() {
 			setFormData((prevData) => ({...prevData, uname: username}));
 			axios
 				.post("/api/username-check", {username: username})
-				.then((response) => {
+				.then((_) => {
 					setAvalabile(true);
 				})
-				.catch((error) => {
+				.catch((_) => {
 					setAvalabile(false);
 				});
 		} else {
@@ -32,7 +34,11 @@ function Register() {
 
 	function handleRegister() {
 		if (!avalabile) {
-			alert("username not avalabile");
+			dialogToUser({
+				title: "Unavalabile usename",
+				content:
+					"In order to ensure our users experience, the usernames on our platform should be unique. Please choose another username and check the below avalability checker if the username is avalabile.",
+			});
 			return;
 		}
 
@@ -43,20 +49,18 @@ function Register() {
 			.then((response) => {
 				const {newuser, id, token} = response.data;
 
-				localStorage.setItem("token", token);
-
 				setUser({...newuser, logged: true, id: id, token: token});
 
 				window.location.replace("/dash");
 			})
 			.catch((error) => {
-				alert(error.response.status + ": " + error.response.data);
+				handleAxiosError(error);
 			});
 	}
 
 	return (
-		<main className="flex min-h-screen items-center mx-auto flex-col justify-center p-12 lg:max-w-4xl">
-			<div className="text-center">
+		<main className="flex min-h-screen items-center mx-auto flex-col justify-center max-w-4xl">
+			<div className="text-center w-full p-5">
 				<h2 className="text-3xl font-bold font-sans my-10">Register</h2>
 				<div className="flex flex-row flex-wrap">
 					<div className="md:basis-1/2 basis-full px-2">
@@ -78,7 +82,7 @@ function Register() {
 						<p>Avalabile: {avalabile ? "YES" : "NO"}</p>
 					</div>
 					<div className="md:basis-1/2 basis-full px-2 flex justify-center items-center">
-						<div className="">
+						<div className="w-full">
 							<FormElement name="email" type="email" label="Email" handleChange={handleChange} value={formData.email} />
 							<FormElement
 								name="password"
