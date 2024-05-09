@@ -19,12 +19,12 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
 		<html lang="en">
 			<body className={inter.className}>
 				<LoadingProvider>
-					<UserProvider>
-						<AlertProvider>
+					<AlertProvider>
+						<UserProvider>
 							<Navbar />
 							<main className="mx-2">{children}</main>
-						</AlertProvider>
-					</UserProvider>
+						</UserProvider>
+					</AlertProvider>
 				</LoadingProvider>
 			</body>
 		</html>
