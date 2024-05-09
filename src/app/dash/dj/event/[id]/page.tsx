@@ -37,7 +37,7 @@ function DjView({params}: {params: {id: number}}) {
 	useEffect(() => {
 		setLoading(true);
 		axios
-			.get("/api/event/" + params.id)
+			.get("/api/event/" + params.id + "?isLive=true")
 			.then((response) => {
 				if (response.data.userHasRightToManage === 0) {
 					window.location.replace("/dash");

@@ -19,7 +19,6 @@ export async function GET(req: NextRequest, { params }: { params: { id: number }
         }
     }
     const answ = await Events.getFullForId(params.id, userId)
-
     return NextResponse.json({ ...answ })
 }
 export { DELETE }

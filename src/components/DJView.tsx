@@ -14,6 +14,9 @@ function DJView({djs}: {djs: Array<string>}) {
 						key={i}>
 						<MdHeadphones className="text-2xl mx-3" />
 						<p className="">{dj}</p>
+						<div className="ms-auto">
+							
+						</div>
 					</div>
 				))}
 			</div>

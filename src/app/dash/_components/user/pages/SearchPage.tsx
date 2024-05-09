@@ -25,6 +25,7 @@ function SearchPage() {
 		setSearchData((prev) => ({...prev, [e.target.name]: e.target.value}));
 
 		if (e.target.name === "category") {
+			setResponseData([]);
 			search();
 			localStorage.setItem("category", e.target.value);
 		} else if (e.target.name === "searchQuery" && e.target.value != "") {
@@ -44,7 +45,7 @@ function SearchPage() {
 					// searchQuery: e.target.name === "searchQuery" ? e.target.value : searchData.searchQuery,
 				})
 				.then((response) => {
-					if (response.data.category == searchData.category) {						
+					if (response.data.category == searchData.category) {
 						setResponseData(response.data.results);
 					}
 				});
