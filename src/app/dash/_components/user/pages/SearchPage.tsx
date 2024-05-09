@@ -19,30 +19,29 @@ function SearchPage() {
 
 	useEffect(() => {
 		search();
-	}, []);
+	}, [searchData]);
 
 	function handleChange(e: any) {
 		setSearchData((prev) => ({...prev, [e.target.name]: e.target.value}));
 
 		if (e.target.name === "category") {
+			console.log("Clearing responses");
+
 			setResponseData([]);
-			search();
 			localStorage.setItem("category", e.target.value);
 		} else if (e.target.name === "searchQuery" && e.target.value != "") {
-			search(e.target.value);
 			localStorage.setItem("searchQuery", e.target.value);
 		} else {
 			localStorage.setItem("searchQuery", e.target.value);
 		}
 	}
 
-	function search(opt?: string) {
+	function search() {
 		if (searchData.searchQuery != "") {
 			axios
 				.post("/api/search", {
-					...searchData,
-					searchQuery: opt || searchData.searchQuery,
-					// searchQuery: e.target.name === "searchQuery" ? e.target.value : searchData.searchQuery,
+					category: searchData.category,
+					searchQuery: searchData.searchQuery,
 				})
 				.then((response) => {
 					if (response.data.category == searchData.category) {
