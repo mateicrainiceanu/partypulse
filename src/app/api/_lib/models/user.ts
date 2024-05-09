@@ -206,6 +206,21 @@ class User {
 
         return user;
     }
+
+    static async getRelUsers(uid: number) {
+        let str = ""
+
+        const [likedUsers] = (await db.execute(`SELECT * FROM users_users WHERE userId = ${uid};`) as any)
+        if (likedUsers.length > 0) {
+            likedUsers.map((r: { secUserId: number }) => {
+                str += r.secUserId + ", "
+            })
+            return db.execute(`SELECT role, uname, fname, lname, donations, created FROM users WHERE id in (${str.substring(0, str.length - 2)}); `)
+        } else {
+            return [[]]
+        }
+    }
+
 }
 
 export default User;

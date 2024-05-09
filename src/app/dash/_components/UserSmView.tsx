@@ -9,6 +9,31 @@ import axios from "axios";
 import moment from "moment";
 import {BeatLoader} from "react-spinners";
 
+// interface UserModelDisplay {
+// 	id: number;
+// 	fname: string;
+// 	lname: string;
+// 	uname: string;
+// 	role: number;
+// 	youFollow: boolean;
+// 	followsYou: boolean;
+// 	donations: string;
+// 	created: string;
+// }
+
+// function UserSmViewWithDetails({user}: {user: UserModelDisplay}) {
+// 	return (
+// 		<div className={"w-full px-2 py-2 border-btm hover:bg-gray-800"} onClick={() => {}}>
+// 			<div className="flex gap-3 py-3">
+// 				{user.role === 0 && <FaRegUser className="my-1" />}
+// 				{user.role === 1 && <BiParty className="my-1" />}
+// 				{user.role === 2 && <FaHeadphones className="my-1" />}
+// 				<span>{user.uname}</span>
+// 			</div>
+// 		</div>
+// 	);
+// }
+
 function UserSmView({uname, role}: {uname: string; role: number}) {
 	const [smView, setSmView] = useState(false);
 
@@ -109,4 +134,6 @@ function UserDetailedView({uname, close}: {uname: string; close: () => void}) {
 	);
 }
 
+// export type {UserModelDisplay};
+// export {UserSmViewWithDetails};
 export default UserSmView;

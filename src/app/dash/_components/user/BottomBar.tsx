@@ -1,6 +1,7 @@
 import React from "react";
 import {BsSearch, BsHouse, BsCalendar, BsBullseye} from "react-icons/bs";
 import {IoLocationOutline} from "react-icons/io5";
+import {FaRegUser} from "react-icons/fa";
 
 function BottomBar({view, setView}: {view: string; setView: (name: string) => void}) {
 	function handleViewChange(e: any) {
@@ -29,6 +30,11 @@ function BottomBar({view, setView}: {view: string; setView: (name: string) => vo
 				<IoLocationOutline
 					className={"hover:text-gray-500 " + (view === "locations" ? "text-gray-400" : "")}
 					id="locations"
+					onClick={handleViewChange}
+				/>
+				<FaRegUser
+					className={"hover:text-gray-500 " + (view === "users" ? "text-gray-400" : "")}
+					id="users"
 					onClick={handleViewChange}
 				/>
 				<BsBullseye
