@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import ConfirmAttendance from "./LiveComponents/ConfirmAttendance";
 import axios from "axios";
 import LiveView from "./LiveComponents/LiveView";
 import FormBtn from "@/components/FormBtn";
+import { AlertContext } from "@/app/AlertContext";
 
 function Live() {
 	const [found, setFound] = useState(null);
@@ -20,6 +21,7 @@ function Live() {
 		msuggestions: 0,
 		genreVote: 0,
 	});
+	const {handleAxiosError} = useContext(AlertContext);
 
 	useEffect(() => {
 		getData();
@@ -33,7 +35,7 @@ function Live() {
 				setFound(res.data.found);
 			})
 			.catch((err) => {
-				console.log(err);
+				handleAxiosError(err);
 			});
 	}
 

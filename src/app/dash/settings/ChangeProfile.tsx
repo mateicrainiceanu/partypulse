@@ -4,12 +4,14 @@ import FormBtn from "@/components/FormBtn";
 import {UserContext} from "@/app/UserContext";
 import axios from "axios";
 import {LoadingContext} from "@/app/LoadingContext";
+import {AlertContext} from "@/app/AlertContext";
 
 function ChangeProfile() {
 	const {user, setUser, getUserData} = useContext(UserContext);
 	const [data, setData] = useState({uname: "", donations: ""});
 	const [avalabile, setAvalabile] = useState(false);
 	const setLoading = useContext(LoadingContext);
+	const {handleAxiosError} = useContext(AlertContext);
 
 	useEffect(() => {
 		if (user.id != 0) {
@@ -26,7 +28,7 @@ function ChangeProfile() {
 				setAvalabile(true);
 			})
 			.catch((error) => {
-				setAvalabile(false);
+				handleAxiosError(error);
 			});
 	}
 
@@ -39,7 +41,7 @@ function ChangeProfile() {
 				setUser(data.data);
 			})
 			.catch((error) => {
-				alert("error");
+				handleAxiosError(error);
 			});
 
 		setLoading(false);

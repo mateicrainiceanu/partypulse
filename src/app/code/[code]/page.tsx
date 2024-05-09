@@ -1,10 +1,12 @@
 "use client";
+import { AlertContext } from "@/app/AlertContext";
 import {LoadingContext} from "@/app/LoadingContext";
 import axios from "axios";
 import React, {useContext, useEffect} from "react";
 
 function QRCodeConfim({params}: {params: {code: string}}) {
 	const setLoading = useContext(LoadingContext);
+	const {handleAxiosError} = useContext(AlertContext)
 
 	useEffect(() => {
 		setLoading(true);
@@ -19,7 +21,7 @@ function QRCodeConfim({params}: {params: {code: string}}) {
 				}
 			})
 			.catch((err) => {
-				console.log(err);
+				handleAxiosError(err)
 			});
 	}, []);
 

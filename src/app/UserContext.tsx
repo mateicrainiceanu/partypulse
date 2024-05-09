@@ -4,6 +4,7 @@ import React, {ReactNode, createContext, useContext, useEffect, useState} from "
 import axios, {AxiosResponse} from "axios";
 import {LoadingContext} from "./LoadingContext";
 import {getCookie} from "cookies-next";
+import {AlertContext} from "./AlertContext";
 interface IUser {
 	id: number;
 	fname: string;
@@ -28,6 +29,7 @@ function UserProvider({children}: {children: ReactNode}) {
 	const [tried, setTried] = useState(false);
 
 	const setLoading = useContext(LoadingContext);
+	const {handleAxiosError} = useContext(AlertContext);
 
 	useEffect(() => {
 		const startUser = {
@@ -60,6 +62,7 @@ function UserProvider({children}: {children: ReactNode}) {
 				setTried(true);
 			})
 			.catch((error) => {
+				handleAxiosError(error);
 				setTried(true);
 				if (mandatory) {
 					window.location.replace("/login");

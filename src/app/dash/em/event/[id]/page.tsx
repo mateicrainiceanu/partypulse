@@ -10,6 +10,7 @@ import {Location} from "@/app/dash/_components/new-event-comp/Location";
 import FormBtn from "@/components/FormBtn";
 import {parseEventForView} from "@/app/dash/_lib/data-manager";
 import UpdateStauts from "./UpdateStauts";
+import {AlertContext} from "@/app/AlertContext";
 
 function ManageEvent({params}: {params: {id: number}}) {
 	const [data, setData] = useState({
@@ -32,6 +33,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 	const [edit, setEdit] = useState(false);
 
 	const setLoading = useContext(LoadingContext);
+	const handleAxiosError = useContext(AlertContext);
 
 	useEffect(() => {
 		setLoading(true);
@@ -43,8 +45,8 @@ function ManageEvent({params}: {params: {id: number}}) {
 					setLoading(false);
 				}, 100);
 			})
-			.catch(() => {
-				alert("There is an error");
+			.catch((err) => {
+				handleAxiosError(err);
 				setLoading(false);
 			});
 	}, []);
@@ -62,7 +64,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 				setLoading(false);
 			})
 			.catch((err) => {
-				alert("There was an error");
+				handleAxiosError(err);
 				setLoading(false);
 			});
 	}
@@ -171,8 +173,8 @@ function ManageEvent({params}: {params: {id: number}}) {
 							.then((_) => {
 								window.location.replace("/dash/em");
 							})
-							.catch((_) => {
-								alert("ERR");
+							.catch((err) => {
+								handleAxiosError(err);
 							});
 					}}>
 					Delete

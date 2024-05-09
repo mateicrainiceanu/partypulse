@@ -1,11 +1,13 @@
 "use client";
-import React, {MouseEventHandler, useState} from "react";
+import React, {MouseEventHandler, useContext, useState} from "react";
 import FormElement from "@/components/FormElement";
 import FormBtn from "@/components/FormBtn";
 import axios from "axios";
+import {AlertContext} from "@/app/AlertContext";
 
 export function ChangePassword() {
 	const [passwordData, setPasswordData] = useState({oldPassword: "", newPassword: "", checkPssw: ""});
+	const {handleAxiosError} = useContext(AlertContext);
 
 	function handleChange(e: any) {
 		setPasswordData((prevData) => ({...prevData, [e.target.name]: e.target.value}));
@@ -21,7 +23,7 @@ export function ChangePassword() {
 					setPasswordData({oldPassword: "", newPassword: "", checkPssw: ""});
 				})
 				.catch((error) => {
-					alert("There was an error" + error);
+					handleAxiosError;
 				});
 		} else {
 			alert("Passwords must match");

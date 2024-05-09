@@ -5,12 +5,14 @@ import FormElement from "@/components/FormElement";
 import FormBtn from "@/components/FormBtn";
 import axios from "axios";
 import {LoadingContext} from "@/app/LoadingContext";
+import {AlertContext} from "@/app/AlertContext";
 
 function BecomeDJ() {
 	const {user} = useContext(UserContext);
 	const [username, setUsername] = useState("");
 	const [avalabile, setAvalabile] = useState(false);
 	const setLoading = useContext(LoadingContext);
+	const {handleAxiosError} = useContext(AlertContext);
 
 	async function handleChange(e: any) {
 		const newuname = e.target!.value.replaceAll(" ", "");
@@ -22,6 +24,7 @@ function BecomeDJ() {
 				setAvalabile(true);
 			})
 			.catch((error) => {
+				handleAxiosError(error);
 				setAvalabile(false);
 			});
 	}
@@ -41,7 +44,7 @@ function BecomeDJ() {
 				alert("ok");
 			})
 			.catch((error) => {
-				alert("there was an error: " + error);
+				handleAxiosError(error);
 			});
 	}
 

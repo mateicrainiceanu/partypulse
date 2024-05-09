@@ -30,7 +30,7 @@ function AlertProvider({children}: {children: ReactNode}) {
 			});
 		}
 	}, []);
-
+//
 	useEffect(() => {
 		if (alert?.autoClose) {
 			setTimeout(() => {

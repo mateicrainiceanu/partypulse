@@ -1,9 +1,10 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import FormElement from "@/components/FormElement";
 import SongPreview, {Song, SongLgPreview} from "@/components/SongPreview";
 import axios from "axios";
 import {IoMdCloseCircle} from "react-icons/io";
 import FormBtn from "@/components/FormBtn";
+import { AlertContext } from "@/app/AlertContext";
 
 function MSuggestions({eventId}: {eventId: number}) {
 	const [search, setSearch] = useState("");
@@ -12,6 +13,8 @@ function MSuggestions({eventId}: {eventId: number}) {
 
 	const [suggest, setSuggest] = useState(null);
 
+	const {handleAxiosError} = useContext(AlertContext);
+
 	function updateResults(q: string) {
 		axios
 			.post("/api/search/song/external", {q})
@@ -19,7 +22,7 @@ function MSuggestions({eventId}: {eventId: number}) {
 				setResults(res.data);
 			})
 			.catch((err) => {
-				console.log(err);
+				handleAxiosError(err);
 			});
 	}
 

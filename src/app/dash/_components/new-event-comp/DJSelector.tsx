@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from "react";
-import { Autocomplete, TextField} from "@mui/material";
+import React, {useContext, useEffect, useState} from "react";
+import {Autocomplete, TextField} from "@mui/material";
 import {BsXCircleFill} from "react-icons/bs";
 import axios from "axios";
 import "./../../em/manage-location/[id]/location.css";
+import { AlertContext } from "@/app/AlertContext";
 
 interface IProps {
 	djs: Array<string>;
@@ -14,6 +15,8 @@ export function DJSelector({djs, setData}: IProps) {
 	const [opt, setOpt] = useState([]);
 	const [selected, setSelected] = useState("");
 
+	const {handleAxiosError} = useContext(AlertContext);
+
 	useEffect(getoptions, [fieldVal]);
 
 	function getoptions() {
@@ -24,7 +27,7 @@ export function DJSelector({djs, setData}: IProps) {
 					setOpt(response.data);
 				})
 				.catch((err) => {
-					console.log(err);
+					handleAxiosError(err);
 				});
 		}
 	}
@@ -59,8 +62,8 @@ export function DJSelector({djs, setData}: IProps) {
 						}
 						onClick={() => {
 							if (selected !== "") {
-								if (djs.filter((djname) => (djname === selected)).length > 0) {
-                  alert("Already exists")
+								if (djs.filter((djname) => djname === selected).length > 0) {
+									alert("Already exists");
 								} else {
 									setData((prev: any) => ({...prev, djs: [selected, ...prev.djs]}));
 								}
@@ -83,9 +86,10 @@ export function DJSelector({djs, setData}: IProps) {
 							<tbody>
 								{djs.map((dj, i) => (
 									<tr className="h-9" key={i}>
-										<td onClick={()=>{
-                      setData((prev: any) => ({...prev, djs: djs.filter(djname => djname !== dj)}));
-                    }}>
+										<td
+											onClick={() => {
+												setData((prev: any) => ({...prev, djs: djs.filter((djname) => djname !== dj)}));
+											}}>
 											<i className="text-red-400 hover:text-red-500">
 												<BsXCircleFill></BsXCircleFill>
 											</i>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {FaHeadphones} from "react-icons/fa";
 import {FaRegUser} from "react-icons/fa";
 import {BiParty} from "react-icons/bi";
@@ -8,6 +8,7 @@ import {IoHeart} from "react-icons/io5";
 import axios from "axios";
 import moment from "moment";
 import {BeatLoader} from "react-spinners";
+import {AlertContext} from "@/app/AlertContext";
 
 // interface UserModelDisplay {
 // 	id: number;
@@ -64,6 +65,8 @@ function UserSmView({uname, role}: {uname: string; role: number}) {
 
 function UserDetailedView({uname, close}: {uname: string; close: () => void}) {
 	const [tliked, setTLiked] = useState(false);
+	const {handleAxiosError} = useContext(AlertContext);
+
 	const [chosenUser, setChosenUser] = useState({
 		id: 0,
 		fname: "",
@@ -83,7 +86,7 @@ function UserDetailedView({uname, close}: {uname: string; close: () => void}) {
 				setTLiked(response.data.youFollow);
 			})
 			.catch((err) => {
-				console.log(err);
+				handleAxiosError(err);
 			});
 	}, []);
 
@@ -95,7 +98,7 @@ function UserDetailedView({uname, close}: {uname: string; close: () => void}) {
 				console.log(res.data);
 			})
 			.catch((err) => {
-				console.log(err);
+				handleAxiosError(err);
 			});
 		setTLiked((prev) => !prev);
 	}

@@ -1,12 +1,14 @@
 "use client";
 
-import React, {SyntheticEvent, useState} from "react";
+import React, {SyntheticEvent, useContext, useState} from "react";
 import {Autocomplete, TextField} from "@mui/material";
 import axios from "axios";
+import {AlertContext} from "@/app/AlertContext";
 
 function AddUser({id}: {id: string}) {
 	const [fieldVal, setFieldVal] = useState("");
 	const [opt, setOpt] = useState([]);
+	const {handleAxiosError} = useContext(AlertContext);
 
 	function getoptions(q: string) {
 		if (q) {
@@ -16,7 +18,7 @@ function AddUser({id}: {id: string}) {
 					setOpt(response.data);
 				})
 				.catch((err) => {
-					console.log(err);
+					handleAxiosError(err);
 				});
 		}
 	}
@@ -38,7 +40,7 @@ function AddUser({id}: {id: string}) {
 							setFieldVal(value);
 						}
 					}}
-					filterOptions={(options)=>options}
+					filterOptions={(options) => options}
 					renderInput={(params) => (
 						<TextField
 							{...params}
@@ -48,7 +50,8 @@ function AddUser({id}: {id: string}) {
 								getoptions(e.target.value);
 							}}
 						/>
-					)}/>
+					)}
+				/>
 			</div>
 			<div className="w-1/4 px-2">
 				<button className="bg-purple-500 hover:bg-purple-400 w-full h-full rounded-lg text-xl" onClick={addUser}>

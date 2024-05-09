@@ -1,7 +1,8 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {IoHeart, IoSettingsSharp} from "react-icons/io5";
 import {BiHeart} from "react-icons/bi";
 import axios from "axios";
+import { AlertContext } from "@/app/AlertContext";
 
 function LocationSmView({
 	locationData,
@@ -11,6 +12,7 @@ function LocationSmView({
 	showManage?: boolean;
 }) {	
 	const [tliked, setTLiked] = useState(locationData.liked);
+	const {handleAxiosError} = useContext(AlertContext);
 
 	function handleLike() {
 		axios
@@ -19,7 +21,7 @@ function LocationSmView({
 				console.log(response);
 			})
 			.catch((err) => {
-				alert("Err");
+				handleAxiosError(err)
 			});
 		setTLiked((prev) => !prev);
 	}

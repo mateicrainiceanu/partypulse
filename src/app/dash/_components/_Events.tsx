@@ -5,6 +5,7 @@ import React, {useContext, useEffect, useState} from "react";
 import EventView from "./EventView";
 import {LoadingContext} from "@/app/LoadingContext";
 import {Pagination} from "@mui/material";
+import { AlertContext } from "@/app/AlertContext";
 
 function Events({
 	givenEvents,
@@ -29,6 +30,7 @@ function Events({
 	const [pg, setPg] = useState(1);
 	const showOnPg = 3;
 	const setLoading = useContext(LoadingContext);
+	const {handleAxiosError} = useContext(AlertContext)
 
 	useEffect(() => {
 		if (!givenEvents) {
@@ -42,7 +44,7 @@ function Events({
 					}, 100);
 				})
 				.catch((error) => {
-					alert("There was an error");
+					handleAxiosError(error)
 					setLoading(false);
 				});
 		}

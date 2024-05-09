@@ -5,11 +5,13 @@ import {useContext} from "react";
 import {UserContext} from "@/app/UserContext";
 import FormBtn from "@/components/FormBtn";
 import axios from "axios";
-import { LoadingContext } from "@/app/LoadingContext";
+import {LoadingContext} from "@/app/LoadingContext";
+import { AlertContext } from "@/app/AlertContext";
 
 function BecomeAnEm() {
 	const {user} = useContext(UserContext);
-	const setLoading = useContext(LoadingContext)
+	const setLoading = useContext(LoadingContext);
+	const {handleAxiosError} = useContext(AlertContext);
 
 	async function handleSubmit() {
 		setLoading(true);
@@ -21,7 +23,7 @@ function BecomeAnEm() {
 				alert("ok");
 			})
 			.catch((error) => {
-				alert("there was an error: " + error);
+				handleAxiosError(error);
 			});
 	}
 

@@ -2,9 +2,12 @@ import React, {useContext} from "react";
 import axios from "axios";
 import {LoadingContext} from "@/app/LoadingContext";
 import {parseEventForView} from "@/app/dash/_lib/data-manager";
+import {AlertContext} from "@/app/AlertContext";
 
 function UpdateStauts({data, setData}: {data: any; setData: any}) {
 	const setLoading = useContext(LoadingContext);
+	const {handleAxiosError} = useContext(AlertContext);
+
 	function handleStatusChange(e: any) {
 		var stat: Number;
 		if (e.target.id == "1") {
@@ -20,7 +23,7 @@ function UpdateStauts({data, setData}: {data: any; setData: any}) {
 				setLoading(false);
 			})
 			.catch((err) => {
-				alert("There was an error");
+				handleAxiosError(err);
 				setLoading(false);
 			});
 	}

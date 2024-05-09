@@ -10,6 +10,7 @@ import {Switch} from "@mui/material";
 import {BsCheckCircleFill} from "react-icons/bs";
 import {UserContext} from "@/app/UserContext";
 import LiveEventUpdates from "./LiveEventUpdates";
+import {AlertContext} from "@/app/AlertContext";
 
 function DjView({params}: {params: {id: number}}) {
 	const [data, setData] = useState({
@@ -32,6 +33,8 @@ function DjView({params}: {params: {id: number}}) {
 	const [updated, setUpdated] = useState(true);
 
 	const setLoading = useContext(LoadingContext);
+	const {handleAxiosError} = useContext(AlertContext);
+
 	const {user, setUser} = useContext(UserContext);
 
 	useEffect(() => {
@@ -47,46 +50,46 @@ function DjView({params}: {params: {id: number}}) {
 					setLoading(false);
 				}, 100);
 			})
-			.catch(() => {
-				alert("There is an error");
+			.catch((err) => {
+				handleAxiosError(err);
 				setLoading(false);
 			});
-	}, []);
-
-	async function handleDonations(e: any) {
-		setUpdated(false);
-		setUser((prev: any) => ({...prev, donations: e.target.value}));
-	}
-
-	function handleUpdateDonations(e: any) {
-		if (!updated) {
-			axios
+		}, []);
+		
+		async function handleDonations(e: any) {
+			setUpdated(false);
+			setUser((prev: any) => ({...prev, donations: e.target.value}));
+		}
+		
+		function handleUpdateDonations(e: any) {
+			if (!updated) {
+				axios
 				.post("/api/partner", {donations: e.target.value})
 				.then((data) => {
 					setUpdated(true);
 				})
-				.catch((error) => {
-					alert("error");
+				.catch((err) => {
+					handleAxiosError(err);
 				});
+			}
 		}
-	}
-
-	function handleGenreUpdate() {
-		updateData({genreVote: data.genreVote == 0 ? 1 : 0});
-	}
-
-	async function handleSuggestionsUpdate(_: any, val: boolean) {
-		updateData({msuggestions: val ? 1 : 0});
-	}
-
-	function updateData(obj: {msuggestions?: number; genreVote?: number}) {
-		axios
+		
+		function handleGenreUpdate() {
+			updateData({genreVote: data.genreVote == 0 ? 1 : 0});
+		}
+		
+		async function handleSuggestionsUpdate(_: any, val: boolean) {
+			updateData({msuggestions: val ? 1 : 0});
+		}
+		
+		function updateData(obj: {msuggestions?: number; genreVote?: number}) {
+			axios
 			.patch("/api/partner/event", {id: data.id, ...obj})
 			.then((response) => {
 				setData(parseEventForView(response.data));
 			})
 			.catch((err) => {
-				alert("There was an error");
+				handleAxiosError(err);
 			});
 	}
 

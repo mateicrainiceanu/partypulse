@@ -9,6 +9,7 @@ import DJView from "@/components/DJView";
 import StatusPointer from "@/components/StatusPointer";
 import UpdateStauts from "@/app/dash/em/event/[id]/UpdateStauts";
 import Link from "next/link";
+import {AlertContext} from "@/app/AlertContext";
 
 function ManageEvent({params}: {params: {id: number}}) {
 	const [data, setData] = useState({
@@ -28,6 +29,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 	});
 
 	const setLoading = useContext(LoadingContext);
+	const {handleAxiosError} = useContext(AlertContext);
 
 	useEffect(() => {
 		setLoading(true);
@@ -39,8 +41,8 @@ function ManageEvent({params}: {params: {id: number}}) {
 					setLoading(false);
 				}, 100);
 			})
-			.catch(() => {
-				alert("There is an error");
+			.catch((err) => {
+				handleAxiosError(err);
 				setLoading(false);
 			});
 	}, []);

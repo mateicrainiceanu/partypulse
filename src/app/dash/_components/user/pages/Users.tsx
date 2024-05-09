@@ -1,14 +1,17 @@
 import axios from "axios";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import UserSmView from "../../UserSmView";
 import FormElement from "@/components/FormElement";
 import {Pagination} from "@mui/material";
+import {AlertContext} from "@/app/AlertContext";
 
 function Users() {
 	const [users, setUsers] = useState([]);
 	const [search, setSearch] = useState("");
 	const [pg, setPg] = useState(1);
 	const showOnPg = 5;
+
+	const {handleAxiosError} = useContext(AlertContext);
 
 	useEffect(() => {
 		axios
@@ -17,7 +20,7 @@ function Users() {
 				setUsers(res.data);
 			})
 			.catch((err) => {
-				console.log(err);
+				handleAxiosError(err);
 			});
 	}, []);
 

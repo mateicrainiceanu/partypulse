@@ -1,17 +1,20 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import FormElement from "@/components/FormElement";
 import FormBtn from "@/components/FormBtn";
 import Map from "@/components/Map";
 import axios from "axios";
 import {IoMdCloseCircle} from "react-icons/io";
+import {AlertContext} from "@/app/AlertContext";
 
 interface IProps {
 	close: () => void;
 }
 
 function NewLocation({close}: IProps) {
-	const [locData, setLocData] = useState({name: "", useForAdress:"", adress: "", city: "", lon: 0.0, lat: 0.0});
+	const [locData, setLocData] = useState({name: "", useForAdress: "", adress: "", city: "", lon: 0.0, lat: 0.0});
 	const [selected, setSelected] = useState("coordinates");
+
+	const {handleAxiosError} = useContext(AlertContext);
 
 	function handleChange(e: any) {
 		setLocData((prev) => ({...prev, [e.target.name]: e.target.value}));
@@ -35,7 +38,7 @@ function NewLocation({close}: IProps) {
 				close();
 			})
 			.catch((error) => {
-				alert("error" + error);
+				handleAxiosError(error);
 				close();
 			});
 	}

@@ -8,10 +8,12 @@ import Map from "@/components/Map";
 import {LoadingContext} from "@/app/LoadingContext";
 import AddUser from "./AddUser";
 import EditUsers from "./EditUsers";
+import {AlertContext} from "@/app/AlertContext";
 
 function ManageLocation({params}: {params: {id: string}}) {
 	const locationid = params.id;
 	const setLoading = useContext(LoadingContext);
+	const {handleAxiosError} = useContext(AlertContext);
 
 	const [locationData, setLocationData] = useState({
 		id: 0,
@@ -60,7 +62,7 @@ function ManageLocation({params}: {params: {id: string}}) {
 			})
 			.catch((error) => {
 				setLoading(false);
-				alert("Error" + error);
+				handleAxiosError(error);
 			});
 	}
 

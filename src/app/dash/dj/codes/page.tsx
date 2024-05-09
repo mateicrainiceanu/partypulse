@@ -1,16 +1,18 @@
 "use client";
 
 import axios from "axios";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {CgAdd} from "react-icons/cg";
 import {CgRemove} from "react-icons/cg";
 import {BsQrCode} from "react-icons/bs";
 import {BiQr} from "react-icons/bi";
 
 import {useQRCode} from "next-qrcode";
+import { AlertContext } from "@/app/AlertContext";
 
 function Codes() {
 	const [codes, setCodes] = useState([]);
+	const {handleAxiosError} = useContext(AlertContext);
 
 	const {Canvas} = useQRCode();
 
@@ -21,29 +23,29 @@ function Codes() {
 				setCodes(res.data);
 			})
 			.catch((err) => {
-				alert("There was an error fetching your codes");
+				handleAxiosError(err);
 			});
-	}, []);
-
-	function remove(id:number) {
-		axios
+		}, []);
+		
+		function remove(id: number) {
+			axios
 			.delete("/api/code" + "?codeId=" + id)
 			.then((res) => {
 				setCodes(res.data);
 			})
 			.catch((err) => {
-				alert("There was an error fetching your codes");
+				handleAxiosError(err);
 			});
-	}
-
-	function newCode() {
-		axios
+		}
+		
+		function newCode() {
+			axios
 			.get("/api/code?usedFor=user")
 			.then((res) => {
 				setCodes(res.data.codes);
 			})
 			.catch((err) => {
-				alert("There was an error fetching your codes");
+				handleAxiosError(err);
 			});
 	}
 
@@ -72,7 +74,12 @@ function Codes() {
 							<tr key={i} className="h-9">
 								<td>
 									<div className="flex gap-4">
-										<CgRemove id={`${code.id}`} onClick={()=>{remove(code.id)}} />{" "}
+										<CgRemove
+											id={`${code.id}`}
+											onClick={() => {
+												remove(code.id);
+											}}
+										/>{" "}
 										<BiQr
 											onClick={() => {
 												window.location.href = "/dash/dj/codes/" + code.code;

@@ -1,11 +1,12 @@
 import FormBtn from "@/components/FormBtn";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 
 import NewLocation from "./NewLocation";
 import axios from "axios";
 import LocationSmView from "./LocationSmView";
 import FormElement from "@/components/FormElement";
 import {Pagination} from "@mui/material";
+import { AlertContext } from "@/app/AlertContext";
 
 function PaLocation({pa}: {pa: boolean}) {
 	const [newloc, setNewloc] = useState(false);
@@ -15,6 +16,8 @@ function PaLocation({pa}: {pa: boolean}) {
 	const showOnPg = 4;
 
 	const [search, setSearch] = useState("");
+
+	const {handleAxiosError} = useContext(AlertContext)
 
 	useEffect(() => {
 		getData();
@@ -27,7 +30,7 @@ function PaLocation({pa}: {pa: boolean}) {
 				setLocations(response.data.locations);
 			})
 			.catch((error) => {
-				alert("err: " + error);
+				handleAxiosError(error);
 			});
 	}
 
