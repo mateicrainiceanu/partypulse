@@ -1,5 +1,5 @@
+import UserSmView from "@/app/dash/_components/UserSmView";
 import React from "react";
-import {MdHeadphones} from "react-icons/md";
 
 function DJView({djs}: {djs: Array<string>}) {
 	return (
@@ -8,15 +8,8 @@ function DJView({djs}: {djs: Array<string>}) {
 			<hr className="border-2" />
 			<div className="text-left">
 				{djs.map((dj, i) => (
-					<div
-						className="flex p-2 py-3 border-white"
-						style={{borderBottomStyle: "solid", borderBottomWidth: "2px"}}
-						key={i}>
-						<MdHeadphones className="text-2xl mx-3" />
-						<p className="">{dj}</p>
-						<div className="ms-auto">
-							
-						</div>
+					<div key={i} style={{borderBottomStyle: "solid", borderBottomWidth: "2px"}}>
+						<UserSmView uname={dj} role={2} />
 					</div>
 				))}
 			</div>

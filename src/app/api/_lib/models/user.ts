@@ -182,6 +182,30 @@ class User {
     static deleteCode(codeId: string) {
         return db.execute(`DELETE FROM codes WHERE id = '${codeId}';`)
     }
+
+    static relation(uid: number, nduid: number, reltype: number, val: boolean) {
+        if (val)
+            return db.execute(`INSERT INTO users_users (userId, secUserId, reltype) VALUES (${uid}, ${nduid}, ${reltype});`)
+        else
+            return db.execute(`DELETE FROM users_users WHERE userId = ${uid} AND secUserId = ${nduid};`)
+    }
+
+    static async getUserAndRel(userid: number, reluser: number) {
+        let [user] = (await db.execute(`SELECT role, uname, fname, lname, donations, created FROM users WHERE id = ${userid};`) as RowDataPacket[][])[0]
+
+        let [relations] = (await db.execute(`SELECT * FROM users_users WHERE userId = ${reluser} AND secUserId = ${userid};`) as any)
+
+        user = { ...user, followsYou: false, youFollow: false }
+
+        relations.map((relation: { userId: number, secUserId: number, reltype: number }) => {
+            if (relation.reltype == 1 && relation.userId == reluser)
+                user = { ...user, youFollow: true }
+            else if (relation.reltype == 1 && relation.userId == userid)
+                user = { ...user, followsYou: true }
+        })
+
+        return user;
+    }
 }
 
 export default User;

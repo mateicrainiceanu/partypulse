@@ -24,6 +24,9 @@ function ManageEvent({params}: {params: {id: number}}) {
 		duration: "00:00",
 		privateev: false,
 		status: 0,
+		there: false,
+		coming: false,
+		liked: false,
 	});
 
 	const [edit, setEdit] = useState(false);
@@ -78,6 +81,9 @@ function ManageEvent({params}: {params: {id: number}}) {
 						location={data.location}
 						djs={data.djs}
 						showManage={false}
+						there={data.there}
+						coming={data.coming}
+						liked={data.liked}
 					/>
 				)}
 			</div>
