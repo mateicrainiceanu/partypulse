@@ -8,7 +8,7 @@ function UpdateStauts({data, setData}: {data: any; setData: any}) {
 	const setLoading = useContext(LoadingContext);
 	const {handleAxiosError, dialogToUser} = useContext(AlertContext);
 
-	function handleStatusChange(e: any, force?: boolean) {
+	function handleStatusChange(e: any, force?: boolean, endAssoc?: boolean) {
 		var stat: Number;
 		if (e.target.id == "1") {
 			stat = data.status != 1 ? 1 : 2;
@@ -17,9 +17,9 @@ function UpdateStauts({data, setData}: {data: any; setData: any}) {
 		}
 
 		axios
-			.patch("/api/event/" + data.id + "/status", {status: stat, confirmedClose: force})
+			.patch("/api/event/" + data.id + "/status", {status: stat, confirmedClose: force, endAssoc: endAssoc})
 			.then((response) => {
-				setData((prev:any) => ({...prev, ...parseEventForView(response.data)}));
+				setData((prev: any) => ({...prev, ...parseEventForView(response.data)}));
 				setLoading(false);
 			})
 			.catch((err) => {
@@ -33,6 +33,12 @@ function UpdateStauts({data, setData}: {data: any; setData: any}) {
 								btnName: "End other events",
 								func: () => {
 									handleStatusChange(e, true);
+								},
+							},
+							{
+								btnName: "End association",
+								func: () => {
+									handleStatusChange(e, false, true);
 								},
 							},
 						],

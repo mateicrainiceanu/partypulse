@@ -161,6 +161,11 @@ class Events {
         return db.execute(`DELETE FROM events WHERE id = ${id};`)
     }
 
+    static endAssoc(eid: number, uid: number) {
+        let sql = `DELETE FROM users_events WHERE userId = ${uid} AND eventId != ${eid} AND (reltype = 1 OR reltype = 2);`
+        return db.execute(sql)
+    }
+
     static async areOtherOngoingEvents(uid: number, force: boolean) {
         const [eventsRels] = await db.execute(`SELECT * FROM users_events WHERE userId = ${uid} AND (reltype = 1 OR reltype = 2); `) as any
 
@@ -177,7 +182,7 @@ class Events {
 
         if (str != "" && !force) {
             let [liveEvents] = await db.execute(`SELECT * FROM events WHERE id IN (${str.substring(0, str.length - 2)}) AND status = 1; `) as RowDataPacket[][]
-            
+
             return liveEvents
 
         } else { return [] }

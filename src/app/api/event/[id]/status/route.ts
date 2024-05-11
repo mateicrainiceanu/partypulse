@@ -5,16 +5,19 @@ import { cookies } from "next/headers";
 import { getUserFromToken } from "@/app/api/_lib/token";
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: number } }) {
-    const { status, confirmedClose } = await req.json()
+    const { status, confirmedClose, endAssoc } = await req.json()
     const url = new URL(req.url)
     const tok = url.searchParams.get("token")
     const token = cookies().get("token")?.value || tok
 
-    if (token) {
+    if (token && params.id) {
         const user = getUserFromToken(token)
         if (user.id) {
 
             //handleCheck if user HAS RIGHT TO MANAGE
+
+            if (endAssoc)
+                await Events.endAssoc(params.id, user.id)
 
             if (status == 1) {
                 const ongoing = await Events.areOtherOngoingEvents(user.id, confirmedClose)
