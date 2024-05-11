@@ -20,7 +20,7 @@ function LiveEventUpdates({evid}: {evid: number}) {
 	let unmounts = 0;
 	//    ^? WebSocket on the client, null on the server
 	const [data, setData] = useState([]);
-	const [djMiniView, setDjMiniView] = useState("all");
+	const [djMiniView, setDjMiniView] = useState("live");
 	const [order, setOrder] = useState(1);
 
 	async function handleMsg(event: MessageEvent<Blob>) {
@@ -47,7 +47,7 @@ function LiveEventUpdates({evid}: {evid: number}) {
 		setDjMiniView(event.target.id);
 	}
 
-	function handleStatusChange(reqId: number, newStatus: number) {		
+	function handleStatusChange(reqId: number, newStatus: number) {
 		ws?.send(JSON.stringify({reqId: reqId, newStatus: newStatus}));
 	}
 
@@ -82,7 +82,7 @@ function LiveEventUpdates({evid}: {evid: number}) {
 				<div className="w-full p-3">
 					<h2 className="text-xl font-mono font-bold text-center">Requests</h2>
 					<p className="text-xs my-2 italic text-gray-400">
-						Disclaimer: none of the buttons play one song. They just have an impanct on your view.
+						Disclaimer: none of the buttons play one song. They just have an impact on your view.
 					</p>
 				</div>
 				<div className="mt-2">
@@ -151,19 +151,19 @@ function LiveEventUpdates({evid}: {evid: number}) {
 							<div key={sr.id} className="flex flex-row hover:bg-lime-700 px-4 rounded-lg">
 								<div className="my-auto text-3xl flex gap-3">
 									<IoPlayCircle
-										className="hover:text-green-500"
+										className={"hover:text-green-500 " + (sr.status == 3 ? "text-green-500" : "")}
 										onClick={() => {
 											handleStatusChange(sr.id, 3);
 										}}
 									/>
 									<IoPlayForwardCircleSharp
-										className="hover:text-yellow-400"
+										className={"hover:text-yellow-500 " + (sr.status == 1 ? "text-yellow-500" : "")}
 										onClick={() => {
 											handleStatusChange(sr.id, 1);
 										}}
 									/>
 									<GoXCircleFill
-										className="hover:text-red-500 text-2xl my-auto"
+										className={"hover:text-red-500 text-2xl my-auto " + (sr.status == 2 ? "text-red-500" : "")}
 										onClick={() => {
 											handleStatusChange(sr.id, 2);
 										}}

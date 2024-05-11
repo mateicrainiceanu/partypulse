@@ -30,7 +30,7 @@ function AlertProvider({children}: {children: ReactNode}) {
 			});
 		}
 	}, []);
-//
+	//
 	useEffect(() => {
 		if (alert?.autoClose) {
 			setTimeout(() => {
@@ -58,7 +58,6 @@ function AlertProvider({children}: {children: ReactNode}) {
 				],
 			};
 		}
-		console.log(diaToSet);
 
 		setDialog(diaToSet);
 	}
@@ -113,7 +112,12 @@ function AlertProvider({children}: {children: ReactNode}) {
 					{dialog.actionButtons != undefined && (
 						<DialogActions>
 							{dialog.actionButtons.map((action: {func: () => void; btnName: string}, i: number) => (
-								<Button key={i} onClick={action.func}>
+								<Button
+									key={i}
+									onClick={() => {
+										action.func();
+										setDialog(null);
+									}}>
 									{action.btnName}
 								</Button>
 							))}

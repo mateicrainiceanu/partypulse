@@ -161,6 +161,31 @@ class Events {
         return db.execute(`DELETE FROM events WHERE id = ${id};`)
     }
 
+    static async areOtherOngoingEvents(uid: number, force: boolean) {
+        const [eventsRels] = await db.execute(`SELECT * FROM users_events WHERE userId = ${uid} AND (reltype = 1 OR reltype = 2); `) as any
+
+        let str = ""
+
+        eventsRels.map((rel: { eventId: number }) => {
+            str += rel.eventId + ", "
+        })
+
+        if (force) {
+            let [res] = await db.execute(`UPDATE events SET status = 0 WHERE id IN (${str.substring(0, str.length - 2)}) AND status = 1; `) as RowDataPacket[][]
+            return []
+        }
+
+        if (str != "" && !force) {
+            let [liveEvents] = await db.execute(`SELECT * FROM events WHERE id IN (${str.substring(0, str.length - 2)}) AND status = 1; `) as RowDataPacket[][]
+            
+            return liveEvents
+
+        } else { return [] }
+
+
+
+    }
+
     static changeStatus(id: number, newStatus: number) {
         return db.execute(`UPDATE events SET status = ${newStatus} WHERE id = ${id}`)
     }

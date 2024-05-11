@@ -6,9 +6,9 @@ import {AlertContext} from "@/app/AlertContext";
 
 function UpdateStauts({data, setData}: {data: any; setData: any}) {
 	const setLoading = useContext(LoadingContext);
-	const {handleAxiosError} = useContext(AlertContext);
+	const {handleAxiosError, dialogToUser} = useContext(AlertContext);
 
-	function handleStatusChange(e: any) {
+	function handleStatusChange(e: any, force?: boolean) {
 		var stat: Number;
 		if (e.target.id == "1") {
 			stat = data.status != 1 ? 1 : 2;
@@ -17,13 +17,27 @@ function UpdateStauts({data, setData}: {data: any; setData: any}) {
 		}
 
 		axios
-			.patch("/api/event/" + data.id + "/status", {status: stat})
+			.patch("/api/event/" + data.id + "/status", {status: stat, confirmedClose: force})
 			.then((response) => {
-				setData(parseEventForView(response.data));
+				setData((prev:any) => ({...prev, ...parseEventForView(response.data)}));
 				setLoading(false);
 			})
 			.catch((err) => {
-				handleAxiosError(err);
+				if (err.response.status === 400) {
+					dialogToUser({
+						title: err.response.data,
+						content:
+							"You might have another event in progress that is preventing you to start a new one. You can remove yourself from the other event as em or dj and lose your rights to any changes or start this event by ending the other events.",
+						actionButtons: [
+							{
+								btnName: "End other events",
+								func: () => {
+									handleStatusChange(e, true);
+								},
+							},
+						],
+					});
+				} else handleAxiosError(err);
 				setLoading(false);
 			});
 	}

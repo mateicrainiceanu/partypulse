@@ -54,16 +54,20 @@ function DjView({params}: {params: {id: number}}) {
 				handleAxiosError(err);
 				setLoading(false);
 			});
-		}, []);
-		
-		async function handleDonations(e: any) {
-			setUpdated(false);
-			setUser((prev: any) => ({...prev, donations: e.target.value}));
-		}
-		
-		function handleUpdateDonations(e: any) {
-			if (!updated) {
-				axios
+	}, []);
+
+	useEffect(() => {
+		console.log(data);
+	}, [data]);
+
+	async function handleDonations(e: any) {
+		setUpdated(false);
+		setUser((prev: any) => ({...prev, donations: e.target.value}));
+	}
+
+	function handleUpdateDonations(e: any) {
+		if (!updated) {
+			axios
 				.post("/api/partner", {donations: e.target.value})
 				.then((data) => {
 					setUpdated(true);
@@ -71,19 +75,19 @@ function DjView({params}: {params: {id: number}}) {
 				.catch((err) => {
 					handleAxiosError(err);
 				});
-			}
 		}
-		
-		function handleGenreUpdate() {
-			updateData({genreVote: data.genreVote == 0 ? 1 : 0});
-		}
-		
-		async function handleSuggestionsUpdate(_: any, val: boolean) {
-			updateData({msuggestions: val ? 1 : 0});
-		}
-		
-		function updateData(obj: {msuggestions?: number; genreVote?: number}) {
-			axios
+	}
+
+	function handleGenreUpdate() {
+		updateData({genreVote: data.genreVote == 0 ? 1 : 0});
+	}
+
+	async function handleSuggestionsUpdate(_: any, val: boolean) {
+		updateData({msuggestions: val ? 1 : 0});
+	}
+
+	function updateData(obj: {msuggestions?: number; genreVote?: number}) {
+		axios
 			.patch("/api/partner/event", {id: data.id, ...obj})
 			.then((response) => {
 				setData(parseEventForView(response.data));
@@ -113,43 +117,36 @@ function DjView({params}: {params: {id: number}}) {
 						)}
 						<hr className="my-2" />
 						<h1 className="text-center text-2xl text-white font-mono font-bold">Live Changes</h1>
-						<table className="w-full">
-							<tbody>
-								<tr className="h-10">
-									<td>Music Suggestions</td>
-									<td>
-										<Switch checked={data.msuggestions === 1} onChange={handleSuggestionsUpdate}></Switch>
-									</td>
-								</tr>
-								<tr className="h-10">
-									<td>Genre Vote</td>
-									<td>
-										<button
-											className={"py-1 px-3 rounded-md " + (data.genreVote == 0 ? "bg-fuchsia-500" : "bg-red-500")}
-											onClick={handleGenreUpdate}>
-											{data.genreVote == 0 ? "Start" : "Stop"}
-										</button>
-									</td>
-								</tr>
-								<tr className="h-10">
-									<td>Donation page redirect</td>
-									<td>
-										<div className="flex w-full items-center">
-											<input
-												type="text"
-												className="font-sans p-2 rounded-md m-2 text-black w-10/12"
-												value={user.donations}
-												onChange={handleDonations}
-												onMouseOut={handleUpdateDonations}
-											/>
-											<div className={"text-xl w-1/6 " + (updated ? "text-green-500" : "text-red-500")}>
-												<BsCheckCircleFill></BsCheckCircleFill>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+						<div className="flex flex-col gap-3">
+							<span>Music Suggestions</span>
+							<span>
+								<Switch checked={data.msuggestions === 1} onChange={handleSuggestionsUpdate}></Switch>
+							</span>
+
+							<span>Genre Vote</span>
+							<span>
+								<button
+									className={"py-1 px-3 rounded-md " + (data.genreVote == 0 ? "bg-fuchsia-500" : "bg-red-500")}
+									onClick={handleGenreUpdate}>
+									{data.genreVote == 0 ? "Start" : "Stop"}
+								</button>
+							</span>
+
+							<span>Donation page redirect</span>
+
+							<div className="flex w-full items-center">
+								<input
+									type="text"
+									className="font-sans p-2 rounded-md m-2 text-black w-10/12"
+									value={user.donations}
+									onChange={handleDonations}
+									onMouseOut={handleUpdateDonations}
+								/>
+								<div className={"text-xl w-1/6 " + (updated ? "text-green-500" : "text-red-500")}>
+									<BsCheckCircleFill></BsCheckCircleFill>
+								</div>
+							</div>
+						</div>
 					</div>
 				)}
 			</div>
