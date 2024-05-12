@@ -2,24 +2,14 @@ import React from "react";
 import UserSmView from "../../../UserSmView";
 import EventView from "../../../EventView";
 import {parseEventForView} from "@/app/dash/_lib/data-manager";
+import {FullEvent} from "@/types";
 
 interface EvData {
 	uname: string;
 	role: number;
 	eventMatches: Array<{
 		reltype: number;
-		event: {
-			id: number;
-			name: string;
-			location: string;
-			dateStart: string;
-			djs: Array<string>;
-			status: number;
-			userHasRightToManage: number;
-			there: boolean;
-			coming: boolean;
-			liked: boolean;
-		};
+		event: FullEvent;
 	}>;
 }
 
@@ -27,7 +17,7 @@ function EventsFromUsers({data}: {data: Array<EvData>}) {
 	return (
 		<div>
 			{data.map((evMatch, i) => (
-				<div key={i} className="my-2 bg-fuchsia-800 p-2 rounded-xl">
+				<div key={i} className="my-4 bg-fuchsia-800 p-2 rounded-xl">
 					<div className="">
 						<UserSmView uname={evMatch.uname} role={evMatch.role} rounded />
 					</div>
@@ -38,11 +28,11 @@ function EventsFromUsers({data}: {data: Array<EvData>}) {
 							return (
 								<div key={ev.id}>
 									<div className="m-2 font-mono">
-                                        {evData.reltype == 2 && <p>Is a dj at:</p>}
-                                        {evData.reltype == 1 && <p>Is em at:</p>}
-                                        {evData.reltype == 4 && <p>Goes:</p>}
-                                        {evData.reltype == 5 && <p>Liked:</p>}
-                                    </div>
+										{evData.reltype == 2 && <p>Is a dj at:</p>}
+										{evData.reltype == 1 && <p>Is em at:</p>}
+										{evData.reltype == 4 && <p>Goes:</p>}
+										{evData.reltype == 5 && <p>Liked:</p>}
+									</div>
 									<EventView
 										id={ev.id}
 										name={ev.name}

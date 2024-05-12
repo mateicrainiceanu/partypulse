@@ -16,9 +16,9 @@ export default async function GET(req: NextRequest) {
         const user = getUserFromToken(token)
         if (user.id) {
 
-            const [rels] = await Relationship.getLocForUser(user.id, (onlyManaged == "true" ? 1 : 0));
+            const [rels] = await Relationship.getLocForUser(user.id, (onlyManaged == "true" ? 1 : 0));            
 
-            if (rels[0].length === 0) {
+            if (rels.length === 0) {
                 return NextResponse.json({ locations: [] })
             }
 

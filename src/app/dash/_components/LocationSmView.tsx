@@ -3,12 +3,13 @@ import {IoHeart, IoSettingsSharp} from "react-icons/io5";
 import {BiHeart} from "react-icons/bi";
 import axios from "axios";
 import { AlertContext } from "@/app/AlertContext";
+import { FullLocation } from "@/types";
 
 function LocationSmView({
 	locationData,
 	showManage,
 }: {
-	locationData: {name: string; id: number; adress: string; city?: string; liked?: boolean};
+	locationData: FullLocation;
 	showManage?: boolean;
 }) {	
 	const [tliked, setTLiked] = useState(locationData.liked);
