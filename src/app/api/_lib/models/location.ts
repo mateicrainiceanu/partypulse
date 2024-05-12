@@ -135,6 +135,11 @@ class Location {
     static addCode(locid: number, code: string) {
         return db.execute(`INSERT INTO codes (usedFor, itemId, code) VALUES('location' , ${locid}, '${code}');`)
     }
+
+    static async getLocationsForUser(uid:number){
+        let [rels] = await db.execute(`SELECT * FROM users_locaitons WHERE userId = ${uid}`)
+    }
+
 }
 
 

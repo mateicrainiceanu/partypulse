@@ -73,7 +73,33 @@ class Events {
         return db.execute(sql) as Promise<Array<RowDataPacket>>
     }
 
+    static async getEventsForRelsUserId(uid: number, mainUsrId: number) {
+        const [rels] = await db.execute(`SELECT eventId, reltype FROM users_events WHERE userId = ${uid};`) as any;
+        const eventsWithData = rels.map(async (rel: { eventId: number, reltype: number }) => {
+            const event = await Events.getFullForId(rel.eventId, mainUsrId, true)
+            return { reltype: rel.reltype, event }
+        })
 
+        const matches = (await Promise.all(eventsWithData)).filter((o: { event: Events | null }) => (o.event != null))
+
+        if (matches.length)
+            return matches
+        else
+            return null
+    }
+
+    static async getFullForLocation(locId: number, mainUsrId: number) {
+        const location = (await Location.getFullLocation(locId, mainUsrId))
+        
+        const [events] = await db.execute(`SELECT id FROM events WHERE locationId = ${locId}; `) as any
+
+        const data = events.map(async (e: { id: number }) => {
+            return await Events.getFullForId(e.id, mainUsrId, true, location)
+        })
+
+        return { location, events: await Promise.all(data) }
+
+    }
 
     // static async getEventIdsForUser(id: number, onlyManaged:boolean) {
     //     const [eventsIds] = await db.execute(`SELECT * FROM users_events WHERE userId = ${id};`) as Array<RowDataPacket>
@@ -106,21 +132,27 @@ class Events {
         return db.execute(`SELECT * FROM events_locations WHERE eventId = ${eventId};`) as Promise<Array<RowDataPacket>>
     }
 
-    static getForId(eventId: number) {
-        return db.execute(`SELECT * FROM events WHERE id = ${eventId}`)
+    static getForId(eventId: number, isNotOver?: boolean) {
+        return db.execute(`SELECT * FROM events WHERE id = ${eventId} ${(isNotOver ? "AND status < 2" : "")};`)
     }
 
     static getForLocations(locString: number) {
         return db.execute(`SELECT * FROM events WHERE locationId IN (${locString})`);
     }
 
-    static async getFullForId(id: number | string, userId?: number) {
-        const [events] = await Events.getForId(Number(id)) as Array<RowDataPacket>
+    static async getFullForId(id: number | string, userId?: number, isNotOver?: boolean, givenLocation?: Location | undefined) {
+
+        const [events] = await Events.getForId(Number(id), isNotOver) as Array<RowDataPacket>
+
         if (events.length > 0) {
 
             const event = events[0]
 
-            const [location] = await Location.getFromIds(`${event.locationId}`) as Array<RowDataPacket>
+            let location: Location
+            if (givenLocation == undefined)
+                location = (await Location.getFromIds(`${event.locationId}`) as any)[0][0]
+            else
+                location = givenLocation!
 
             const djs = await User.getDjsForId(event.id)
 
@@ -150,7 +182,7 @@ class Events {
                 }
             }
 
-            return { ...event, djs: djsToReturn, location: location[0].name, locationData: location[0], locationId: location[0].id, userHasRightToManage, there, coming, liked }
+            return { ...event, djs: djsToReturn, location: location.name, locationData: location, locationId: location.id, userHasRightToManage, there, coming, liked }
         } else {
             return null
         }

@@ -35,12 +35,13 @@ import {AlertContext} from "@/app/AlertContext";
 // 	);
 // }
 
-function UserSmView({uname, role}: {uname: string; role: number}) {
+function UserSmView({uname, role, rounded}: {uname: string; role: number, rounded?:boolean}) {
 	const [smView, setSmView] = useState(false);
 
 	return (
 		<div
-			className={"w-full px-2 py-2 border-btm " + (smView ? "" : "hover:bg-gray-800")}
+			className={"w-full px-2 py-2 border-btm " + (smView ? "" : "hover:bg-gray-800") + (rounded ? " rounded-lg": "")
+			}
 			onClick={() => {
 				setSmView(true);
 			}}>

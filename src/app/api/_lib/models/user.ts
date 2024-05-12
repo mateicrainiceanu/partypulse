@@ -221,6 +221,10 @@ class User {
         }
     }
 
+    static getFriends(uid: number) {
+        return db.execute(`SELECT * FROM users_users WHERE userId = ${uid} ORDER BY id desc;`)
+    }
+
 }
 
 export default User;
