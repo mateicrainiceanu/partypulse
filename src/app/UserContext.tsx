@@ -62,9 +62,9 @@ function UserProvider({children}: {children: ReactNode}) {
 				setTried(true);
 			})
 			.catch((error) => {
-				handleAxiosError(error);
 				setTried(true);
 				if (mandatory) {
+					handleAxiosError(error);
 					window.location.replace("/login");
 				}
 				return;
