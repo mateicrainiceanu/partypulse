@@ -32,13 +32,7 @@ function UserProvider({children}: {children: ReactNode}) {
 	const setLoading = useContext(LoadingContext);
 	const {handleAxiosError} = useContext(AlertContext);
 
-	const {data: session, status} = useSession();
-
 	useEffect(() => {
-
-		// if (status !== "authenticated") {
-		// 	window.location.replace("login");
-		// }
 		const startUser = {
 			id: Number(getCookie("userId")) || 0,
 			fname: getCookie("fname") || "",
