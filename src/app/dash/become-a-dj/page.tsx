@@ -19,7 +19,7 @@ function BecomeDJ() {
 		setUsername(newuname);
 
 		await axios
-			.post("/api/username-check", {username: "dj_" + newuname})
+			.post("/api/user/username-check", {username: "dj_" + newuname})
 			.then((response) => {
 				setAvalabile(true);
 			})
@@ -37,7 +37,7 @@ function BecomeDJ() {
 		setLoading(true);
 
 		await axios
-			.post("/api/partner", {username: "dj_" + username, ptype: 2})
+			.post("/api/user/partner", {username: "dj_" + username, ptype: 2})
 			.then((data) => {
 				//implementation of ok
 				window.location.replace("/dash");

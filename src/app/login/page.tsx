@@ -5,13 +5,14 @@ import React, {useContext, useState} from "react";
 import axios from "axios";
 import {LoadingContext} from "../LoadingContext";
 import {AlertContext} from "../AlertContext";
-import {signIn, SignInResponse} from "next-auth/react";
+import {signIn} from "next-auth/react";
 import {BsGoogle, BsSpotify} from "react-icons/bs";
+import {deleteCookie, getCookie} from "cookies-next";
 
 function Login() {
 	const [formData, setFormData] = useState({email: "", password: ""});
 	const setLoading = useContext(LoadingContext);
-	const {handleError, handleAxiosError} = useContext(AlertContext);
+	const {handleAxiosError} = useContext(AlertContext);
 
 	function handleChange(e: any) {
 		setFormData((prevData) => ({...prevData, [e.target.name]: e.target.value}));
@@ -21,9 +22,12 @@ function Login() {
 		setLoading(true);
 
 		await axios
-			.post("/api/login", formData)
+			.post("/api/user/login", formData)
 			.then((response) => {
-				window.location.replace("/dash");
+				if (getCookie("prevUrl") != undefined && getCookie("prevUrl") != "")
+					window.location.replace(getCookie("prevUrl") || "/");
+				else window.location.replace("/dash");
+				deleteCookie("prevUrl");
 			})
 			.catch((error) => {
 				handleAxiosError(error);

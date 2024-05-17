@@ -36,9 +36,9 @@ function Events({
 		if (!givenEvents) {
 			setLoading(true);
 			axios
-				.get("/api/user/events" + (onlyManaged ? "?onlyManaged=true" : ""))
+				.get("/api/event" + (onlyManaged ? "?onlyManaged=true" : ""))
 				.then((response) => {
-					setEvents(response.data);
+					setEvents(response.data);					
 					setTimeout(() => {
 						setLoading(false);
 					}, 100);

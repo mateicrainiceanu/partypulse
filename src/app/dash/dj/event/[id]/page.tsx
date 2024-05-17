@@ -56,10 +56,6 @@ function DjView({params}: {params: {id: number}}) {
 			});
 	}, []);
 
-	useEffect(() => {
-		console.log(data);
-	}, [data]);
-
 	async function handleDonations(e: any) {
 		setUpdated(false);
 		setUser((prev: any) => ({...prev, donations: e.target.value}));
@@ -68,7 +64,7 @@ function DjView({params}: {params: {id: number}}) {
 	function handleUpdateDonations(e: any) {
 		if (!updated) {
 			axios
-				.post("/api/partner", {donations: e.target.value})
+				.post("/api/user/partner", {donations: e.target.value})
 				.then((data) => {
 					setUpdated(true);
 				})
@@ -88,7 +84,7 @@ function DjView({params}: {params: {id: number}}) {
 
 	function updateData(obj: {msuggestions?: number; genreVote?: number}) {
 		axios
-			.patch("/api/partner/event", {id: data.id, ...obj})
+			.patch("/api/event/dj-settings", {id: data.id, ...obj})
 			.then((response) => {
 				setData(parseEventForView(response.data));
 			})

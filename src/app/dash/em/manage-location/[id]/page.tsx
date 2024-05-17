@@ -54,7 +54,7 @@ function ManageLocation({params}: {params: {id: string}}) {
 		setLoading(true);
 
 		await axios
-			.patch("/api/partner/locations", locationData)
+			.patch("/api/location", locationData)
 			.then((response) => {
 				setLoading(false);
 				alert("ok");

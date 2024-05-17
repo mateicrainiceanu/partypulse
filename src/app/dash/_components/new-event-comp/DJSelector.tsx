@@ -3,7 +3,7 @@ import {Autocomplete, TextField} from "@mui/material";
 import {BsXCircleFill} from "react-icons/bs";
 import axios from "axios";
 import "./../../em/manage-location/[id]/location.css";
-import { AlertContext } from "@/app/AlertContext";
+import {AlertContext} from "@/app/AlertContext";
 
 interface IProps {
 	djs: Array<string>;
@@ -22,7 +22,7 @@ export function DJSelector({djs, setData}: IProps) {
 	function getoptions() {
 		if (fieldVal != "") {
 			axios
-				.post("/api/partner/avalabile", {q: fieldVal, role: 2, seeSelf: true})
+				.post("/api/user/partner/avalabile", {q: fieldVal, role: 2, seeSelf: true})
 				.then((response) => {
 					setOpt(response.data);
 				})

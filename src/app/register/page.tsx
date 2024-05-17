@@ -6,6 +6,7 @@ import React, {useContext, useState} from "react";
 import {UserContext} from "../UserContext";
 import {LoadingContext} from "../LoadingContext";
 import {AlertContext} from "../AlertContext";
+import {deleteCookie, getCookie, setCookie} from "cookies-next";
 
 function Register() {
 	const [formData, setFormData] = useState({fname: "", lname: "", uname: "", email: "", password: ""});
@@ -20,7 +21,7 @@ function Register() {
 			const username = e.target.value.replaceAll(" ", "");
 			setFormData((prevData) => ({...prevData, uname: username}));
 			axios
-				.post("/api/username-check", {username: username})
+				.post("/api/user/username-check", {username: username})
 				.then((_) => {
 					setAvalabile(true);
 				})
@@ -45,13 +46,15 @@ function Register() {
 		setLoading(true);
 
 		axios
-			.post("/api/register", formData)
+			.post("/api/user/register", formData)
 			.then((response) => {
 				const {newuser, id, token} = response.data;
 
 				setUser({...newuser, logged: true, id: id, token: token});
-
-				window.location.replace("/dash");
+				if (getCookie("prevUrl") != undefined && getCookie("prevUrl") != "")
+					window.location.replace(getCookie("prevUrl") || "/");
+				else window.location.replace("/dash");
+				deleteCookie("prevUrl");
 			})
 			.catch((error) => {
 				handleAxiosError(error);

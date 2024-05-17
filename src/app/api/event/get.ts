@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers"
-import { getUserFromToken } from "../../_lib/token";
+import { getUserFromToken } from "../_lib/token";
 
-import Events from "../../_lib/models/event";
+import Events from "../_lib/models/event";
 import { RowDataPacket } from "mysql2";
 
 

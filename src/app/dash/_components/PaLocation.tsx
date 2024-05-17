@@ -25,7 +25,7 @@ function PaLocation({pa}: {pa: boolean}) {
 
 	async function getData() {
 		await axios
-			.get("/api/partner/locations" + (pa ? "?onlyManaged=true" : ""))
+			.get("/api/location" + (pa ? "?onlyManaged=true" : ""))
 			.then((response) => {
 				setLocations(response.data.locations);
 			})

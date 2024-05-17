@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Location from "../../_lib/models/location";
+import Location from "../_lib/models/location";
 import { RowDataPacket } from "mysql2";
 
 export default async function PATCH(req: NextRequest) {

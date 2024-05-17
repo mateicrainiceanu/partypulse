@@ -1,8 +1,8 @@
 "use server"
 
 import { NextRequest, NextResponse } from "next/server";
-import User from "../_lib/models/user";
-import { getUserFromToken } from "../_lib/token";
+import User from "../../_lib/models/user";
+import { getUserFromToken } from "../../_lib/token";
 import { cookies } from "next/headers";
 import { RowDataPacket } from "mysql2";
 
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
                 warnings += result3.warningStatus
             }
             if (warnings === 0) {
-                const [updatedUser] = (await User.findById(user.id) as RowDataPacket[][])[0]                
+                const [updatedUser] = (await User.findById(user.id) as RowDataPacket[][])[0]
                 cookies().set("token", token)
                 cookies().set("userId", updatedUser.id)
                 cookies().set("uname", updatedUser.uname)

@@ -17,7 +17,7 @@ export function ChangePassword() {
 		//handle ChangePssw Logic
 		if (passwordData.newPassword === passwordData.checkPssw) {
 			await axios
-				.post("/api/change-ps", {newPassword: passwordData.newPassword})
+				.post("/api/user/change-ps", {newPassword: passwordData.newPassword})
 				.then((data) => {
 					alert("OK");
 					setPasswordData({oldPassword: "", newPassword: "", checkPssw: ""});

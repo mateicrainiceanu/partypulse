@@ -8,7 +8,7 @@ import {BsQrCode} from "react-icons/bs";
 import {BiQr} from "react-icons/bi";
 
 import {useQRCode} from "next-qrcode";
-import { AlertContext } from "@/app/AlertContext";
+import {AlertContext} from "@/app/AlertContext";
 
 function Codes() {
 	const [codes, setCodes] = useState([]);
@@ -18,17 +18,17 @@ function Codes() {
 
 	useEffect(() => {
 		axios
-			.get("/api/partner/codes")
+			.get("/api/user/partner/codes")
 			.then((res) => {
 				setCodes(res.data);
 			})
 			.catch((err) => {
 				handleAxiosError(err);
 			});
-		}, []);
-		
-		function remove(id: number) {
-			axios
+	}, []);
+
+	function remove(id: number) {
+		axios
 			.delete("/api/code" + "?codeId=" + id)
 			.then((res) => {
 				setCodes(res.data);
@@ -36,10 +36,10 @@ function Codes() {
 			.catch((err) => {
 				handleAxiosError(err);
 			});
-		}
-		
-		function newCode() {
-			axios
+	}
+
+	function newCode() {
+		axios
 			.get("/api/code?usedFor=user")
 			.then((res) => {
 				setCodes(res.data.codes);

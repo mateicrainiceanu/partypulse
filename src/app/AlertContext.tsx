@@ -40,6 +40,11 @@ function AlertProvider({children}: {children: ReactNode}) {
 	}, [alert]);
 
 	function handleAxiosError(err: AxiosError) {
+		if(err.response?.status == 403){
+			setCookie("prevUrl", window.location.href)
+			window.location.replace("/login")
+		}
+		
 		setAlert({severity: "error", prompt: err.response?.data, autoClose: true});
 	}
 

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import User from "../_lib/models/user";
+import User from "../../_lib/models/user";
 import { RowDataPacket } from "mysql2";
 import bcrypt from "bcrypt";
 import { cookies } from "next/headers"
-import { signtoken } from "../_lib/token";
+import { signtoken } from "../../_lib/token";
 
 export async function POST(req: NextRequest) {
 

@@ -1,6 +1,6 @@
 "use server"
 import { NextRequest, NextResponse } from "next/server";
-import User from "../_lib/models/user";
+import User from "../../_lib/models/user";
 import { RowDataPacket } from "mysql2";
  
 export async function POST (req: NextRequest) {
@@ -11,6 +11,6 @@ export async function POST (req: NextRequest) {
     if (result.length === 0) {
         return new NextResponse("OK", {status:200})
     } else {
-        return new NextResponse("NOT OK", { status: 400 })
+        return new NextResponse("NOT OK", { status: 200 })
     }
 }

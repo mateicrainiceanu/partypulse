@@ -23,7 +23,7 @@ function ChangeProfile() {
 		setData((prevData: any) => ({...prevData, [e.target.name]: e.target.value}));
 
 		await axios
-			.post("/api/username-check", {username: e.target.value})
+			.post("/api/user/username-check", {username: e.target.value})
 			.then((response) => {
 				setAvalabile(true);
 			})
@@ -35,7 +35,7 @@ function ChangeProfile() {
 	async function handleSumbit(e: any) {
 		setLoading(true);
 		await axios
-			.post("/api/partner", {username: data.uname, donations: data.donations})
+			.post("/api/user/partner", {username: data.uname, donations: data.donations})
 			.then((data) => {
 				alert("ok");
 				setUser(data.data);

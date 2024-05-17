@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers"
-import { getUserFromToken } from "../../_lib/token";
-import Events from "../../_lib/models/event";
-import User from "../../_lib/models/user";
+import { getUserFromToken } from "../../../_lib/token";
+import Events from "../../../_lib/models/event";
+import User from "../../../_lib/models/user";
 
 export async function GET(req: NextRequest) {
 

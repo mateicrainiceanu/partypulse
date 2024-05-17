@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import User from "../_lib/models/user";
+import User from "../../_lib/models/user";
 import { RowDataPacket } from "mysql2";
-import { signtoken } from "../_lib/token";
+import { signtoken } from "../../_lib/token";
 import { cookies } from "next/headers"
 
 export async function POST(req: NextRequest) {

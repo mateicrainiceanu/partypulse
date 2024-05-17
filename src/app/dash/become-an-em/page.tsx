@@ -16,7 +16,7 @@ function BecomeAnEm() {
 	async function handleSubmit() {
 		setLoading(true);
 		await axios
-			.post("/api/partner", {ptype: 1})
+			.post("/api/user/partner", {ptype: 1})
 			.then((data) => {
 				//implementation of ok
 				window.location.replace("/dash");

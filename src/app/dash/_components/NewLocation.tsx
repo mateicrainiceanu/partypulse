@@ -33,7 +33,7 @@ function NewLocation({close}: IProps) {
 
 	async function handleSubmit() {
 		await axios
-			.post("/api/partner/locations", {...locData, useForAdress: selected})
+			.post("/api/location", {...locData, useForAdress: selected})
 			.then((data) => {
 				close();
 			})

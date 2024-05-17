@@ -13,20 +13,21 @@ function AddUser({id}: {id: string}) {
 	function getoptions(q: string) {
 		if (q) {
 			axios
-				.post("/api/partner/avalabile", {q: q})
+				.post("/api/user/partner/avalabile", {q: q, seeSelf: false})
 				.then((response) => {
 					setOpt(response.data);
 				})
-				.catch((err) => {
-					handleAxiosError(err);
-				});
+				.catch(handleAxiosError);
 		}
 	}
 
 	function addUser() {
-		axios.post("/api/user/location", {username: fieldVal, locationId: id}).then((response) => {
-			window.location.reload();
-		});
+		axios
+			.post("/api/location/add-user", {username: fieldVal, locationId: id})
+			.then((response) => {
+				window.location.reload();
+			})
+			.catch(handleAxiosError);
 	}
 
 	return (
