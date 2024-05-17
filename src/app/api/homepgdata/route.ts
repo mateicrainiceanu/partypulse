@@ -1,4 +1,4 @@
-import Location from "@/app/api/_lib/models/location";
+import Location from "../_lib/models/location"; 
 import { RowDataPacket } from "mysql2";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
