@@ -15,9 +15,12 @@ export async function GET(req: NextRequest) {
 
             const [resp] = await Events.getIdsForUser(user.id, false, true) as Array<RowDataPacket>
 
-            const event = await Events.getFullForId(resp[0].eventId)
+            if (resp.lenght > 0) {
+                const event = await Events.getFullForId(resp[0].eventId)
+                return NextResponse.json({ event, found: (resp[0] != undefined ? true : false) })
+            } else
+                return NextResponse.json({ found: false })
 
-            return NextResponse.json({ event , found: (resp[0] != undefined ? true : false) })
         } else {
             return new NextResponse("UserNotLoggedIn", { status: 403 })
         }
