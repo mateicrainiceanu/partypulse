@@ -55,21 +55,20 @@ function UserProvider({children}: {children: ReactNode}) {
 
 	async function getUserData(mandatory: boolean) {
 		setLoading(true);
-
-		await axios
-			.get("/api/user")
-			.then((response) => {
-				setUser({...(response as AxiosResponse).data, logged: true});
-				setTried(true);
-			})
-			.catch((error) => {
-				setTried(true);
-				if (mandatory) {
-					handleAxiosError(error);
-					window.location.replace("/login");
-				}
-				return;
-			});
+		// await axios
+		// 	.get("/api/user")
+		// 	.then((response) => {
+		// 		setUser({...(response as AxiosResponse).data, logged: true});
+		// 		setTried(true);
+		// 	})
+		// 	.catch((error) => {
+		// 		setTried(true);
+		// 		if (mandatory) {
+		// 			handleAxiosError(error);
+		// 			window.location.replace("/login");
+		// 		}
+		// 		return;
+		// 	});
 		setLoading(false);
 	}
 

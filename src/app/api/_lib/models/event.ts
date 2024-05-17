@@ -88,17 +88,16 @@ class Events {
             return null
     }
 
-    static async getFullForLocation(locId: number, mainUsrId: number) {
+    static async getFullForLocation(locId: number, mainUsrId?: number) {
         const location = (await Location.getFullLocation(locId, mainUsrId))
-        
-        const [events] = await db.execute(`SELECT id FROM events WHERE locationId = ${locId}; `) as any
+
+        const [events] = await db.execute(`SELECT id FROM events WHERE locationId = ${locId} ORDER BY status ASC, dateStart ASC ; `) as any
 
         const data = events.map(async (e: { id: number }) => {
             return await Events.getFullForId(e.id, mainUsrId, true, location)
         })
 
         return { location, events: await Promise.all(data) }
-
     }
 
     // static async getEventIdsForUser(id: number, onlyManaged:boolean) {

@@ -1,5 +1,5 @@
 "use client";
-import FormElement from "@/app/components";
+import FormElement from "@/app/components/FormElement";
 import Link from "next/link";
 import React, {useContext, useState} from "react";
 import axios from "axios";

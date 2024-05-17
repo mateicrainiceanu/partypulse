@@ -5,15 +5,16 @@ import axios from "axios";
 import {IoMdCloseCircle} from "react-icons/io";
 import FormBtn from "@/app/components/FormBtn";
 import {AlertContext} from "@/app/AlertContext";
+import {FullEvent} from "@/types";
 
-function MSuggestions({eventId}: {eventId: number}) {
+function MSuggestions({eventId, setEvent}: {eventId: number; setEvent: (event: FullEvent) => void}) {
 	const [search, setSearch] = useState("");
 
 	const [results, setResults] = useState([]);
 
 	const [suggest, setSuggest] = useState(null);
 
-	const {handleAxiosError} = useContext(AlertContext);
+	const {handleAxiosError, handleError} = useContext(AlertContext);
 
 	function updateResults(q: string) {
 		axios
@@ -35,11 +36,11 @@ function MSuggestions({eventId}: {eventId: number}) {
 			.post("/api/user/request", {song: suggest})
 			.then((res) => {
 				///handle succes
+				setEvent(res.data);
+				handleError("Sent to DJ!", "success");
 				setSuggest(null);
 			})
-			.catch((err) => {
-				//handle fail
-			});
+			.catch(handleAxiosError);
 	}
 
 	return (

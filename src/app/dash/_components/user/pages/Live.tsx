@@ -4,6 +4,7 @@ import axios from "axios";
 import LiveView from "./LiveComponents/LiveView";
 import FormBtn from "@/app/components/FormBtn";
 import {AlertContext} from "@/app/AlertContext";
+import {FullEvent} from "@/types";
 
 function Live() {
 	const [found, setFound] = useState(null);
@@ -57,7 +58,7 @@ function Live() {
 					)}
 					{event.status == 1 && (
 						<div>
-							<LiveView event={event} />
+							<LiveView event={event} setEvent={setEvent as (event: FullEvent) => void} />
 						</div>
 					)}
 					{event.status == 2 && (

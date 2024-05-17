@@ -108,7 +108,9 @@ class Location {
                 }
             })
             return { ...location, userHasRightToManage, liked }
-        } else { return null }
+        } else if (locations.length)
+            return locations[0];
+        else return null
     }
 
     static async getUsersPermission(locid?: number, uid?: number) {
@@ -136,7 +138,7 @@ class Location {
         return db.execute(`INSERT INTO codes (usedFor, itemId, code) VALUES('location' , ${locid}, '${code}');`)
     }
 
-    static async getLocationsForUser(uid:number){
+    static async getLocationsForUser(uid: number) {
         let [rels] = await db.execute(`SELECT * FROM users_locaitons WHERE userId = ${uid}`)
     }
 

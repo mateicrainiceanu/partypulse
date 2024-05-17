@@ -8,9 +8,6 @@ import { RowDataPacket } from "mysql2";
 import { cookies } from "next/headers";
 import { signtoken } from "../../_lib/token";
 
-console.log(process.env.SPOTIFY_CLIENT_SECRET);
-
-
 export const authOptions = {
     providers: [
         Spotify({

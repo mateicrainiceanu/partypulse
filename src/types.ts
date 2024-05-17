@@ -27,4 +27,6 @@ export interface FullEvent {
     there: boolean;
     coming: boolean;
     liked: boolean;
+    genreVote: number;
+    msuggestions: number;
 } 
