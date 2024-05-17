@@ -2,9 +2,9 @@
 import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import LocationSmView from "@/app/dash/_components/LocationSmView";
-import FormElement from "@/components/FormElement";
-import FormBtn from "@/components/FormBtn";
-import Map from "@/components/Map";
+import FormElement from "@/app/components/FormElement";
+import FormBtn from "@/app/components/FormBtn";
+import Map from "@/app/components/Map";
 import {LoadingContext} from "@/app/LoadingContext";
 import AddUser from "./AddUser";
 import EditUsers from "./EditUsers";

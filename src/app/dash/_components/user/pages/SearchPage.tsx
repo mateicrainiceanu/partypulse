@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import FormElement from "@/components/FormElement";
+import FormElement from "@/app/components/FormElement";
 import {FormControl, Select, MenuItem, InputLabel} from "@mui/material";
 import Users from "./SearchPageComp/Users";
 import axios from "axios";

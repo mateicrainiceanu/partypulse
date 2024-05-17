@@ -5,6 +5,7 @@ import axios, {AxiosResponse} from "axios";
 import {LoadingContext} from "./LoadingContext";
 import {getCookie} from "cookies-next";
 import {AlertContext} from "./AlertContext";
+import {useSession} from "next-auth/react";
 interface IUser {
 	id: number;
 	fname: string;
@@ -31,7 +32,13 @@ function UserProvider({children}: {children: ReactNode}) {
 	const setLoading = useContext(LoadingContext);
 	const {handleAxiosError} = useContext(AlertContext);
 
+	const {data: session, status} = useSession();
+
 	useEffect(() => {
+
+		// if (status !== "authenticated") {
+		// 	window.location.replace("login");
+		// }
 		const startUser = {
 			id: Number(getCookie("userId")) || 0,
 			fname: getCookie("fname") || "",

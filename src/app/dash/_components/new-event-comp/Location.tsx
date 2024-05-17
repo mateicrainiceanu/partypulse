@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Switch, Autocomplete, TextField} from "@mui/material";
 import axios from "axios";
-import FormElement from "@/components/FormElement";
+import FormElement from "@/app/components/FormElement";
 
 export function Location({eventData, setEventData}: any) {
 	const [locationSearch, setLocationSearch] = useState("");

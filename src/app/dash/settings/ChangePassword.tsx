@@ -1,7 +1,7 @@
 "use client";
 import React, {MouseEventHandler, useContext, useState} from "react";
-import FormElement from "@/components/FormElement";
-import FormBtn from "@/components/FormBtn";
+import FormElement from "@/app/components/FormElement";
+import FormBtn from "@/app/components/FormBtn";
 import axios from "axios";
 import {AlertContext} from "@/app/AlertContext";
 

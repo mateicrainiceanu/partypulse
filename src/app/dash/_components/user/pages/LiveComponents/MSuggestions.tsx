@@ -1,10 +1,10 @@
 import React, {useContext, useState} from "react";
-import FormElement from "@/components/FormElement";
-import SongPreview, {Song, SongLgPreview} from "@/components/SongPreview";
+import FormElement from "@/app/components/FormElement";
+import SongPreview, {Song, SongLgPreview} from "@/app/components/SongPreview";
 import axios from "axios";
 import {IoMdCloseCircle} from "react-icons/io";
-import FormBtn from "@/components/FormBtn";
-import { AlertContext } from "@/app/AlertContext";
+import FormBtn from "@/app/components/FormBtn";
+import {AlertContext} from "@/app/AlertContext";
 
 function MSuggestions({eventId}: {eventId: number}) {
 	const [search, setSearch] = useState("");

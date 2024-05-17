@@ -3,10 +3,10 @@
 import React from "react";
 import {useContext} from "react";
 import {UserContext} from "@/app/UserContext";
-import FormBtn from "@/components/FormBtn";
+import FormBtn from "@/app/components/FormBtn";
 import axios from "axios";
 import {LoadingContext} from "@/app/LoadingContext";
-import { AlertContext } from "@/app/AlertContext";
+import {AlertContext} from "@/app/AlertContext";
 
 function BecomeAnEm() {
 	const {user} = useContext(UserContext);

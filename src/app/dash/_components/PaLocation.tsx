@@ -1,12 +1,12 @@
-import FormBtn from "@/components/FormBtn";
+import FormBtn from "@/app/components/FormBtn";
 import React, {useContext, useEffect, useState} from "react";
 
 import NewLocation from "./NewLocation";
 import axios from "axios";
 import LocationSmView from "./LocationSmView";
-import FormElement from "@/components/FormElement";
+import FormElement from "@/app/components/FormElement";
 import {Pagination} from "@mui/material";
-import { AlertContext } from "@/app/AlertContext";
+import {AlertContext} from "@/app/AlertContext";
 
 function PaLocation({pa}: {pa: boolean}) {
 	const [newloc, setNewloc] = useState(false);
@@ -17,7 +17,7 @@ function PaLocation({pa}: {pa: boolean}) {
 
 	const [search, setSearch] = useState("");
 
-	const {handleAxiosError} = useContext(AlertContext)
+	const {handleAxiosError} = useContext(AlertContext);
 
 	useEffect(() => {
 		getData();

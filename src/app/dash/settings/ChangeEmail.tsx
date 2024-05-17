@@ -1,14 +1,12 @@
 "use client";
 import React, {useState} from "react";
-import FormElement from "@/components/FormElement";
-import FormBtn from "@/components/FormBtn";
+import FormElement from "@/app/components/FormElement";
+import FormBtn from "@/app/components/FormBtn";
 
 function ChangeEmail() {
 	const [email, setEmail] = useState("");
 
-    async function handle(e: any){
-
-    }
+	async function handle(e: any) {}
 
 	return (
 		<>
@@ -19,8 +17,9 @@ function ChangeEmail() {
 				value={email}
 				handleChange={(e) => {
 					setEmail(e.target.value);
-				}}/>
-            <FormBtn name="Get Verification Email" onClick={handle}/>
+				}}
+			/>
+			<FormBtn name="Get Verification Email" onClick={handle} />
 		</>
 	);
 }

@@ -1,14 +1,13 @@
 "use client";
 import React, {useState, useEffect, useContext} from "react";
 import NewEvent from "./NewEvent";
-import FormElement from "@/components/FormElement";
+import FormElement from "@/app/components/FormElement";
 import "./dash.css";
 import Events from "./_Events";
 
 function PaEvents() {
 	const [showAdd, setShowAdd] = useState(false);
 	const [search, setSearch] = useState("");
-
 
 	return (
 		<div>

@@ -1,5 +1,5 @@
 import React from "react";
-import DJView from "@/components/DJView";
+import DJView from "@/app/components/DJView";
 import MSuggestions from "./MSuggestions";
 import GenreVote from "./GenreVote";
 

@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from "react";
-import FormElement from "@/components/FormElement";
-import FormBtn from "@/components/FormBtn";
+import FormElement from "@/app/components/FormElement";
+import FormBtn from "@/app/components/FormBtn";
 import {UserContext} from "@/app/UserContext";
 import axios from "axios";
 import {LoadingContext} from "@/app/LoadingContext";

@@ -4,7 +4,7 @@ import {LoadingContext} from "@/app/LoadingContext";
 import axios from "axios";
 import {parseEventForView} from "@/app/dash/_lib/data-manager";
 import UpdateStauts from "@/app/dash/em/event/[id]/UpdateStauts";
-import StatusPointer from "@/components/StatusPointer";
+import StatusPointer from "@/app/components/StatusPointer";
 import Link from "next/link";
 import {Switch} from "@mui/material";
 import {BsCheckCircleFill} from "react-icons/bs";

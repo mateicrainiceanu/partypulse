@@ -6,6 +6,8 @@ import "./globals.css";
 import AlertProvider from "./AlertContext";
 import UserProvider from "./UserContext";
 import LoadingProvider from "./LoadingContext";
+import SessionProvider from "./components/SessionProvider";
+import {getServerSession} from "next-auth";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -14,17 +16,20 @@ export const metadata: Metadata = {
 	description: "The app for your party",
 };
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
+export default async function RootLayout({children}: {children: React.ReactNode}) {
+	const session = await getServerSession();
 	return (
 		<html lang="en">
 			<body className={inter.className}>
 				<LoadingProvider>
-					<AlertProvider>
-						<UserProvider>
-							<Navbar />
-							<main className="mx-2">{children}</main>
-						</UserProvider>
-					</AlertProvider>
+					<SessionProvider session={session}>
+						<AlertProvider>
+							<UserProvider>
+								<Navbar />
+								<main className="mx-2">{children}</main>
+							</UserProvider>
+						</AlertProvider>
+					</SessionProvider>
 				</LoadingProvider>
 			</body>
 		</html>

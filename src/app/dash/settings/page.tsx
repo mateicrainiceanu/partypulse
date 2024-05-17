@@ -2,7 +2,7 @@
 import {ChangePassword} from "./ChangePassword";
 import React from "react";
 import ChangeEmail from "./ChangeEmail";
-import FormBtn from "@/components/FormBtn";
+import FormBtn from "@/app/components/FormBtn";
 import Link from "next/link";
 import ChangeProfile from "./ChangeProfile";
 

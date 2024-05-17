@@ -2,9 +2,9 @@ import {DJSelector} from "./new-event-comp/DJSelector";
 import {Location} from "./new-event-comp/Location";
 import React, {useState} from "react";
 import {IoMdCloseCircle} from "react-icons/io";
-import FormElement from "@/components/FormElement";
+import FormElement from "@/app/components/FormElement";
 import {Switch} from "@mui/material";
-import FormBtn from "@/components/FormBtn";
+import FormBtn from "@/app/components/FormBtn";
 import axios from "axios";
 
 function NewEvent({close}: {close: any}) {

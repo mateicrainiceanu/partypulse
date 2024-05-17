@@ -4,7 +4,7 @@ import React from "react";
 import {useWebSocket} from "next-ws/client";
 import {useEffect, useState} from "react";
 import {getCookie} from "cookies-next";
-import SongPreview, {Song} from "@/components/SongPreview";
+import SongPreview, {Song} from "@/app/components/SongPreview";
 import {IoPlayForwardCircleSharp, IoPlayCircle} from "react-icons/io5";
 import {GoXCircleFill} from "react-icons/go";
 import {RiSortAsc, RiSortDesc} from "react-icons/ri";

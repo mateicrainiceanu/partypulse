@@ -1,7 +1,7 @@
 import React from "react";
 import {BsGeoAltFill} from "react-icons/bs";
 import {BsHousesFill} from "react-icons/bs";
-import Map from "@/components/Map";
+import Map from "@/app/components/Map";
 
 function LocationXlView({
 	data,

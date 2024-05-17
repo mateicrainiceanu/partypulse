@@ -1,7 +1,7 @@
 "use client";
 
 import React, {createContext, ReactNode, useState} from "react";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/app/components/Spinner";
 
 const LoadingContext = createContext(null as any);
 
@@ -23,4 +23,4 @@ function LoadingProvider({children}: IChildren) {
 }
 
 export default LoadingProvider;
-export {LoadingContext}
+export {LoadingContext};

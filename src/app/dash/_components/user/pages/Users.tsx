@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, {useContext, useEffect, useState} from "react";
 import UserSmView from "../../UserSmView";
-import FormElement from "@/components/FormElement";
+import FormElement from "@/app/components/FormElement";
 import {Pagination} from "@mui/material";
 import {AlertContext} from "@/app/AlertContext";
 

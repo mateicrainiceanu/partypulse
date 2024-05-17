@@ -43,6 +43,10 @@ function AlertProvider({children}: {children: ReactNode}) {
 		setAlert({severity: "error", prompt: err.response?.data, autoClose: true});
 	}
 
+	function handleError(text: string, tp: string) {
+		setAlert({prompt: text, severity: tp, autoClose: true});
+	}
+
 	function dialogToUser(dialog: AppDialog) {
 		let diaToSet = dialog;
 		if (!dialog.actionButtons) {
@@ -72,7 +76,7 @@ function AlertProvider({children}: {children: ReactNode}) {
 	}
 
 	return (
-		<AlertContext.Provider value={{handleAxiosError, dialogToUser}}>
+		<AlertContext.Provider value={{handleAxiosError, dialogToUser, handleError}}>
 			{alert != null && (
 				<div className="fixed md:right-10 md:bottom-10 right-5 bottom-5 z-50">
 					<Alert

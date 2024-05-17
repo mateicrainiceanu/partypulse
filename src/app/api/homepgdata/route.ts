@@ -8,7 +8,6 @@ import Events from "../_lib/models/event";
 import Relationship from "../_lib/models/relationship";
 
 export async function GET(req: NextRequest) {
-
     const url = new URL(req.url)
     const tok = url.searchParams.get("token")
     const token = cookies().get("token")?.value || tok

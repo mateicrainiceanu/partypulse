@@ -2,8 +2,8 @@ import React, {useContext, useEffect, useState} from "react";
 import ConfirmAttendance from "./LiveComponents/ConfirmAttendance";
 import axios from "axios";
 import LiveView from "./LiveComponents/LiveView";
-import FormBtn from "@/components/FormBtn";
-import { AlertContext } from "@/app/AlertContext";
+import FormBtn from "@/app/components/FormBtn";
+import {AlertContext} from "@/app/AlertContext";
 
 function Live() {
 	const [found, setFound] = useState(null);

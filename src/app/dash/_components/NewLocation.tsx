@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
-import FormElement from "@/components/FormElement";
-import FormBtn from "@/components/FormBtn";
-import Map from "@/components/Map";
+import FormElement from "@/app/components/FormElement";
+import FormBtn from "@/app/components/FormBtn";
+import Map from "@/app/components/Map";
 import axios from "axios";
 import {IoMdCloseCircle} from "react-icons/io";
 import {AlertContext} from "@/app/AlertContext";

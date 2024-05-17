@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import React from "react";
-import QrCode from "@/components/QrCode";
+import QrCode from "@/app/components/QrCode";
 
 function CodePreview({params}: {params: {code: string}}) {
 	return (
@@ -10,7 +10,7 @@ function CodePreview({params}: {params: {code: string}}) {
 			<div className="w-full px-auto">
 				<QrCode link={params.code} />
 			</div>
-            <p className="text-lg my-4 font-mono text-center">Join the party...</p>
+			<p className="text-lg my-4 font-mono text-center">Join the party...</p>
 		</div>
 	);
 }

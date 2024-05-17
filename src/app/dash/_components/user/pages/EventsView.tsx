@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import Events from "../../_Events";
-import FormElement from "@/components/FormElement";
+import FormElement from "@/app/components/FormElement";
 
 function EventsView() {
 	const [filter, setFilter] = useState("");
