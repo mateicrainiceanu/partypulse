@@ -32,7 +32,10 @@ function ManageEvent({params}: {params: {id: number}}) {
 	const {handleAxiosError} = useContext(AlertContext);
 
 	useEffect(() => {
-		setLoading(true);
+		setLoading(data.id == 0);
+	}, [data, setLoading]);
+
+	useEffect(() => {
 		axios
 			.get("/api/event/" + params.id)
 			.then((response) => {
@@ -41,10 +44,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 					setLoading(false);
 				}, 100);
 			})
-			.catch((err) => {
-				handleAxiosError(err);
-				setLoading(false);
-			});
+			.catch(handleAxiosError);
 	}, []);
 
 	return (

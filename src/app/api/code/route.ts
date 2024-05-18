@@ -23,9 +23,10 @@ export async function GET(req: NextRequest) {
 
             if (usedFor == "user") {
                 await User.addCode(user.id, code)
-                codes = (await User.getCodes(user.id) as Array<RowDataPacket>) [0] as Array<{}>                
+                codes = (await User.getCodes(user.id) as Array<RowDataPacket>)[0] as Array<{}>
             } else {
-                Location.addCode(Number(locid), code)
+                await Location.addCode(Number(locid), code)
+                codes = (await Location.getCodes(Number(locid)) as any) [0]
             }
 
             return NextResponse.json({ code, codes: codes })
@@ -43,7 +44,7 @@ export async function DELETE(req: NextRequest) {
     const url = new URL(req.url)
     const token = cookies().get("token")?.value || url.searchParams.get("token");
 
-    const codeId = url.searchParams.get("codeId");    
+    const codeId = url.searchParams.get("codeId");
 
     if (token && codeId) {
         const user = getUserFromToken(token)

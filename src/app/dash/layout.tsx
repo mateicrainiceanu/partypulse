@@ -14,9 +14,8 @@ export default function Layout({children}: {children: React.ReactNode}) {
 		if (user.id === 0 && tried) {
 			window.location.replace("/login");
 		} else {
-			setLoading(false);
+			setLoading(false)
 		}
-
 		//eslint-disable-next-line
 	}, [user, tried]);
 
