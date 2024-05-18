@@ -3,6 +3,9 @@ import axios from "axios";
 import {LoadingContext} from "@/app/LoadingContext";
 import {parseEventForView} from "@/app/dash/_lib/data-manager";
 import {AlertContext} from "@/app/AlertContext";
+import StatusPointer from "@/app/components/StatusPointer";
+import {FaPlayCircle, FaRegStopCircle} from "react-icons/fa";
+import {GrPowerReset} from "react-icons/gr";
 
 function UpdateStauts({data, setData}: {data: any; setData: any}) {
 	const setLoading = useContext(LoadingContext);
@@ -15,6 +18,8 @@ function UpdateStauts({data, setData}: {data: any; setData: any}) {
 		} else {
 			stat = 0;
 		}
+
+		console.log(e.target.id);
 
 		axios
 			.patch("/api/event/" + data.id + "/status", {status: stat, confirmedClose: force, endAssoc: endAssoc})
@@ -49,18 +54,24 @@ function UpdateStauts({data, setData}: {data: any; setData: any}) {
 	}
 	return (
 		<div>
-			<div className="max-w-lg mx-auto w-full flex justify-center my-5">
+			<div className="max-w-lg mx-auto w-full flex justify-center my-1 gap-2">
+				<div className="my-auto">
+					<StatusPointer status={data.status} lg />
+				</div>
 				<button
-					id="1"
+					id={"1"}
 					className={
-						"w-1/3 p-2 rounded-lg mx-1 " +
-						(data.status != 1 ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600 ")
+						"p-2 rounded-full m-1 text-2xl " +
+						(data.status != 1 ? "bg-green-600 hover:bg-green-700" : "bg-red-500 hover:bg-red-600 ")
 					}
 					onClick={handleStatusChange}>
-					{data.status == 1 ? "End" : "Start"} event
+					{data.status == 1 ? <FaRegStopCircle id={"1"} /> : <FaPlayCircle id={"1"} />}
 				</button>
-				<button id="2" className="w-1/3 p-2 rounded-lg mx-1 bg-gray-500 hover:bg-gray-600" onClick={handleStatusChange}>
-					Reset Status
+				<button
+					id="2"
+					className=" p-2 text-2xl rounded-full m-1 bg-gray-500 hover:bg-gray-600"
+					onClick={handleStatusChange}>
+					<GrPowerReset />
 				</button>
 			</div>
 		</div>

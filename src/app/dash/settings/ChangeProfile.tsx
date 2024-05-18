@@ -11,7 +11,7 @@ function ChangeProfile() {
 	const [data, setData] = useState({uname: "", donations: ""});
 	const [avalabile, setAvalabile] = useState(false);
 	const setLoading = useContext(LoadingContext);
-	const {handleAxiosError} = useContext(AlertContext);
+	const {handleAxiosError, handleError} = useContext(AlertContext);
 
 	useEffect(() => {
 		if (user.id != 0) {
@@ -37,7 +37,7 @@ function ChangeProfile() {
 		await axios
 			.post("/api/user/partner", {username: data.uname, donations: data.donations})
 			.then((data) => {
-				alert("ok");
+				handleError("Data was upadated.", "succes");
 				setUser(data.data);
 			})
 			.catch((error) => {
