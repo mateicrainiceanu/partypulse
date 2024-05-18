@@ -7,11 +7,17 @@ import {UserContext} from "../UserContext";
 import {LoadingContext} from "../LoadingContext";
 import {AlertContext} from "../AlertContext";
 import {deleteCookie, getCookie, setCookie} from "cookies-next";
+import {checkPassword} from "./MyPassChecker";
+import MyPassChecker from "./MyPassChecker";
+import { signIn } from "next-auth/react";
+import { BsGoogle } from "react-icons/bs";
+import { BsSpotify } from "react-icons/bs";
 
 function Register() {
 	const [formData, setFormData] = useState({fname: "", lname: "", uname: "", email: "", password: ""});
 	const [avalabile, setAvalabile] = useState(false);
 	const setLoading = useContext(LoadingContext);
+	const [passStrength, setPassStrength] = useState();
 
 	const {user, setUser} = useContext(UserContext);
 	const {handleAxiosError, dialogToUser} = useContext(AlertContext);
@@ -19,7 +25,6 @@ function Register() {
 	async function handleChange(e: any) {
 		if (e.target.name === "uname") {
 			const username = e.target.value.replaceAll(" ", "");
-			setFormData((prevData) => ({...prevData, uname: username}));
 			axios
 				.post("/api/user/username-check", {username: username})
 				.then((_) => {
@@ -28,12 +33,20 @@ function Register() {
 				.catch((_) => {
 					setAvalabile(false);
 				});
-		} else {
-			setFormData((prevData) => ({...prevData, [e.target.name]: e.target.value}));
 		}
+		setFormData((prevData) => ({...prevData, [e.target.name]: e.target.value}));
 	}
 
 	function handleRegister() {
+		if (checkPassword(formData.password).id < 1) {
+			dialogToUser({
+				title: "Password is to weak!",
+				content:
+					"In order to ensure our users safety, the passwords used on our platform should be at least at a medium safety-level. That means that the password should contain at least 8 uppercase and lowercase letters and symbols. If you struggle with password management, there always is the option to sing in with Google or Spotify.",
+			});
+			return;
+		}
+
 		if (!avalabile) {
 			dialogToUser({
 				title: "Unavalabile usename",
@@ -94,6 +107,7 @@ function Register() {
 								handleChange={handleChange}
 								value={formData.password}
 							/>
+							<MyPassChecker givenPass={formData.password} />
 						</div>
 					</div>
 				</div>
@@ -105,6 +119,30 @@ function Register() {
 						onClick={handleRegister}
 						className="rounded-md w-full my-4 bg-purple-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
 						Register
+					</button>
+					<button
+						onClick={() => {
+							signIn("google").then(() => {
+								window.location.replace("/dash");
+							});
+						}}
+						type="submit"
+						className="rounded-md w-full mb-2 px-3 py-2 text-sm bg-white hover:bg-gray-300 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+						<div className="flex gap-2 justify-center text-black">
+							<BsGoogle className="my-auto" /> <span className="my-auto">Sign up with Google</span>
+						</div>
+					</button>
+					<button
+						onClick={() => {
+							signIn("spotify").then((e) => {
+								window.location.replace("/dash");
+							});
+						}}
+						type="submit"
+						className="rounded-md w-full mb-2 px-3 py-2 text-sm bg-white hover:bg-gray-300 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+						<div className="flex gap-2 justify-center text-black">
+							<BsSpotify className="my-auto" /> <span className="my-auto">Sign up with Spotify</span>
+						</div>
 					</button>
 					<Link className="text-gray-300 hover:text-gray-100" href="/login">
 						{"Already have an account? Login!"}
