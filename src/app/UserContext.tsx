@@ -6,6 +6,7 @@ import {LoadingContext} from "./LoadingContext";
 import {getCookie} from "cookies-next";
 import {AlertContext} from "./AlertContext";
 import {useSession} from "next-auth/react";
+import { verify } from "crypto";
 interface IUser {
 	id: number;
 	fname: string;
@@ -42,6 +43,7 @@ function UserProvider({children}: {children: ReactNode}) {
 			token: getCookie("token") || "",
 			logged: getCookie("fname") != undefined ? true : false,
 			role: Number(getCookie("role")) || 0,
+			verified: Number(getCookie("verified")) || 0,
 			donations: getCookie("donations") || "",
 		};
 
@@ -50,6 +52,16 @@ function UserProvider({children}: {children: ReactNode}) {
 		if ((getCookie("userId") == undefined || getCookie("userId") == "") && getCookie("token") != "") {
 			getUserData(false);
 		}
+
+		if (
+			startUser.id != 0 &&
+			getCookie("verified") != "1" &&
+			!window.location.href.includes("/dash/verify") &&
+			window.location.href.includes("/dash")
+		)
+			window.location.replace("/dash/verify");
+
+
 		setLoading(false);
 	}, []);
 

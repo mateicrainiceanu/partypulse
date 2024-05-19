@@ -38,6 +38,8 @@ export async function POST(req: NextRequest) {
                 cookies().set("role", updatedUser.role)
                 cookies().set("email", updatedUser.email)
                 cookies().set("donations", updatedUser.donations)
+                cookies().set("verified", updatedUser.verified)
+
                 return NextResponse.json({ ...updatedUser, hash: "xxx" })
             } else {
                 return new NextResponse("Error", { status: 500 })

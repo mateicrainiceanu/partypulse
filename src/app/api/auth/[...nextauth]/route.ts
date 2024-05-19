@@ -33,7 +33,7 @@ export const authOptions = {
                     cookies().set("donations", user.donations)
                     return user as any
                 } else {
-                    const user = new User(display_name, "", email.split("@")[0], email, id)
+                    const user = new User(display_name, "", email.split("@")[0], email, id, 1)
                     const { insertId } = (await user.save() as RowDataPacket[])[0]
                     const token = signtoken(insertId, user.email)
                     cookies().set("token", token)
@@ -66,9 +66,11 @@ export const authOptions = {
                     cookies().set("role", user.role)
                     cookies().set("email", user.email)
                     cookies().set("donations", user.donations)
+                    cookies().set("verified", '1')
+
                     return user as any
                 } else {
-                    const user = new User(given_name, family_name, email.split("@")[0], email, at_hash)
+                    const user = new User(given_name, family_name, email.split("@")[0], email, at_hash, 1)
                     const { insertId } = (await user.save() as RowDataPacket[])[0]
                     const token = signtoken(insertId, user.email)
                     cookies().set("token", token)
@@ -79,6 +81,8 @@ export const authOptions = {
                     cookies().set("role", '0')
                     cookies().set("email", user.email)
                     cookies().set("donations", '')
+                    cookies().set("verified", '1')
+
                     return { id: insertId, role: 0, ...user, password: "xxx" }
                 }
             }

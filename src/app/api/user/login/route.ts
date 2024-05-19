@@ -26,6 +26,8 @@ export async function POST(req: NextRequest) {
             cookies().set("role", user.role)
             cookies().set("email", user.email)
             cookies().set("donations", user.donations)
+            cookies().set("verified", user.verified)
+
             return new NextResponse("ok")
         } else {
             return new NextResponse("Wrong Password", { status: 403 })

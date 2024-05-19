@@ -9,9 +9,9 @@ import {AlertContext} from "../AlertContext";
 import {deleteCookie, getCookie, setCookie} from "cookies-next";
 import {checkPassword} from "./MyPassChecker";
 import MyPassChecker from "./MyPassChecker";
-import { signIn } from "next-auth/react";
-import { BsGoogle } from "react-icons/bs";
-import { BsSpotify } from "react-icons/bs";
+import {signIn} from "next-auth/react";
+import {BsGoogle} from "react-icons/bs";
+import {BsSpotify} from "react-icons/bs";
 
 function Register() {
 	const [formData, setFormData] = useState({fname: "", lname: "", uname: "", email: "", password: ""});
@@ -64,10 +64,7 @@ function Register() {
 				const {newuser, id, token} = response.data;
 
 				setUser({...newuser, logged: true, id: id, token: token});
-				if (getCookie("prevUrl") != undefined && getCookie("prevUrl") != "")
-					window.location.replace(getCookie("prevUrl") || "/");
-				else window.location.replace("/dash");
-				deleteCookie("prevUrl");
+				window.location.replace("/dash/verify");
 			})
 			.catch((error) => {
 				handleAxiosError(error);

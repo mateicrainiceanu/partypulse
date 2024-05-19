@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import User from "../../_lib/models/user";
 import { RowDataPacket } from "mysql2";
 import { signtoken } from "../../_lib/token";
-import { cookies } from "next/headers"
+import { cookies } from "next/headers";
+import { sendMail } from "./sendregistermail"
+import random from "random-string-alphanumeric-generator"
 
 export async function POST(req: NextRequest) {
     const { fname, lname, uname, email, password } = await req.json()
@@ -14,12 +16,13 @@ export async function POST(req: NextRequest) {
         return new NextResponse("Already used this email adress", { status: 400 })
     }
 
-    const newuser = new User(fname, lname, uname, email, password);
+    const newuser = new User(fname, lname, uname, email, password, random.randomNumber(6));
     const [result] = (await newuser.save()) as Array<RowDataPacket>;
 
     if (!result.waringStatus) {
         const id = result.insertId;
-        const token = signtoken(id, email)
+        const token = signtoken(id, email);
+        sendMail(email, newuser.verified)
 
         cookies().set("token", token, { secure: false })
         cookies().set("userId", id)
@@ -27,6 +30,7 @@ export async function POST(req: NextRequest) {
         cookies().set("fname", newuser.fname)
         cookies().set("lname", newuser.lname)
         cookies().set("role", '0')
+        cookies().set("verified", '0')
         cookies().set("email", newuser.email)
         cookies().set("donations", '')
 

@@ -12,16 +12,18 @@ interface User {
     email: string,
     role?: number,
     password: string,
-    hash: string
+    hash: string,
+    verified: number
 }
 
 class User {
-    constructor(fname: string, lname: string, uname: string, email: string, password: string) {
+    constructor(fname: string, lname: string, uname: string, email: string, password: string, verified: number) {
         this.lname = lname;
         this.fname = fname;
         this.uname = uname;
         this.email = email;
         this.password = password;
+        this.verified = verified;
     }
 
     async save() {
@@ -31,14 +33,15 @@ class User {
 
         let sql = `
         INSERT INTO users (
-             fname, lname, uname, email, hash
+             fname, lname, uname, email, hash, verified
         ) 
         VALUES (
             '${this.fname}',
             '${this.lname}',
             '${this.uname}',
             '${this.email}',
-            '${hash}'
+            '${hash}',
+            ${this.verified}
         );`
 
         return db.execute(sql);
