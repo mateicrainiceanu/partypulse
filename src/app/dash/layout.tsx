@@ -2,19 +2,18 @@
 
 import {useContext, useEffect} from "react";
 import {UserContext} from "../UserContext";
-import {LoadingContext} from "../LoadingContext";
+import {LoadManContext} from "../LoadManContext";
 
 export default function Layout({children}: {children: React.ReactNode}) {
 	const {user, tried} = useContext(UserContext);
-	const setLoading = useContext(LoadingContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 
-	
 	useEffect(() => {
-		setLoading(true);
+		addLoadingItem();
 		if (user.id === 0 && tried) {
 			window.location.replace("/login");
 		} else {
-			setLoading(false)
+			finishedLoadingItem();
 		}
 		//eslint-disable-next-line
 	}, [user, tried]);

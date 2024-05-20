@@ -5,6 +5,7 @@ import axios, {AxiosError} from "axios";
 import {LoadingContext} from "./LoadingContext";
 import Link from "next/link";
 import {Alert, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions} from "@mui/material";
+import {LoadManContext} from "./LoadManContext";
 
 const AlertContext = createContext(null as any);
 
@@ -17,6 +18,8 @@ interface AppDialog {
 function AlertProvider({children}: {children: ReactNode}) {
 	const [alert, setAlert] = useState(null as any);
 	const [dialog, setDialog] = useState(null as any);
+
+	const {finishedLoadingItem} = useContext(LoadManContext);
 
 	useEffect(() => {
 		if (getCookie("c-permisson") != "ok") {
@@ -40,11 +43,13 @@ function AlertProvider({children}: {children: ReactNode}) {
 	}, [alert]);
 
 	function handleAxiosError(err: AxiosError) {
-		if(err.response?.status == 403){
-			setCookie("prevUrl", window.location.href)
-			window.location.replace("/login")
+		if (err.response?.status == 403) {
+			setCookie("prevUrl", window.location.href);
+			window.location.replace("/login");
 		}
-		
+
+		finishedLoadingItem();
+
 		setAlert({severity: "error", prompt: err.response?.data, autoClose: true});
 	}
 

@@ -3,6 +3,7 @@ import React from "react";
 import "./dash.css";
 import {UserContext} from "../../UserContext";
 import {LoadingContext} from "../../LoadingContext";
+import { LoadManContext } from "@/app/LoadManContext";
 
 interface IProps {
 	fselected: string;
@@ -30,7 +31,7 @@ function MiniBar({fselected}: IProps) {
 export default MiniBar;
 
 function SelectBtn(name: string, selected: string, setSelected: React.Dispatch<React.SetStateAction<string>>) {
-	const setLoading = useContext(LoadingContext);
+	const {addLoadingItem} = useContext(LoadManContext)
 
 	return (
 		<button
@@ -39,7 +40,7 @@ function SelectBtn(name: string, selected: string, setSelected: React.Dispatch<R
 				"mx-1 mt-2 py-2 px-4 rounded-t-lg bg-gray-500 hover:bg-gray-600 uppercase " + (selected === name ? "sel" : "")
 			}
 			onClick={(e: any) => {
-				setLoading(true);
+				addLoadingItem();
 				setSelected(e.target.name);
 				window.location.replace(name === "user" ? "/dash" : "/dash/" + name);
 			}}>

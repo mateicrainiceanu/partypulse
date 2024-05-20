@@ -6,12 +6,14 @@ import {AlertContext} from "@/app/AlertContext";
 import StatusPointer from "@/app/components/StatusPointer";
 import {FaPlayCircle, FaRegStopCircle} from "react-icons/fa";
 import {GrPowerReset} from "react-icons/gr";
+import { LoadManContext } from "@/app/LoadManContext";
 
 function UpdateStauts({data, setData}: {data: any; setData: any}) {
-	const setLoading = useContext(LoadingContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	const {handleAxiosError, dialogToUser} = useContext(AlertContext);
 
 	function handleStatusChange(e: any, force?: boolean, endAssoc?: boolean) {
+		addLoadingItem()
 		var stat: Number;
 		if (e.target.id == "1") {
 			stat = data.status != 1 ? 1 : 2;
@@ -19,13 +21,11 @@ function UpdateStauts({data, setData}: {data: any; setData: any}) {
 			stat = 0;
 		}
 
-		console.log(e.target.id);
-
 		axios
 			.patch("/api/event/" + data.id + "/status", {status: stat, confirmedClose: force, endAssoc: endAssoc})
 			.then((response) => {
 				setData((prev: any) => ({...prev, ...parseEventForView(response.data)}));
-				setLoading(false);
+				finishedLoadingItem()
 			})
 			.catch((err) => {
 				if (err.response.status === 400) {
@@ -48,8 +48,8 @@ function UpdateStauts({data, setData}: {data: any; setData: any}) {
 							},
 						],
 					});
+					finishedLoadingItem()
 				} else handleAxiosError(err);
-				setLoading(false);
 			});
 	}
 	return (

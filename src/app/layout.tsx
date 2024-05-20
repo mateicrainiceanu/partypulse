@@ -8,6 +8,7 @@ import UserProvider from "./UserContext";
 import LoadingProvider from "./LoadingContext";
 import SessionProvider from "./components/SessionProvider";
 import {getServerSession} from "next-auth";
+import LoadManProvider from "./LoadManContext";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -22,14 +23,16 @@ export default async function RootLayout({children}: {children: React.ReactNode}
 		<html lang="en">
 			<body className={inter.className}>
 				<LoadingProvider>
-					<SessionProvider session={session}>
-						<AlertProvider>
-							<UserProvider>
-								<Navbar />
-								<main className="mx-2">{children}</main>
-							</UserProvider>
-						</AlertProvider>
-					</SessionProvider>
+					<LoadManProvider>
+						<SessionProvider session={session}>
+							<AlertProvider>
+								<UserProvider>
+									<Navbar />
+									<main className="mx-2">{children}</main>
+								</UserProvider>
+							</AlertProvider>
+						</SessionProvider>
+					</LoadManProvider>
 				</LoadingProvider>
 			</body>
 		</html>

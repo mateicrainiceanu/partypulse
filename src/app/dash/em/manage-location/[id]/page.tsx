@@ -5,15 +5,15 @@ import LocationSmView from "@/app/dash/_components/LocationSmView";
 import FormElement from "@/app/components/FormElement";
 import FormBtn from "@/app/components/FormBtn";
 import Map from "@/app/components/Map";
-import {LoadingContext} from "@/app/LoadingContext";
 import AddUser from "./AddUser";
 import EditUsers from "./EditUsers";
 import {AlertContext} from "@/app/AlertContext";
+import { LoadManContext } from "@/app/LoadManContext";
 
 function ManageLocation({params}: {params: {id: string}}) {
 	const locationid = params.id;
-	const setLoading = useContext(LoadingContext);
-	const {handleAxiosError} = useContext(AlertContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
+	const {handleAxiosError, handleError} = useContext(AlertContext);
 
 	const [locationData, setLocationData] = useState({
 		id: 0,
@@ -30,8 +30,10 @@ function ManageLocation({params}: {params: {id: string}}) {
 	}, []);
 
 	async function getData() {
+		addLoadingItem();
 		await axios.get("/api/location/" + locationid).then((response) => {
 			setLocationData(response.data);
+			finishedLoadingItem();
 		});
 	}
 
@@ -41,7 +43,7 @@ function ManageLocation({params}: {params: {id: string}}) {
 				setLocationData((prev) => ({...prev, lat: position.coords.latitude, lon: position.coords.longitude}));
 			},
 			() => {
-				alert("There was an error retriveing your location!");
+				handleError("There was an error retriveing your location!", "error");
 			}
 		);
 	}
@@ -51,19 +53,16 @@ function ManageLocation({params}: {params: {id: string}}) {
 	}
 
 	async function handleSave() {
-		setLoading(true);
+		addLoadingItem();
 
 		await axios
 			.patch("/api/location", locationData)
 			.then((response) => {
-				setLoading(false);
-				alert("ok");
+				finishedLoadingItem();
 				window.location.replace("/dash/em");
+				handleError("ok", "success");
 			})
-			.catch((error) => {
-				setLoading(false);
-				handleAxiosError(error);
-			});
+			.catch(handleAxiosError);
 	}
 
 	return (
@@ -72,7 +71,7 @@ function ManageLocation({params}: {params: {id: string}}) {
 			<div className="max-w-lg mx-auto my-2">
 				<h2 className="text-lg font-bold">Preview</h2>
 				<LocationSmView
-					locationData={{id: locationData.id, name: locationData.name, adress: locationData.adress}}></LocationSmView>
+					locationData={locationData as any}></LocationSmView>
 			</div>
 			<div className="flex my-4 flex-wrap">
 				<h1 className="text-2xl font-mono font-bold text-center w-full">Edit data</h1>

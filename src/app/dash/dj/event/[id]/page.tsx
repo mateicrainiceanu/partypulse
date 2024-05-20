@@ -11,6 +11,7 @@ import {BsCheckCircleFill} from "react-icons/bs";
 import {UserContext} from "@/app/UserContext";
 import LiveEventUpdates from "./LiveEventUpdates";
 import {AlertContext} from "@/app/AlertContext";
+import { LoadManContext } from "@/app/LoadManContext";
 
 function DjView({params}: {params: {id: number}}) {
 	const [data, setData] = useState({
@@ -32,13 +33,13 @@ function DjView({params}: {params: {id: number}}) {
 	});
 	const [updated, setUpdated] = useState(true);
 
-	const setLoading = useContext(LoadingContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	const {handleAxiosError} = useContext(AlertContext);
 
 	const {user, setUser} = useContext(UserContext);
 
 	useEffect(() => {
-		setLoading(true);
+		addLoadingItem();
 		axios
 			.get("/api/event/" + params.id + "?isLive=true")
 			.then((response) => {
@@ -46,14 +47,9 @@ function DjView({params}: {params: {id: number}}) {
 					window.location.replace("/dash");
 				}
 				setData(parseEventForView(response.data));
-				setTimeout(() => {
-					setLoading(false);
-				}, 100);
+				finishedLoadingItem()
 			})
-			.catch((err) => {
-				handleAxiosError(err);
-				setLoading(false);
-			});
+			.catch(handleAxiosError);
 	}, []);
 
 	async function handleDonations(e: any) {

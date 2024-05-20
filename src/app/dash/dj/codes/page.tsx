@@ -4,34 +4,33 @@ import axios from "axios";
 import React, {useContext, useEffect, useState} from "react";
 import {CgAdd} from "react-icons/cg";
 import {CgRemove} from "react-icons/cg";
-import {BsQrCode} from "react-icons/bs";
 import {BiQr} from "react-icons/bi";
-
-import {useQRCode} from "next-qrcode";
 import {AlertContext} from "@/app/AlertContext";
+import { LoadManContext } from "@/app/LoadManContext";
 
 function Codes() {
 	const [codes, setCodes] = useState([]);
-	const {handleAxiosError} = useContext(AlertContext);
-
-	const {Canvas} = useQRCode();
+	const {handleAxiosError, handleError} = useContext(AlertContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext)
 
 	useEffect(() => {
+		addLoadingItem()
 		axios
 			.get("/api/user/partner/codes")
 			.then((res) => {
 				setCodes(res.data);
+				finishedLoadingItem()
 			})
-			.catch((err) => {
-				handleAxiosError(err);
-			});
+			.catch(handleAxiosError);
 	}, []);
 
 	function remove(id: number) {
+		addLoadingItem()
 		axios
 			.delete("/api/code" + "?codeId=" + id)
 			.then((res) => {
 				setCodes(res.data);
+				finishedLoadingItem()
 			})
 			.catch((err) => {
 				handleAxiosError(err);
@@ -39,14 +38,14 @@ function Codes() {
 	}
 
 	function newCode() {
+		addLoadingItem()
 		axios
 			.get("/api/code?usedFor=user")
 			.then((res) => {
 				setCodes(res.data.codes);
+				finishedLoadingItem()
 			})
-			.catch((err) => {
-				handleAxiosError(err);
-			});
+			.catch(handleAxiosError);
 	}
 
 	return (

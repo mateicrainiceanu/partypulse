@@ -5,12 +5,13 @@ import {UserContext} from "@/app/UserContext";
 import axios from "axios";
 import {LoadingContext} from "@/app/LoadingContext";
 import {AlertContext} from "@/app/AlertContext";
+import { LoadManContext } from "@/app/LoadManContext";
 
 function ChangeProfile() {
 	const {user, setUser, getUserData} = useContext(UserContext);
 	const [data, setData] = useState({uname: "", donations: ""});
 	const [avalabile, setAvalabile] = useState(false);
-	const setLoading = useContext(LoadingContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	const {handleAxiosError, handleError} = useContext(AlertContext);
 
 	useEffect(() => {
@@ -33,18 +34,15 @@ function ChangeProfile() {
 	}
 
 	async function handleSumbit(e: any) {
-		setLoading(true);
+		addLoadingItem();
 		await axios
 			.post("/api/user/partner", {username: data.uname, donations: data.donations})
 			.then((data) => {
 				handleError("Data was upadated.", "succes");
 				setUser(data.data);
+				finishedLoadingItem()
 			})
-			.catch((error) => {
-				handleAxiosError(error);
-			});
-
-		setLoading(false);
+			.catch(handleAxiosError);
 	}
 
 	return (

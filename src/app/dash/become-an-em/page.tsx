@@ -7,20 +7,21 @@ import FormBtn from "@/app/components/FormBtn";
 import axios from "axios";
 import {LoadingContext} from "@/app/LoadingContext";
 import {AlertContext} from "@/app/AlertContext";
+import {LoadManContext} from "@/app/LoadManContext";
 
 function BecomeAnEm() {
 	const {user} = useContext(UserContext);
-	const setLoading = useContext(LoadingContext);
-	const {handleAxiosError} = useContext(AlertContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
+	const {handleAxiosError, handleError} = useContext(AlertContext);
 
 	async function handleSubmit() {
-		setLoading(true);
+		addLoadingItem();
 		await axios
 			.post("/api/user/partner", {ptype: 1})
 			.then((data) => {
 				//implementation of ok
 				window.location.replace("/dash");
-				alert("ok");
+				handleError("Congratulations!", "success");
 			})
 			.catch((error) => {
 				handleAxiosError(error);

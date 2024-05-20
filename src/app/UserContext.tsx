@@ -6,7 +6,8 @@ import {LoadingContext} from "./LoadingContext";
 import {getCookie} from "cookies-next";
 import {AlertContext} from "./AlertContext";
 import {useSession} from "next-auth/react";
-import { verify } from "crypto";
+import {verify} from "crypto";
+import LoadManProvider, {LoadManContext} from "./LoadManContext";
 interface IUser {
 	id: number;
 	fname: string;
@@ -29,11 +30,12 @@ function UserProvider({children}: {children: ReactNode}) {
 		donations: "",
 	});
 	const [tried, setTried] = useState(false);
-
-	const setLoading = useContext(LoadingContext);
 	const {handleAxiosError} = useContext(AlertContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
+	//addLoadingItem();
 
 	useEffect(() => {
+		addLoadingItem()
 		const startUser = {
 			id: Number(getCookie("userId")) || 0,
 			fname: getCookie("fname") || "",
@@ -61,12 +63,11 @@ function UserProvider({children}: {children: ReactNode}) {
 		)
 			window.location.replace("/dash/verify");
 
-
-		setLoading(false);
+		finishedLoadingItem();
 	}, []);
 
 	async function getUserData(mandatory: boolean) {
-		setLoading(true);
+		//addLoadingItem();
 		// await axios
 		// 	.get("/api/user")
 		// 	.then((response) => {
@@ -81,7 +82,7 @@ function UserProvider({children}: {children: ReactNode}) {
 		// 		}
 		// 		return;
 		// 	});
-		setLoading(false);
+		//finishedLoadingItem();
 	}
 
 	return (

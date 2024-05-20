@@ -3,9 +3,9 @@
 import axios from "axios";
 import React, {useContext, useEffect, useState} from "react";
 import EventView from "./EventView";
-import {LoadingContext} from "@/app/LoadingContext";
 import {Pagination} from "@mui/material";
-import { AlertContext } from "@/app/AlertContext";
+import {AlertContext} from "@/app/AlertContext";
+import {LoadManContext} from "@/app/LoadManContext";
 
 function Events({
 	givenEvents,
@@ -29,24 +29,19 @@ function Events({
 	const [events, setEvents] = useState(givenEvents || []);
 	const [pg, setPg] = useState(1);
 	const showOnPg = 3;
-	const setLoading = useContext(LoadingContext);
-	const {handleAxiosError} = useContext(AlertContext)
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
+	const {handleAxiosError} = useContext(AlertContext);
 
 	useEffect(() => {
 		if (!givenEvents) {
-			setLoading(true);
+			addLoadingItem();
 			axios
 				.get("/api/event" + (onlyManaged ? "?onlyManaged=true" : ""))
 				.then((response) => {
-					setEvents(response.data);					
-					setTimeout(() => {
-						setLoading(false);
-					}, 100);
+					setEvents(response.data);
+					finishedLoadingItem();
 				})
-				.catch((error) => {
-					handleAxiosError(error)
-					setLoading(false);
-				});
+				.catch(handleAxiosError);
 		}
 	}, []);
 

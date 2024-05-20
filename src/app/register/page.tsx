@@ -12,11 +12,12 @@ import MyPassChecker from "./MyPassChecker";
 import {signIn} from "next-auth/react";
 import {BsGoogle} from "react-icons/bs";
 import {BsSpotify} from "react-icons/bs";
+import {LoadManContext} from "../LoadManContext";
 
 function Register() {
 	const [formData, setFormData] = useState({fname: "", lname: "", uname: "", email: "", password: ""});
 	const [avalabile, setAvalabile] = useState(false);
-	const setLoading = useContext(LoadingContext);
+	const {addLoadingItem} = useContext(LoadManContext);
 	const [passStrength, setPassStrength] = useState();
 
 	const {user, setUser} = useContext(UserContext);
@@ -56,19 +57,16 @@ function Register() {
 			return;
 		}
 
-		setLoading(true);
+		addLoadingItem();
 
 		axios
 			.post("/api/user/register", formData)
 			.then((response) => {
 				const {newuser, id, token} = response.data;
-
 				setUser({...newuser, logged: true, id: id, token: token});
 				window.location.replace("/dash/verify");
 			})
-			.catch((error) => {
-				handleAxiosError(error);
-			});
+			.catch(handleAxiosError);
 	}
 
 	return (

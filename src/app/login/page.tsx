@@ -8,10 +8,11 @@ import {AlertContext} from "../AlertContext";
 import {signIn} from "next-auth/react";
 import {BsGoogle, BsSpotify} from "react-icons/bs";
 import {deleteCookie, getCookie} from "cookies-next";
+import { LoadManContext } from "../LoadManContext";
 
 function Login() {
 	const [formData, setFormData] = useState({email: "", password: ""});
-	const setLoading = useContext(LoadingContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	const {handleAxiosError} = useContext(AlertContext);
 
 	function handleChange(e: any) {
@@ -19,21 +20,17 @@ function Login() {
 	}
 
 	async function handeSubmit() {
-		setLoading(true);
+		addLoadingItem();
 
 		await axios
 			.post("/api/user/login", formData)
 			.then((response) => {
 				if (getCookie("prevUrl") != undefined && getCookie("prevUrl") != "")
-					window.location.replace(getCookie("prevUrl") || "/");
+					window.location.replace(getCookie("prevUrl") || "/dash");
 				else window.location.replace("/dash");
 				deleteCookie("prevUrl");
 			})
-			.catch((error) => {
-				handleAxiosError(error);
-				setLoading(false);
-			});
-		setLoading(false);
+			.catch(handleAxiosError);
 	}
 
 	return (

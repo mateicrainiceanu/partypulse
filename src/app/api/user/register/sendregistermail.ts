@@ -59,7 +59,7 @@ function getEmailHTML(code: number) {
       <h1>Welcome to Partypulse!</h1>
       <p>Your verificarion code is: </p>
       <p class="code">${code}</p>
-      <a href="http://localhost:3000/register/verify/${code}">Or click here to verify your account</a>
+      <a href="http://localhost:3000/dash/verify/${code}">Or click here to verify your account</a>
     </div>
 
     `;

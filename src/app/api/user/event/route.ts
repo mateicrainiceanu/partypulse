@@ -14,8 +14,9 @@ export async function GET(req: NextRequest) {
         if (user.id) {
 
             const [resp] = await Events.getIdsForUser(user.id, false, true) as Array<RowDataPacket>
-
-            if (resp.lenght > 0) {
+            console.log();
+            
+            if (resp.length > 0) {
                 const event = await Events.getFullForId(resp[0].eventId)
                 return NextResponse.json({ event, found: (resp[0] != undefined ? true : false) })
             } else

@@ -12,6 +12,7 @@ import Link from "next/link";
 import {AlertContext} from "@/app/AlertContext";
 import {IoSettings} from "react-icons/io5";
 import {EventReactions} from "@/app/dash/_components/EventView";
+import {LoadManContext} from "@/app/LoadManContext";
 
 function ManageEvent({params}: {params: {id: number}}) {
 	const [data, setData] = useState({
@@ -35,23 +36,18 @@ function ManageEvent({params}: {params: {id: number}}) {
 	const [tliked, setTLiked] = useState(data.liked);
 	const [tcoming, setTComing] = useState(data.coming);
 
-	const setLoading = useContext(LoadingContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	const {handleAxiosError} = useContext(AlertContext);
 
 	useEffect(() => {
-		setLoading(data.id == 0);
-	}, [data, setLoading]);
-
-	useEffect(() => {
+		addLoadingItem();
 		axios
 			.get("/api/event/" + params.id)
 			.then((response) => {
 				setData(parseEventForView(response.data));
 				setTComing(response.data.coming);
 				setTLiked(response.data.liked);
-				setTimeout(() => {
-					setLoading(false);
-				}, 100);
+				finishedLoadingItem();
 			})
 			.catch(handleAxiosError);
 	}, []);
@@ -87,7 +83,9 @@ function ManageEvent({params}: {params: {id: number}}) {
 			<LocationXlView data={data.locationData as any}></LocationXlView>
 			<div className="mx-auto max-w-xl my-2"></div>
 			<DJView djs={data.djs}></DJView>
-			<div className="my-2 bg-gray-700 rounded-lg">{EventReactions(data.id, reacted, tcoming, setTComing, tliked, setTLiked)}</div>
+			<div className="my-2 bg-gray-700 rounded-lg">
+				{EventReactions(data.id, reacted, tcoming, setTComing, tliked, setTLiked)}
+			</div>
 		</div>
 	);
 }

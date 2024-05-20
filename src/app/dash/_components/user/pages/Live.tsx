@@ -32,6 +32,8 @@ function Live() {
 		axios
 			.get("/api/user/event")
 			.then((res) => {
+				console.log(res.data);
+
 				setEvent(res.data.event);
 				setFound(res.data.found);
 			})

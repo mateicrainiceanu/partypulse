@@ -11,6 +11,7 @@ import FormBtn from "@/app/components/FormBtn";
 import {parseEventForView} from "@/app/dash/_lib/data-manager";
 import UpdateStauts from "./UpdateStauts";
 import {AlertContext} from "@/app/AlertContext";
+import {LoadManContext} from "@/app/LoadManContext";
 
 function ManageEvent({params}: {params: {id: number}}) {
 	const [data, setData] = useState({
@@ -32,23 +33,18 @@ function ManageEvent({params}: {params: {id: number}}) {
 
 	const [edit, setEdit] = useState(false);
 
-	const setLoading = useContext(LoadingContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	const handleAxiosError = useContext(AlertContext);
 
 	useEffect(() => {
-		setLoading(true);
+		addLoadingItem();
 		axios
 			.get("/api/event/" + params.id)
 			.then((response) => {
 				setData(parseEventForView(response.data));
-				setTimeout(() => {
-					setLoading(false);
-				}, 100);
+				finishedLoadingItem();
 			})
-			.catch((err) => {
-				handleAxiosError(err);
-				setLoading(false);
-			});
+			.catch(handleAxiosError);
 	}, []);
 
 	function handleChange(e: any) {
@@ -56,17 +52,14 @@ function ManageEvent({params}: {params: {id: number}}) {
 	}
 
 	function handleSave() {
-		setLoading(true);
+		addLoadingItem();
 		axios
 			.patch("/api/event", data)
 			.then((response) => {
 				setData(parseEventForView(response.data));
-				setLoading(false);
+				finishedLoadingItem();
 			})
-			.catch((err) => {
-				handleAxiosError(err);
-				setLoading(false);
-			});
+			.catch(handleAxiosError);
 	}
 
 	return (

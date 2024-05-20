@@ -1,28 +1,26 @@
 "use client";
-import { AlertContext } from "@/app/AlertContext";
+import {AlertContext} from "@/app/AlertContext";
 import {LoadingContext} from "@/app/LoadingContext";
+import {LoadManContext} from "@/app/LoadManContext";
 import axios from "axios";
 import React, {useContext, useEffect} from "react";
 
 function QRCodeConfim({params}: {params: {code: string}}) {
-	const setLoading = useContext(LoadingContext);
-	const {handleAxiosError} = useContext(AlertContext)
-
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
+	const {handleAxiosError} = useContext(AlertContext);
 	useEffect(() => {
-		setLoading(true);
+		addLoadingItem();
 		axios
 			.post("/api/code/verify", {code: params.code})
 			.then((res) => {
 				if (res.data.found == false) {
-					setLoading(false);
+					finishedLoadingItem();
 				} else {
 					localStorage.setItem("view", "live");
 					window.location.replace("/dash");
 				}
 			})
-			.catch((err) => {
-				handleAxiosError(err)
-			});
+			.catch(handleAxiosError);
 	}, []);
 
 	return (

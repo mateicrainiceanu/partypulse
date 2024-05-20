@@ -6,13 +6,14 @@ import FormBtn from "@/app/components/FormBtn";
 import axios from "axios";
 import {LoadingContext} from "@/app/LoadingContext";
 import {AlertContext} from "@/app/AlertContext";
+import { LoadManContext } from "@/app/LoadManContext";
 
 function BecomeDJ() {
 	const {user} = useContext(UserContext);
 	const [username, setUsername] = useState("");
 	const [avalabile, setAvalabile] = useState(false);
-	const setLoading = useContext(LoadingContext);
-	const {handleAxiosError} = useContext(AlertContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
+	const {handleAxiosError, handleError} = useContext(AlertContext);
 
 	async function handleChange(e: any) {
 		const newuname = e.target!.value.replaceAll(" ", "");
@@ -34,18 +35,15 @@ function BecomeDJ() {
 			alert("username not avalabile");
 			return;
 		}
-		setLoading(true);
+		addLoadingItem();
 
 		await axios
 			.post("/api/user/partner", {username: "dj_" + username, ptype: 2})
-			.then((data) => {
-				//implementation of ok
+			.then(() => {
 				window.location.replace("/dash");
-				alert("ok");
+				handleError("Updated data", "success");
 			})
-			.catch((error) => {
-				handleAxiosError(error);
-			});
+			.catch(handleAxiosError);
 	}
 
 	return (
