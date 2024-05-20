@@ -5,6 +5,7 @@ import LiveView from "./LiveComponents/LiveView";
 import FormBtn from "@/app/components/FormBtn";
 import {AlertContext} from "@/app/AlertContext";
 import {FullEvent} from "@/types";
+import {LoadManContext} from "@/app/LoadManContext";
 
 function Live() {
 	const [found, setFound] = useState(null);
@@ -23,23 +24,22 @@ function Live() {
 		genreVote: 0,
 	});
 	const {handleAxiosError} = useContext(AlertContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 
 	useEffect(() => {
 		getData();
 	}, []);
 
 	function getData() {
+		addLoadingItem();
 		axios
 			.get("/api/user/event")
 			.then((res) => {
-				console.log(res.data);
-
 				setEvent(res.data.event);
 				setFound(res.data.found);
+				finishedLoadingItem();
 			})
-			.catch((err) => {
-				handleAxiosError(err);
-			});
+			.catch(handleAxiosError);
 	}
 
 	return (

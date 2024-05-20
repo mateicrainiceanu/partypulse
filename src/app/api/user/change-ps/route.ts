@@ -17,7 +17,7 @@ export async function POST(req: NextRequest){
         if (user.id) {
             const salt = await bcrypt.genSalt(saltRounds);
             const hash = await bcrypt.hash(newPassword, salt);
-            User.update(user.id, "hash", hash)
+            await User.update(user.id, "hash", hash)
             return new NextResponse("OK", { status: 200 })
 
         } else {

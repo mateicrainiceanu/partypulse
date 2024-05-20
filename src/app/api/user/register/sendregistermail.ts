@@ -2,36 +2,37 @@ import nodemailer from "nodemailer";
 
 export function sendMail(email: string, emailToken: number) {
 
-    const transporter = nodemailer.createTransport({
-        service: process.env.MAIL_HOST,
-        name: process.env.MAIL_HOST,
-        host: process.env.MAIL_HOST,
-        port: process.env.MAIL_PORT,
-        secure: true,
-        auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS
-        }, debug: true
-    } as any)
+  const transporter = nodemailer.createTransport({
+    service: process.env.MAIL_HOST,
+    name: process.env.MAIL_HOST,
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    secure: true,
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS
+    }, debug: true
+  } as any)
 
-    const mailOptions = {
-        from: `"Partypulse" <${process.env.MAIL_SENDERADRESS}>`,
-        to: email,
-        subject: "Mail Verification for Partypulse",
-        html: getEmailHTML(emailToken)
+  const mailOptions = {
+    from: `"Partypulse" <${process.env.MAIL_SENDERADRESS}>`,
+    to: email,
+    subject: "Mail Verification for Partypulse",
+    html: getEmailHTML(emailToken)
+  }
+
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(info);
     }
-
-    transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(info);
-        }
-    })
+  })
 }
 
 function getEmailHTML(code: number) {
-    return `
+  return `
+  <div>
        <style>
     .all{
       padding: 2%;
@@ -59,8 +60,8 @@ function getEmailHTML(code: number) {
       <h1>Welcome to Partypulse!</h1>
       <p>Your verificarion code is: </p>
       <p class="code">${code}</p>
-      <a href="http://localhost:3000/dash/verify/${code}">Or click here to verify your account</a>
-    </div>
+      <a href="http://${window.location.host}/dash/verify/${code}">Or click here to verify your account</a>
+    </div></div>
 
     `;
 }

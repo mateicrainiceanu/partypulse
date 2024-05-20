@@ -10,7 +10,7 @@ function Locations({locations}: {locations: Array<{name: string; id: number; adr
 		<div>
 			<div className="max-w-xl mx-auto m-2">
 				{locations.slice((pg - 1) * resPerPage, pg * resPerPage).map((location) => (
-					<LocationSmView key={location.id} locationData={location} showManage={location.userHasRightToManage} />
+					<LocationSmView key={location.id} locationData={location as any} showManage={location.userHasRightToManage} />
 				))}
 				{locations.length > resPerPage && (
 					<div className="flex my-2 justify-center">

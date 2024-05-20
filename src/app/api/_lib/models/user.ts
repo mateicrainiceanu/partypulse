@@ -170,12 +170,17 @@ class User {
         }
 
         if (evId != 0) {
+            await User.removeThereConf(uid)
             await User.addEventRelation(uid, evId, 3) as Array<RowDataPacket>
             return Events.getFullForId(evId, uid)
         } else {
             return null;
         }
 
+    }
+
+    static removeThereConf(uid: number) {
+        return db.execute(`DELETE FROM users_events WHERE userId = ${uid} AND reltype = 3; `)
     }
 
     static getCodes(uid: number) {

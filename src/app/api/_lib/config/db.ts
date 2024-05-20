@@ -10,10 +10,10 @@ const pool = mysql.createPool({
         'DATETIME'
     ]
 })
-class Database {
+class db {
     constructor() { }
 
-    async execute(sql: string) {
+    static async execute(sql: string) {
         const pool = mysql.createPool({
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
@@ -32,7 +32,5 @@ class Database {
         return answ;
     }
 }
-
-const db = new Database()
 
 export { db };
