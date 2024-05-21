@@ -2,6 +2,7 @@ import { RowDataPacket } from "mysql2";
 import { db } from "../config/db";
 import Location from "./location";
 import User from "./user";
+import UserNotification from "./notifications";
 interface Events {
     id?: number;
     name: string;
@@ -238,8 +239,15 @@ class Events {
         return db.execute(`SELECT id FROM events WHERE name LIKE '%${q}%' AND privateev = 0;`)
     }
 
-    static reaction(uid: number, eid: number, type: number, value: boolean) {
+    static async reaction(uid: number, eid: number, type: number, value: boolean) {
         if (value) {
+            const [u]: { userId: number, reltype: number }[][] = await db.execute(`SELECT userId, reltype FROM users_events WHERE eventId = ${eid};`)
+            u.map(u => {
+                if ((type == 1 || type == 2) && (u.reltype == 1 || u.reltype == 2))
+                    new UserNotification({ forUserId: u.userId, fromUserId: uid, nottype: "event-manager-add", text: "can now manage your event.", itemType: "event", itemId: eid }).save()
+                else if ((type == 4 || type == 5) && (u.reltype == 1 || u.reltype == 2))
+                    new UserNotification({ forUserId: u.userId, fromUserId: uid, nottype: "event-reaction", text: (type == 4 ? " is coming to" : " liked") + " your event.", itemType: "event", itemId: eid }).save()
+            })
             return db.execute(`INSERT INTO users_events (userId, eventId, reltype) VALUES (${uid}, ${eid}, ${type});`) as Promise<Array<RowDataPacket>>
         } else {
             return db.execute(`DELETE FROM users_events WHERE userId = ${uid} AND eventId = ${eid} AND reltype = ${type};`) as Promise<Array<RowDataPacket>>

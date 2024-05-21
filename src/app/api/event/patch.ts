@@ -15,6 +15,7 @@ export async function PATCH(req: NextRequest) {
 
     if (body.locName) {
         if (!body.customLoc) {
+            //user-notifcation : Notify location owners
             Events.setLocation(body.id, body.locId)
         } else {
             let locinsertid = await Location.privateLoc(body.locName, body.locAdress)

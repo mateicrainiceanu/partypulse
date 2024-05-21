@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { saltRounds } from "../types";
 import { RowDataPacket } from "mysql2";
 import Events from "./event";
+import UserNotification from "./notifications";
 
 interface User {
     id?: number,
@@ -192,9 +193,10 @@ class User {
     }
 
     static relation(uid: number, nduid: number, reltype: number, val: boolean) {
-        if (val)
+        if (val) {
+            new UserNotification({ forUserId: nduid, fromUserId: uid, nottype: "like", text: " liked your profile!" }).save()
             return db.execute(`INSERT INTO users_users (userId, secUserId, reltype) VALUES (${uid}, ${nduid}, ${reltype});`)
-        else
+        } else
             return db.execute(`DELETE FROM users_users WHERE userId = ${uid} AND secUserId = ${nduid};`)
     }
 
@@ -232,7 +234,6 @@ class User {
     static getFriends(uid: number) {
         return db.execute(`SELECT * FROM users_users WHERE userId = ${uid} ORDER BY id desc;`)
     }
-
 }
 
 export default User;
