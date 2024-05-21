@@ -8,6 +8,7 @@ import {AlertContext} from "@/app/AlertContext";
 import {LoadManContext} from "@/app/LoadManContext";
 import FormElement from "@/app/components/FormElement";
 import moment from "moment";
+import FormBtn from "@/app/components/FormBtn";
 
 function Events({
 	givenEvents,
@@ -35,6 +36,7 @@ function Events({
 	const {handleAxiosError} = useContext(AlertContext);
 	const [statusFilter, setStatusFilter] = useState(-1);
 	const [dateFilter, setDateFilter] = useState("");
+	const [showFilterByDate, setShowFilterByDate] = useState(false);
 
 	useEffect(() => {
 		if (!givenEvents) {
@@ -58,34 +60,13 @@ function Events({
 		if (dateFilter == "") {
 			return true;
 		} else {
-			console.log(moment(date, "YYYY-MM-DD").format("YYYY-MM-DD").toString());
-			console.log(moment(dateFilter, "YYYY-MM-DD").format("YYYY-MM-DD").toString());
-			console.log(dateFilter);
-
-			console.log("--------------------");
-
 			return moment(date, "YYYY-MM-DD").toString() == moment(dateFilter, "YYYY-MM-DD").toString();
 		}
 	}
 
 	return (
 		<div>
-			<div className="flex gap-2 justify-center">
-				<div className="w-1/2">
-					<FormElement
-						label=""
-						name="date"
-						type="date"
-						value={dateFilter}
-						handleChange={(e) => {
-							setDateFilter(e.target.value);
-						}}></FormElement>
-				</div>
-				<Button color="secondary" variant="outlined" className="my-2">
-					Clear
-				</Button>
-			</div>
-			<div className="flex justify-center">
+			<div className="flex justify-center gap-2">
 				<ButtonGroup variant="outlined" aria-label="Loading button group" className="">
 					<Button
 						color="primary"
@@ -120,7 +101,38 @@ function Events({
 						Ended
 					</Button>
 				</ButtonGroup>
+				<Button
+					color="warning"
+					variant="outlined"
+					className={" " + (showFilterByDate ? " bg-orange-900 " :"")}
+					onClick={() => {
+						setShowFilterByDate((prev) => !prev);
+					}}>
+					Filter by date
+				</Button>
 			</div>
+			{showFilterByDate && (
+				<div className="flex gap-2 justify-center">
+					<div className="w-1/2">
+						<FormElement
+							label=""
+							name="date"
+							type="date"
+							value={dateFilter}
+							handleChange={(e) => {
+								setDateFilter(e.target.value);
+							}}></FormElement>
+					</div>
+					<div className="max-w-1/2">
+						<FormBtn
+							name={"Clear"}
+							onClick={() => {
+								setDateFilter("");
+							}}
+						/>
+					</div>
+				</div>
+			)}
 			{(events.length != 0 || givenEvents?.length != 0) && (
 				<>
 					{givenEvents?.length != 0 && givenEvents != undefined ? (
