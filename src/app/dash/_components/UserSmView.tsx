@@ -35,13 +35,12 @@ import {AlertContext} from "@/app/AlertContext";
 // 	);
 // }
 
-function UserSmView({uname, role, rounded}: {uname: string; role: number, rounded?:boolean}) {
+function UserSmView({uname, role, rounded}: {uname: string; role: number; rounded?: boolean}) {
 	const [smView, setSmView] = useState(false);
 
 	return (
 		<div
-			className={"w-full px-2 py-2 border-btm " + (smView ? "" : "hover:bg-gray-800") + (rounded ? " rounded-lg": "")
-			}
+			className={"w-full px-2 py-2 border-btm " + (smView ? "" : "hover:bg-gray-800") + (rounded ? " rounded-lg" : "")}
 			onClick={() => {
 				setSmView(true);
 			}}>
@@ -53,13 +52,21 @@ function UserSmView({uname, role, rounded}: {uname: string; role: number, rounde
 					}}
 				/>
 			) : (
-				<div className="flex gap-3 py-3">
-					{role === 0 && <FaRegUser className="my-1" />}
-					{role === 1 && <BiParty className="my-1" />}
-					{role === 2 && <FaHeadphones className="my-1" />}
-					<span>{uname}</span>
+				<div className="py-3">
+					<UserXsView uname={uname} role={role} />
 				</div>
 			)}
+		</div>
+	);
+}
+
+export function UserXsView({uname, role, mono}: {mono?: boolean; uname: string; role: number}) {
+	return (
+		<div className="flex gap-3">
+			{role === 0 && <FaRegUser className="my-1" />}
+			{role === 1 && <BiParty className="my-1" />}
+			{role === 2 && <FaHeadphones className="my-1" />}
+			<span className={mono ? "font-mono underline" : ""}>{uname}</span>
 		</div>
 	);
 }

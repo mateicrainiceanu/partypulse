@@ -5,10 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import {FaBars, FaTimes} from "react-icons/fa";
 import {UserContext} from "./UserContext";
+import { UserNotifContext } from "./UserNotifContext";
 
 const Navbar = () => {
 	const [nav, setNav] = useState(false);
 	const {user} = useContext(UserContext);
+	const {showNotif, show} = useContext(UserNotifContext)
 
 	const links = [
 		{
@@ -57,13 +59,13 @@ const Navbar = () => {
 						<li
 							key={id}
 							className="nav-links px-4 cursor-pointer capitalize font-mono font-medium text-gray-500 hover:scale-105 hover:text-white duration-200 link-underline">
-							{(!needsLogIn || user.logged) && (
-								<Link href={link}>
-									{title}
-								</Link>
-							)}
+							{(!needsLogIn || user.logged) && <Link href={link}>{title}</Link>}
 						</li>
 					))}
+					<li
+						className="nav-links px-4 cursor-pointer capitalize font-mono font-medium text-gray-500 hover:scale-105 hover:text-white duration-200 link-underline">
+						{(user.logged && !show) && <button onClick={showNotif}> Notifications (2) </button>}
+					</li>
 				</ul>
 
 				<div onClick={() => setNav(!nav)} className="cursor-pointer pr-4 z-10 text-gray-500 md:hidden hover:text-white">

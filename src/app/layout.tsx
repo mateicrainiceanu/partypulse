@@ -2,7 +2,7 @@ import type {Metadata} from "next";
 import {Inter} from "next/font/google";
 import Navbar from "./AppNav";
 import "./globals.css";
-
+import UserNotifProvider from "./UserNotifContext";
 import AlertProvider from "./AlertContext";
 import UserProvider from "./UserContext";
 import LoadingProvider from "./LoadingContext";
@@ -27,8 +27,10 @@ export default async function RootLayout({children}: {children: React.ReactNode}
 						<SessionProvider session={session}>
 							<AlertProvider>
 								<UserProvider>
-									<Navbar />
-									<main className="mx-2">{children}</main>
+									<UserNotifProvider>
+										<Navbar />
+										<main className="mx-2">{children}</main>
+									</UserNotifProvider>
 								</UserProvider>
 							</AlertProvider>
 						</SessionProvider>

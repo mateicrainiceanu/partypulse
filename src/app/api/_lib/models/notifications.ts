@@ -46,7 +46,7 @@ export default class UserNotification {
             ${this.text ? ", '" + this.text + "'" : ""}
             ${this.itemType ? ", '" + this.itemType + "'" : ""}
             ${this.itemId ? ", '" + this.itemId + "'" : ""}
-        );`        
+        );`
         return db.execute(sql)
     }
 
@@ -57,7 +57,7 @@ export default class UserNotification {
         const fullNotifications = notifications.map(async notif => {
             const [{ uname, role }] = (await User.findById(notif.fromUserId) as any)[0]
 
-            let fullNotif = { ...notif, from: {uname, role} }
+            let fullNotif = { ...notif, from: { uname, role } }
 
             if (notif.itemType == "location" && notif.itemId)
                 fullNotif = { ...fullNotif, location: await Location.getFullLocation(notif.itemId, uid) }
@@ -68,5 +68,9 @@ export default class UserNotification {
         })
 
         return await Promise.all(fullNotifications)
+    }
+
+    static updateStatus(notid: number, newstatus: number) {
+        return db.execute(`UPDATE users_notifications SET status = ${newstatus} WHERE id = ${notid};`)
     }
 }
