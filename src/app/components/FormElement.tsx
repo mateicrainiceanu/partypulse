@@ -17,6 +17,7 @@ function FormElement({name, type, label, handleChange, value, noAutoComplete}: P
 			<TextField
 				autoComplete={`${noAutoComplete ? false : true}`}
 				variant={"filled"}
+				color="secondary"
 				label={label}
 				name={name}
 				type={type ? type : "text"}
