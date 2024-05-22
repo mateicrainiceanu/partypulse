@@ -3,16 +3,20 @@ import EventsFromUsers from "./HomeComponents/EventsFromUsers";
 import axios from "axios";
 import {AlertContext} from "@/app/AlertContext";
 import EventsFormLocations from "./HomeComponents/EventsFormLocations";
+import { LoadManContext } from "@/app/LoadManContext";
 
 function Home() {
 	const [data, setData] = useState({eventsFromOtherUsers: [], eventsFromLikedLocations: []});
 	const {handleAxiosError} = useContext(AlertContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext)
 
 	useEffect(() => {
+		addLoadingItem()
 		axios
 			.get("/api/homepgdata")
 			.then((res) => {
 				setData(res.data);
+				finishedLoadingItem();
 			})
 			.catch(handleAxiosError);
 	}, []);

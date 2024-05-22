@@ -7,6 +7,7 @@ import LocationSmView from "./LocationSmView";
 import FormElement from "@/app/components/FormElement";
 import {Pagination} from "@mui/material";
 import {AlertContext} from "@/app/AlertContext";
+import {LoadManContext} from "@/app/LoadManContext";
 
 function PaLocation({pa}: {pa: boolean}) {
 	const [newloc, setNewloc] = useState(false);
@@ -18,16 +19,19 @@ function PaLocation({pa}: {pa: boolean}) {
 	const [search, setSearch] = useState("");
 
 	const {handleAxiosError} = useContext(AlertContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 
 	useEffect(() => {
 		getData();
 	}, []);
 
 	async function getData() {
+		addLoadingItem();
 		await axios
 			.get("/api/location" + (pa ? "?onlyManaged=true" : ""))
 			.then((response) => {
 				setLocations(response.data.locations);
+				finishedLoadingItem();
 			})
 			.catch((error) => {
 				handleAxiosError(error);

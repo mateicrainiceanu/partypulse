@@ -1,13 +1,17 @@
 import {DJSelector} from "./new-event-comp/DJSelector";
 import {Location} from "./new-event-comp/Location";
-import React, {useState} from "react";
+import React, {useCallback, useContext, useState} from "react";
 import {IoMdCloseCircle} from "react-icons/io";
 import FormElement from "@/app/components/FormElement";
 import {Switch} from "@mui/material";
 import FormBtn from "@/app/components/FormBtn";
 import axios from "axios";
+import {AlertContext} from "@/app/AlertContext";
+import {LoadManContext} from "@/app/LoadManContext";
 
 function NewEvent({close}: {close: any}) {
+	const {handleAxiosError} = useContext(AlertContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	const [eventData, setEventData] = useState({
 		name: "",
 		privateev: false,
@@ -26,7 +30,14 @@ function NewEvent({close}: {close: any}) {
 	}
 
 	function saveEvent() {
-		axios.post("/api/event", eventData);
+		addLoadingItem();
+		axios
+			.post("/api/event", eventData)
+			.then(() => {
+				close();
+				finishedLoadingItem();
+			})
+			.catch(handleAxiosError);
 	}
 
 	return (

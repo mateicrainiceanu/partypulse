@@ -35,6 +35,7 @@ function PaEvents() {
 				<NewEvent
 					close={() => {
 						setShowAdd(false);
+						window.location.reload();
 					}}
 				/>
 			)}

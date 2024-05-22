@@ -7,15 +7,19 @@ import Locations from "./SearchPageComp/Locations";
 import Events from "../../_Events";
 
 function SearchPage() {
-	var startCategory = localStorage.getItem("category") || "users";
-	var startQuery = localStorage.getItem("searchQuery") || "";
-
 	const [searchData, setSearchData] = useState({
-		searchQuery: startQuery,
-		category: startCategory,
+		searchQuery: "",
+		category: "users",
 	});
 
 	const [responseData, setResponseData] = useState([]);
+
+	useEffect(() => {
+		setSearchData({
+			category: localStorage.getItem("category") || "users",
+			searchQuery: localStorage.getItem("searchQuery") || "",
+		});
+	}, []);
 
 	useEffect(() => {
 		search();

@@ -162,6 +162,7 @@ class Events {
     }
 
     static deleteForId(id: number) {
+        db.execute(`DELETE FROM users_notifications WHERE itemType = 'event' and itemId = ${id};`)
         db.execute(`DELETE FROM user_events WHERE eventId = ${id};`)
         return db.execute(`DELETE FROM events WHERE id = ${id};`)
     }

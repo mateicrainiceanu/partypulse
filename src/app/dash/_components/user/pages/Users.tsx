@@ -4,6 +4,7 @@ import UserSmView from "../../UserSmView";
 import FormElement from "@/app/components/FormElement";
 import {Pagination} from "@mui/material";
 import {AlertContext} from "@/app/AlertContext";
+import {LoadManContext} from "@/app/LoadManContext";
 
 function Users() {
 	const [users, setUsers] = useState([]);
@@ -12,12 +13,15 @@ function Users() {
 	const showOnPg = 5;
 
 	const {handleAxiosError} = useContext(AlertContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 
 	useEffect(() => {
+		addLoadingItem();
 		axios
 			.get("/api/user/relation")
 			.then((res) => {
 				setUsers(res.data);
+				finishedLoadingItem();
 			})
 			.catch((err) => {
 				handleAxiosError(err);

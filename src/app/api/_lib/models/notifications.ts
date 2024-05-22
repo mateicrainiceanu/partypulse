@@ -57,7 +57,7 @@ export default class UserNotification {
 
     static async getForUser(uid: number) {
 
-        const [notifications]: UserNotification[][] = await db.execute(`SELECT * FROM users_notifications WHERE forUserId = ${uid};`) as any
+        const [notifications]: UserNotification[][] = await db.execute(`SELECT * FROM users_notifications WHERE forUserId = ${uid} ORDER BY id DESC;`) as any
 
         const fullNotifications = notifications.map(async notif => {
             const [{ uname, role }] = (await User.findById(notif.fromUserId) as any)[0]
