@@ -27,14 +27,18 @@ function UserNotifProvider({children}: {children: ReactNode}) {
 
 	useEffect(() => {
 		if (user.id != 0) {
-			axios
-				.get("/api/user/notification")
-				.then((res) => {
-					setNotifications(res.data);
-				})
-				.catch(handleAxiosError);
+			setInterval(refreshData, 5000);
 		}
 	}, [user]);
+
+	async function refreshData() {
+		axios
+			.get("/api/user/notification")
+			.then((res) => {
+				setNotifications(res.data);
+			})
+			.catch(handleAxiosError);
+	}
 
 	async function updateNotifcationStatus(notid: number, newstatus: number, markAllAsRead?: boolean) {
 		axios
