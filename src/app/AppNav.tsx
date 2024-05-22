@@ -5,12 +5,14 @@ import Link from "next/link";
 import Image from "next/image";
 import {FaBars, FaTimes} from "react-icons/fa";
 import {UserContext} from "./UserContext";
-import { UserNotifContext } from "./UserNotifContext";
+import {IUserNotification, UserNotifContext} from "./UserNotifContext";
+import {IoIosNotifications} from "react-icons/io";
+import {IoNotificationsOff} from "react-icons/io5";
 
 const Navbar = () => {
 	const [nav, setNav] = useState(false);
 	const {user} = useContext(UserContext);
-	const {showNotif, show} = useContext(UserNotifContext)
+	const {showNotif, hideNotif, show, notifications} = useContext(UserNotifContext);
 
 	const links = [
 		{
@@ -54,22 +56,48 @@ const Navbar = () => {
 					</Link>
 				</div>
 
-				<ul className="hidden md:flex">
+				<ul className="hidden lg:flex">
 					{links.map(({id, title, link, needsLogIn}) => (
 						<li
 							key={id}
-							className="nav-links px-4 cursor-pointer capitalize font-mono font-medium text-gray-500 hover:scale-105 hover:text-white duration-200 link-underline">
+							className="nav-links px-4 cursor-pointer capitalize font-mono font-medium text-gray-500 hover:scale-105 hover:text-white duration-200 link-underline my-auto">
 							{(!needsLogIn || user.logged) && <Link href={link}>{title}</Link>}
 						</li>
 					))}
-					<li
-						className="nav-links px-4 cursor-pointer capitalize font-mono font-medium text-gray-500 hover:scale-105 hover:text-white duration-200 link-underline">
-						{(user.logged && !show) && <button onClick={showNotif}> Notifications (2) </button>}
+
+					<li className="my-auto">
+						{!show && (
+							<IoIosNotifications
+								onClick={showNotif}
+								size={30}
+								className={
+									notifications.filter((n: IUserNotification) => n.status == 0).length > 0
+										? "text-red-400 hover:text-red-500"
+										: "text-gray-500 hover:text-white"
+								}
+							/>
+						)}
 					</li>
 				</ul>
-
-				<div onClick={() => setNav(!nav)} className="cursor-pointer pr-4 z-10 text-gray-500 md:hidden hover:text-white">
-					{nav ? <FaTimes size={30} /> : <FaBars size={30} />}
+				<div className="flex gap-4 cursor-pointer pr-4 z-10 lg:hidden">
+					<div>
+						{show ? (
+							<IoNotificationsOff size={30} onClick={hideNotif} className="text-gray-500 hover:text-white" />
+						) : (
+							<IoIosNotifications
+								onClick={showNotif}
+								size={30}
+								className={
+									notifications.filter((n: IUserNotification) => n.status == 0).length > 0
+										? "text-red-400 hover:text-red-500"
+										: "text-gray-500 hover:text-white"
+								}
+							/>
+						)}
+					</div>
+					<div onClick={() => setNav(!nav)} className=" text-gray-500 lg:hidden hover:text-white">
+						{!nav ? <FaBars size={30} /> : <FaTimes size={30} />}
+					</div>
 				</div>
 
 				{nav && (

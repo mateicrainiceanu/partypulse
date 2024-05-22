@@ -70,7 +70,10 @@ export default class UserNotification {
         return await Promise.all(fullNotifications)
     }
 
-    static updateStatus(notid: number, newstatus: number) {
-        return db.execute(`UPDATE users_notifications SET status = ${newstatus} WHERE id = ${notid};`)
+    static updateStatus(notid: number, newstatus: number, markAllAsRead: boolean, userId?:number) {
+        if (!markAllAsRead)
+            return db.execute(`UPDATE users_notifications SET status = ${newstatus} WHERE id = ${notid};`)
+        else
+            return db.execute(`UPDATE users_notifications SET status = 1 WHERE forUserId = ${userId};`)
     }
 }

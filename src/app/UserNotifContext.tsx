@@ -6,6 +6,7 @@ import {BsXCircleFill} from "react-icons/bs";
 import UserNotifcations from "./UserNotifcations";
 import axios from "axios";
 import {AlertContext} from "./AlertContext";
+import {Button} from "@mui/material";
 
 const UserNotifContext = createContext(null as any);
 
@@ -20,6 +21,9 @@ function UserNotifProvider({children}: {children: ReactNode}) {
 	function showNotif() {
 		setShow(true);
 	}
+	function hideNotif() {
+		setShow(false);
+	}
 
 	useEffect(() => {
 		if (user.id != 0) {
@@ -32,9 +36,9 @@ function UserNotifProvider({children}: {children: ReactNode}) {
 		}
 	}, [user]);
 
-	async function updateNotifcationStatus(notid: number, newstatus: number) {
+	async function updateNotifcationStatus(notid: number, newstatus: number, markAllAsRead?: boolean) {
 		axios
-			.patch("/api/user/notification", {notid, newstatus})
+			.patch("/api/user/notification", {notid, newstatus, markAllAsRead})
 			.then((res) => {
 				setNotifications(res.data);
 			})
@@ -43,14 +47,24 @@ function UserNotifProvider({children}: {children: ReactNode}) {
 
 	return (
 		<>
-			<UserNotifContext.Provider value={{show, showNotif, updateNotifcationStatus}}>
+			<UserNotifContext.Provider value={{show, showNotif, hideNotif, updateNotifcationStatus, notifications}}>
 				{show ? (
 					<div className="flex w-vw">
-						<div className="w-2/3">{children}</div>
-						<div className="w-1/3 p-4 bg-slate-900">
+						<div className="hidden md:block md:w-1/2 lg:w-2/3">{children}</div>
+						<div className="w-full md:block md:w-1/2 lg:w-1/3 p-4 bg-slate-900 overflow-y-scroll h-screen">
 							<div className="flex justify-center">
 								<h1 className="text-lg text-center font-mono my-2 mx-auto">Notifications</h1>
-								<BsXCircleFill className="ms-auto my-auto text-xl" />
+								<BsXCircleFill className="mr-0 my-auto text-xl" onClick={hideNotif} />
+							</div>
+							<div className="flex my-auto justify-center">
+								<Button
+									color="secondary"
+									variant="outlined"
+									onClick={() => {
+										updateNotifcationStatus(0, 0, true);
+									}}>
+									Mark all as read
+								</Button>
 							</div>
 							<UserNotifcations n={notifications} />
 						</div>

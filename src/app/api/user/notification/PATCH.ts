@@ -8,13 +8,13 @@ export async function PATCH(req: NextRequest) {
     const url = new URL(req.url)
     const token = cookies().get("token")?.value || url.searchParams.get("token");
 
-    const { notid, newstatus } = await req.json()
+    const { notid, newstatus, markAllAsRead } = await req.json()    
 
     if (token) {
         const user = getUserFromToken(token)
         if (user.id) {
 
-            await UserNotification.updateStatus(notid, newstatus)
+            await UserNotification.updateStatus(notid, newstatus, markAllAsRead, user.id)
 
             const res = await UserNotification.getForUser(user.id)
             return NextResponse.json(res)
