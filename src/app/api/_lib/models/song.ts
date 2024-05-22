@@ -34,8 +34,8 @@ class Song {
 
     async save() {
         let sql = `INSERT INTO songs (title, artists, spotifyId, spotifyURL, imgsrc) VALUES (
-            '${this.title}',
-            '${this.artists}',
+            "${this.title}",
+            "${this.artists}",
             '${this.spotifyId}',
             '${this.spotifyURL}',
             '${this.imgsrc}'

@@ -1,19 +1,25 @@
 "use client";
 import FormElement from "@/app/components/FormElement";
 import Link from "next/link";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {LoadingContext} from "../LoadingContext";
 import {AlertContext} from "../AlertContext";
 import {signIn} from "next-auth/react";
 import {BsGoogle, BsSpotify} from "react-icons/bs";
 import {deleteCookie, getCookie} from "cookies-next";
-import { LoadManContext } from "../LoadManContext";
+import {LoadManContext} from "../LoadManContext";
 
 function Login() {
 	const [formData, setFormData] = useState({email: "", password: ""});
 	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	const {handleAxiosError} = useContext(AlertContext);
+
+	useEffect(() => {		
+		if (getCookie("token") != undefined) {
+			window.location.replace("/dash");
+		}
+	}, []);
 
 	function handleChange(e: any) {
 		setFormData((prevData) => ({...prevData, [e.target.name]: e.target.value}));
@@ -53,9 +59,7 @@ function Login() {
 				</button>
 				<button
 					onClick={() => {
-						signIn("google").then(() => {
-							window.location.replace("/dash");
-						});
+						signIn("google");
 					}}
 					type="submit"
 					className="rounded-md w-full mb-2 px-3 py-2 text-sm bg-white hover:bg-gray-300 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
@@ -65,9 +69,7 @@ function Login() {
 				</button>
 				<button
 					onClick={() => {
-						signIn("spotify").then((e) => {
-							window.location.replace("/dash");
-						});
+						signIn("spotify")
 					}}
 					type="submit"
 					className="rounded-md w-full mb-2 px-3 py-2 text-sm bg-white hover:bg-gray-300 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">

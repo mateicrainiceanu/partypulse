@@ -31,6 +31,8 @@ export const authOptions = {
                     cookies().set("role", user.role)
                     cookies().set("email", user.email)
                     cookies().set("donations", user.donations)
+                    cookies().set("verified", "1")
+
                     return user as any
                 } else {
                     const user = new User(display_name, "", email.split("@")[0], email, id, 1)
@@ -44,6 +46,8 @@ export const authOptions = {
                     cookies().set("role", '0')
                     cookies().set("email", user.email)
                     cookies().set("donations", '')
+                    cookies().set("verified", "1")
+
                     return { id: insertId, role: 0, ...user, password: "xxx" }
                 }
             }

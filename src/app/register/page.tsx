@@ -2,7 +2,7 @@
 import FormElement from "@/app/components/FormElement";
 import axios from "axios";
 import Link from "next/link";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {UserContext} from "../UserContext";
 import {LoadingContext} from "../LoadingContext";
 import {AlertContext} from "../AlertContext";
@@ -22,6 +22,12 @@ function Register() {
 
 	const {user, setUser} = useContext(UserContext);
 	const {handleAxiosError, dialogToUser} = useContext(AlertContext);
+
+	useEffect(() => {
+		if (getCookie("token") != undefined) {
+			window.location.replace("/dash");
+		}
+	}, []);
 
 	async function handleChange(e: any) {
 		if (e.target.name === "uname") {
@@ -117,9 +123,7 @@ function Register() {
 					</button>
 					<button
 						onClick={() => {
-							signIn("google").then(() => {
-								window.location.replace("/dash");
-							});
+							signIn("google");
 						}}
 						type="submit"
 						className="rounded-md w-full mb-2 px-3 py-2 text-sm bg-white hover:bg-gray-300 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
@@ -129,9 +133,7 @@ function Register() {
 					</button>
 					<button
 						onClick={() => {
-							signIn("spotify").then((e) => {
-								window.location.replace("/dash");
-							});
+							signIn("spotify")
 						}}
 						type="submit"
 						className="rounded-md w-full mb-2 px-3 py-2 text-sm bg-white hover:bg-gray-300 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">

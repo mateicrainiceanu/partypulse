@@ -48,6 +48,10 @@ class User {
         return db.execute(sql);
     }
 
+    static count() {
+        return db.execute(`SELECT count(*) FROM users;`);
+    }
+
     static findByMail(email: string) {
         let sql = `
         SELECT * FROM users WHERE email = '${email}';

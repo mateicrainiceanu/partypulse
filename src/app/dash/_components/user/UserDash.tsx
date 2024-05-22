@@ -10,7 +10,7 @@ import Live from "./pages/Live";
 import Users from "./pages/Users";
 
 function UserDash() {
-	const startStr = "home";
+	const startStr = "search";
 	const [view, setView] = useState(startStr);
 
 	useEffect(() => {

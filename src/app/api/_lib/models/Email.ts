@@ -26,6 +26,8 @@ export default class Email {
     }
 
     async SendRegisterVerif(emailToken: number) {
+      console.log(this.transporter);
+      
         const opt = { ...this.mailOptions, subject: "Registration to Partypulse", html: Email.getRegisterEmail(emailToken) }
 
         this.transporter.sendMail(opt, (err: any, info: any) => {
@@ -38,9 +40,7 @@ export default class Email {
     }
 
     async notification(n: UserNotification) {
-        const opt = { ...this.mailOptions, subject: "Notification from Partypulse", html: await Email.getNotificationEmail(n) }
-        console.log(opt);
-        
+        const opt = { ...this.mailOptions, subject: "Notification from Partypulse", html: await Email.getNotificationEmail(n) }        
 
         this.transporter.sendMail(opt, (err: any, info: any) => {
             if (err) {

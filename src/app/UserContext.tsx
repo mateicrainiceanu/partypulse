@@ -35,7 +35,7 @@ function UserProvider({children}: {children: ReactNode}) {
 	//addLoadingItem();
 
 	useEffect(() => {
-		addLoadingItem()
+		addLoadingItem();
 		const startUser = {
 			id: Number(getCookie("userId")) || 0,
 			fname: getCookie("fname") || "",
@@ -51,10 +51,6 @@ function UserProvider({children}: {children: ReactNode}) {
 
 		setUser(startUser);
 
-		if ((getCookie("userId") == undefined || getCookie("userId") == "") && getCookie("token") != "") {
-			getUserData(false);
-		}
-
 		if (
 			startUser.id != 0 &&
 			getCookie("verified") != "1" &&
@@ -66,24 +62,7 @@ function UserProvider({children}: {children: ReactNode}) {
 		finishedLoadingItem();
 	}, []);
 
-	async function getUserData(mandatory: boolean) {
-		//addLoadingItem();
-		// await axios
-		// 	.get("/api/user")
-		// 	.then((response) => {
-		// 		setUser({...(response as AxiosResponse).data, logged: true});
-		// 		setTried(true);
-		// 	})
-		// 	.catch((error) => {
-		// 		setTried(true);
-		// 		if (mandatory) {
-		// 			handleAxiosError(error);
-		// 			window.location.replace("/login");
-		// 		}
-		// 		return;
-		// 	});
-		//finishedLoadingItem();
-	}
+	async function getUserData(mandatory: boolean) {}
 
 	return (
 		<>
