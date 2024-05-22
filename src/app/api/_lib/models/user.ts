@@ -132,8 +132,9 @@ class User {
 
         return await djsrelations.map(async (djrel: { userId: number }) => {
             const response = await db.execute(`SELECT uname FROM users WHERE id = ${djrel.userId}; `) as Array<RowDataPacket>[0]
-
-            return response[0][0].uname
+            if (response[0][0].uname)
+                return response[0][0].uname
+            else return null
         })
     }
 

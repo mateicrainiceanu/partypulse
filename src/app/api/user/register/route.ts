@@ -5,6 +5,7 @@ import { signtoken } from "../../_lib/token";
 import { cookies } from "next/headers";
 import { sendMail } from "./sendregistermail"
 import random from "random-string-alphanumeric-generator"
+import Email from "../../_lib/models/Email";
 
 export async function POST(req: NextRequest) {
     const { fname, lname, uname, email, password } = await req.json()
@@ -22,7 +23,10 @@ export async function POST(req: NextRequest) {
     if (!result.waringStatus) {
         const id = result.insertId;
         const token = signtoken(id, email);
-        sendMail(email, newuser.verified)
+        // sendMail(email, newuser.verified)
+
+        const mail = new Email(newuser.email)
+        mail.SendRegisterVerif(newuser.verified)
 
         cookies().set("token", token, { secure: false })
         cookies().set("userId", id)

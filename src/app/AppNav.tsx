@@ -66,7 +66,7 @@ const Navbar = () => {
 					))}
 
 					<li className="my-auto">
-						{!show && (
+						{!show && user.logged && (
 							<IoIosNotifications
 								onClick={showNotif}
 								size={30}

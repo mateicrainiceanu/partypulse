@@ -101,33 +101,6 @@ class Events {
         return { location, events: await Promise.all(data) }
     }
 
-    // static async getEventIdsForUser(id: number, onlyManaged:boolean) {
-    //     const [eventsIds] = await db.execute(`SELECT * FROM users_events WHERE userId = ${id};`) as Array<RowDataPacket>
-
-    //     const [userLocations] = await db.execute(`SELECT locationId FROM users_locations WHERE userId = ${id};`) as Array<RowDataPacket>
-
-    //     var locQuery = ""
-
-    //     userLocations.map((rel: { locationId: number }) => {
-    //         locQuery += rel.locationId + ", "
-    //     })
-
-    //     var query = ''
-
-    //     eventsIds.map((ev: { eventId: number }) => {
-    //         query += (ev.eventId + ", ")
-    //     })
-
-    //     if (query != "" || locQuery != "") {
-    //         const [events1] = await db.execute(`SELECT * FROM id WHERE
-    //         ${query != "" ? `id IN (${query.substring(0, query.length - 2)})` : ""} 
-    //         ${query != "" && locQuery != "" ? "OR" : ""}
-    //         ${locQuery != "" ? `locationId IN (${locQuery.substring(0, locQuery.length - 2)})` : ""} 
-    //         ORDER BY dateStart ASC;`);
-    //         return events1;
-    //     } else { return [] }
-    // }
-
     static getLocId(eventId: number) {
         return db.execute(`SELECT * FROM events_locations WHERE eventId = ${eventId};`) as Promise<Array<RowDataPacket>>
     }
@@ -154,9 +127,9 @@ class Events {
             else
                 location = givenLocation!
 
-            const djs = await User.getDjsForId(event.id)
+            const djs = (await User.getDjsForId(event.id))
 
-            const djsToReturn = await Promise.all(djs);
+            const djsToReturn = (await Promise.all(djs)).filter((s: string) => s != null);
 
             var userHasRightToManage = 0
             var liked = false;

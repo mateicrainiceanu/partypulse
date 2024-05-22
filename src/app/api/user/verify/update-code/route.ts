@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { getUserFromToken } from "../../../_lib/token";
 import random from "random-string-alphanumeric-generator";
 import { sendMail } from "../../register/sendregistermail";
+import Email from "@/app/api/_lib/models/Email";
 
 export async function GET(req: NextRequest) {
 
@@ -15,7 +16,8 @@ export async function GET(req: NextRequest) {
         if (user.id) {
             const [fullUser] = (await User.findById(user.id) as any)[0]
             const code = random.randomNumber(6)
-            sendMail(fullUser.email, code)
+            const mail = new Email(fullUser.email)
+            mail.SendRegisterVerif(code)
             await User.update(user.id, "verified", code)
             return new NextResponse("Code was sent to you!", { status: 200 })
         } else {

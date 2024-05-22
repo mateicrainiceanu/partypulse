@@ -1,4 +1,4 @@
-import Location from "../_lib/models/location"; 
+import Location from "../_lib/models/location";
 import { RowDataPacket } from "mysql2";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
@@ -20,13 +20,16 @@ export async function GET(req: NextRequest) {
             //EVENTS THAT FRIENDS LIKE, ATTEND, DJ, ORGANISE
 
             const data = friends.map(async (friend: { secUserId: number }) => {
-                const [friendData] = (await User.findById(friend.secUserId) as any)[0]
-                const eventMatches = (await Events.getEventsForRelsUserId(friend.secUserId, user.id as number) as any)
-                return { uname: friendData.uname, role: friendData.role, eventMatches }
-            })
+                const friendsData = (await User.findById(friend.secUserId) as any)[0]                
+                if (friendsData.length > 0) {
+                    let [friendData] = friendsData;
+                    const eventMatches = (await Events.getEventsForRelsUserId(friend.secUserId, user.id as number) as any)
+                    const obj = { uname: (friendData.uname), role: friendData.role, eventMatches }
+                    return obj;
+                } else return {uname: ""}
+            })            
 
-            const eventsFromOtherUsers = ((await Promise.all(data)).filter(o => o.eventMatches != null));
-            //console.log(eventsFromOtherUsers);
+            const eventsFromOtherUsers = ((await Promise.all(data)).filter(o => (o.eventMatches != null && o.uname != "")));
 
             // EVENTS FORM LIKED LOCATIONS
 

@@ -11,7 +11,7 @@ import {Button} from "@mui/material";
 const UserNotifContext = createContext(null as any);
 
 function UserNotifProvider({children}: {children: ReactNode}) {
-	const [show, setShow] = useState(true);
+	const [show, setShow] = useState(false);
 
 	const {user} = useContext(UserContext);
 	const {handleAxiosError} = useContext(AlertContext);

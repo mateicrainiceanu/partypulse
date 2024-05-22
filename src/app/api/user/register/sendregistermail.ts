@@ -18,7 +18,7 @@ export function sendMail(email: string, emailToken: number) {
     from: `"Partypulse" <${process.env.MAIL_SENDERADRESS}>`,
     to: email,
     subject: "Mail Verification for Partypulse",
-    html: getEmailHTML(emailToken)
+    html: getRegisterEmail(emailToken)
   }
 
   transporter.sendMail(mailOptions, (err, info) => {
@@ -30,7 +30,7 @@ export function sendMail(email: string, emailToken: number) {
   })
 }
 
-function getEmailHTML(code: number) {
+function getRegisterEmail(code: number) {
   return `
   <div>
        <style>
