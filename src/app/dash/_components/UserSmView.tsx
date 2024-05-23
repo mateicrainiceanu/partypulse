@@ -9,6 +9,7 @@ import axios from "axios";
 import moment from "moment";
 import {BeatLoader} from "react-spinners";
 import {AlertContext} from "@/app/AlertContext";
+import {FaDonate} from "react-icons/fa";
 
 // interface UserModelDisplay {
 // 	id: number;
@@ -133,9 +134,21 @@ function UserDetailedView({uname, close}: {uname: string; close: () => void}) {
 				</div>
 				<div className="flex text-3xl py-2 px-3 justify-center bg-slate-800 rounded-b-lg">
 					{chosenUser.id != 0 ? (
-						<button onClick={handleLike}>
-							<IoHeart className={!tliked ? "text-gray-200 hover:text-gray-300" : "text-red-500 hover:text-red-400"} />
-						</button>
+						<div className="flex gap-6">
+							<button onClick={handleLike}>
+								<IoHeart
+									className={!tliked ? "text-gray-200 hover:text-gray-300" : "text-red-500 hover:text-red-400"}
+								/>
+							</button>
+							{chosenUser.donations != "" && (
+								<FaDonate
+									className="text-gray-200 hover:text-gray-300"
+									onClick={() => {
+										window.location.href = chosenUser.donations;
+									}}
+								/>
+							)}
+						</div>
 					) : (
 						<BeatLoader color="#fff" />
 					)}
