@@ -8,7 +8,7 @@ import { RowDataPacket } from "mysql2";
 import { cookies } from "next/headers";
 import { signtoken } from "../../_lib/token";
 
-export const authOptions = {
+const authOptions = {
     providers: [
         Spotify({
             clientId: process.env.SPOTIFY_CLIENT_ID || "",
@@ -131,6 +131,6 @@ export const authOptions = {
     }
 };
 
-export const handler = NextAuth(authOptions);
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

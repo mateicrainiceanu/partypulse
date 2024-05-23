@@ -1,3 +1,5 @@
+'use server'
+
 import Events from '../_lib/models/event';
 import SongRequest from '../_lib/models/songRequest';
 
@@ -45,8 +47,4 @@ export async function SOCKET(
         clearInterval(intervalId)
         console.log('A client disconnected!');
     });
-}
-
-export function GET() {
-
 }
