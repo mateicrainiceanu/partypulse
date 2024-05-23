@@ -12,14 +12,14 @@ function UpdateStauts({data, setData}: {data: any; setData: any}) {
 	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	const {handleAxiosError, dialogToUser} = useContext(AlertContext);
 
-	function handleStatusChange(e: any, force?: boolean, endAssoc?: boolean) {
+	function handleStatusChange(e: any, force?: boolean, endAssoc?: boolean) {		
 		addLoadingItem()
 		var stat: Number;
 		if (e.target.id == "1") {
 			stat = data.status != 1 ? 1 : 2;
 		} else {
 			stat = 0;
-		}
+		}		
 
 		axios
 			.patch("/api/event/" + data.id + "/status", {status: stat, confirmedClose: force, endAssoc: endAssoc})

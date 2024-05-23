@@ -24,20 +24,15 @@ class Location {
     async save() {
         let sql = `
         INSERT INTO locations (name, useForAdress, adress, city, lat, lon) VALUES (
-            '${this.name}',
-            '${this.useForAdress}',
-            '${this.adress}',
-            '${this.city}',
-            '${this.lat}',
-            '${this.lon}'
+            ?,?,?,?,?,?
         );
         `
-        return db.execute(sql);
+        return db.safeexe(sql, [this.name, this.useForAdress, this.adress, this.city, this.lat, this.lon]);
     }
 
     static async privateLoc(name: string, adress: string) {
-        let sql = `INSERT INTO locations (name, adress, useForAdress, city, private) VALUES ('${name}', '${adress}', 'adress', '', 1)`
-        return (await db.execute(sql) as Array<RowDataPacket>)[0].insertId
+        let sql = `INSERT INTO locations (name, adress, useForAdress, city, private) VALUES (?,?, 'adress', '', 1)`
+        return (await db.safeexe(sql, [name, adress]) as Array<RowDataPacket>)[0].insertId
     }
 
     static getFromIds(idrange: string) {
@@ -49,50 +44,52 @@ class Location {
     async updateWhereId(id: number) {
         let sql = `
         UPDATE locations SET 
-        name='${this.name}',
-        useForAdress='${this.useForAdress}',
-        adress='${this.adress}',
-        city='${this.city}',
-        lat='${this.lat}',
-        lon='${this.lon}'
-        WHERE id=${id};
+        name=?,
+        useForAdress=?,
+        adress=?,
+        city=?,
+        lat=?,
+        lon=?
+        WHERE id=?;
         `
-        return db.execute(sql)
+        return db.safeexe(sql, [this.name, this.useForAdress, this.adress, this.city, this.lat, this.lon, id])
     }
 
     static deleteUserAccess(uid: string, locid: string) {
-        let sql = `DELETE from users_locations WHERE locationId=${locid} AND userId=${uid}`
-        return db.execute(sql)
+        let sql = `DELETE from users_locations WHERE locationId=? AND userId=?`
+        return db.safeexe(sql, [locid, uid])
     }
 
     static getContaining(name: string) {
+        const q = `%${name}%`
         let sql = `SELECT id, name FROM locations WHERE 
-        name LIKE "%${name}%" AND 
+        name LIKE ? AND 
         private = 0;`
-        return db.execute(sql);
+        return db.safeexe(sql, [q]);
     }
 
     static findFromString(q: string) {
-        let sql = `SELECT * FROM locations WHERE name LIKE '%${q}%';`
-        return db.execute(sql) as Promise<Array<RowDataPacket>>
+        const q1 = `%${q}%`
+        let sql = `SELECT * FROM locations WHERE name LIKE ?;`
+        return db.safeexe(sql, [q1]) as Promise<Array<RowDataPacket>>
     }
 
     static async reaction(uid: number, locid: number, liked: boolean) {
         if (liked) {
-            let sql1 = `SELECT * FROM users_locations WHERE userId = ${uid} AND locationId = ${locid} AND reltype = 0;`
-            let [res] = await db.execute(sql1) as Array<RowDataPacket>
+            let sql1 = `SELECT * FROM users_locations WHERE userId = ? AND locationId = ? AND reltype = 0;`
+            let [res] = await db.safeexe(sql1, [uid, locid]) as Array<RowDataPacket>
             if (!res.length) {
-                let sql = `INSERT INTO users_locations (userId, locationId, reltype) VALUES (${uid}, ${locid}, 0);`
-                return db.execute(sql);
+                let sql = `INSERT INTO users_locations (userId, locationId, reltype) VALUES (?, ?, 0);`
+                return db.safeexe(sql, [uid, locid]);
             }
         } else {
-            return await db.execute(`DELETE FROM users_locations WHERE userId = ${uid} AND locationId = ${locid} AND reltype = 0`) as Array<RowDataPacket>
+            return await db.safeexe(`DELETE FROM users_locations WHERE userId = ? AND locationId = ? AND reltype = 0`, [uid, locid]) as Array<RowDataPacket>
         }
     }
 
     static async getFullLocation(id: number, uid?: number) {
-        let sql = `SELECT * FROM locations WHERE id = ${id};`
-        let [locations] = await db.execute(sql) as Array<RowDataPacket>
+        let sql = `SELECT * FROM locations WHERE id = ?;`
+        let [locations] = await db.safeexe(sql, [id]) as Array<RowDataPacket>
 
         if (locations.length && uid) {
             const location = locations[0];
@@ -115,9 +112,7 @@ class Location {
 
     static async getUsersPermission(locid?: number, uid?: number) {
         if (locid && uid) {
-
-
-            let [rels] = await db.execute(`SELECT * FROM users_locations WHERE locationId = ${locid} AND userId = ${uid};`) as Array<RowDataPacket>
+            let [rels] = await db.safeexe(`SELECT * FROM users_locations WHERE locationId = ? AND userId = ?;`, [locid, uid]) as Array<RowDataPacket>
             var userHasRightToManage = false
             var liked = false
             rels.map((rel: { reltype: number }) => {
@@ -135,15 +130,16 @@ class Location {
     }
 
     static addCode(locid: number, code: string) {
-        return db.execute(`INSERT INTO codes (usedFor, itemId, code) VALUES('location' , ${locid}, '${code}');`)
+        return db.safeexe(`INSERT INTO codes (usedFor, itemId, code) VALUES('location' ,?, ?);`, [locid, code])
     }
 
     static getCodes(locid: number) {
-        return db.execute(`SELECT * FROM codes WHERE usedFor = 'location' AND itemId = ${locid}`)
+        return db.safeexe(`SELECT * FROM codes WHERE usedFor = 'location' AND itemId = ?`, [locid])
     }
 
     static async getLocationsForUser(uid: number) {
-        let [rels] = await db.execute(`SELECT * FROM users_locaitons WHERE userId = ${uid}`)
+        let [rels] = await db.safeexe(`SELECT * FROM users_locaitons WHERE userId = ?`, [uid])
+        return rels
     }
 
 }

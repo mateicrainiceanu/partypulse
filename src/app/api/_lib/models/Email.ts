@@ -25,9 +25,7 @@ export default class Email {
         this.email = email;
     }
 
-    async SendRegisterVerif(emailToken: number) {
-      console.log(this.transporter);
-      
+    async SendRegisterVerif(emailToken: number) {      
         const opt = { ...this.mailOptions, subject: "Registration to Partypulse", html: Email.getRegisterEmail(emailToken) }
 
         this.transporter.sendMail(opt, (err: any, info: any) => {

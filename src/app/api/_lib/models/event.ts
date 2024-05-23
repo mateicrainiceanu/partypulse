@@ -38,12 +38,12 @@ class Events {
 
         let sql = `
         INSERT INTO events (name, privateev, dateStart, duration) VALUES (
-            '${this.name}',
-            ${this.privateev ? 1 : 0},
-            '${this.date + " " + this.time}:00',
-            ${duration}
+            ?,
+            ?,
+            ?,
+           ?
         );`
-        return db.execute(sql);
+        return db.safeexe(sql, [this.name, (this.privateev ? 1 : 0), (this.date + " " + this.time + ":00"), duration]);
     }
 
     async update(id: number) {
@@ -60,22 +60,36 @@ class Events {
         return db.execute(sql);
     }
 
+    // async update(id: number) {
+    //     const dur = this.duration
+    //     const duration = Number(dur.split(":")[0]) + ((Number(dur.split(":")[1])) * (10 / 6) / 100)
+
+    //     let sql = `UPDATE events SET 
+    //     name=?,
+    //     privateev=?,
+    //     dateStart=?,
+    //     duration=? 
+    //     WHERE id=?;
+    //     `
+    //     return db.safeexe(sql, [this.name, (this.privateev ? 1 : 0), (this.date + "T" + this.time + ":00"), duration, id]);
+    // }
+
     static setLocation(eventId: number, locId: number) {
-        let sql = `UPDATE events SET locationId = ${locId} WHERE id = ${eventId};`
-        return db.execute(sql);
+        let sql = `UPDATE events SET locationId = ? WHERE id = ?;`
+        return db.safeexe(sql, [locId, eventId]);
     }
 
     static getIdsForUser(id: number, onlyManaged?: boolean, there?: boolean) {
-        let sql = `SELECT eventId FROM users_events WHERE userId = ${id}`
+        let sql = `SELECT eventId FROM users_events WHERE userId = ?`
         sql += onlyManaged ? ` AND (reltype = 1 OR reltype = 2);` : ""
         sql += there ? ` AND reltype = 3 ORDER BY id DESC;` : ""
         sql += ";"
 
-        return db.execute(sql) as Promise<Array<RowDataPacket>>
+        return db.safeexe(sql, [id]) as Promise<Array<RowDataPacket>>
     }
 
     static async getEventsForRelsUserId(uid: number, mainUsrId: number) {
-        const [rels] = await db.execute(`SELECT eventId, reltype FROM users_events WHERE userId = ${uid};`) as any;
+        const [rels] = await db.safeexe(`SELECT eventId, reltype FROM users_events WHERE userId = ?;`, [uid]) as any;
         const eventsWithData = rels.map(async (rel: { eventId: number, reltype: number }) => {
             const event = await Events.getFullForId(rel.eventId, mainUsrId, true)
             return { reltype: rel.reltype, event }
@@ -92,7 +106,7 @@ class Events {
     static async getFullForLocation(locId: number, mainUsrId?: number) {
         const location = (await Location.getFullLocation(locId, mainUsrId))
 
-        const [events] = await db.execute(`SELECT id FROM events WHERE locationId = ${locId} ORDER BY status ASC, dateStart ASC ; `) as any
+        const [events] = await db.safeexe(`SELECT id FROM events WHERE locationId = ? ORDER BY status ASC, dateStart ASC ; `, [locId]) as any
 
         const data = events.map(async (e: { id: number }) => {
             return await Events.getFullForId(e.id, mainUsrId, true, location)
@@ -102,11 +116,11 @@ class Events {
     }
 
     static getLocId(eventId: number) {
-        return db.execute(`SELECT * FROM events_locations WHERE eventId = ${eventId};`) as Promise<Array<RowDataPacket>>
+        return db.safeexe(`SELECT * FROM events_locations WHERE eventId = ?;`, [eventId]) as Promise<Array<RowDataPacket>>
     }
 
     static getForId(eventId: number, isNotOver?: boolean) {
-        return db.execute(`SELECT * FROM events WHERE id = ${eventId} ${(isNotOver ? "AND status < 2" : "")};`)
+        return db.safeexe(`SELECT * FROM events WHERE id = ? ${(isNotOver ? "AND status < 2" : "")};`, [eventId])
     }
 
     static getForLocations(locString: number) {
@@ -162,18 +176,18 @@ class Events {
     }
 
     static deleteForId(id: number) {
-        db.execute(`DELETE FROM users_notifications WHERE itemType = 'event' and itemId = ${id};`)
-        db.execute(`DELETE FROM user_events WHERE eventId = ${id};`)
-        return db.execute(`DELETE FROM events WHERE id = ${id};`)
+        db.safeexe(`DELETE FROM users_notifications WHERE itemType = 'event' and itemId = ?;`, [id])
+        db.safeexe(`DELETE FROM user_events WHERE eventId = ?;`, [id])
+        return db.safeexe(`DELETE FROM events WHERE id = ?;`, [id])
     }
 
     static endAssoc(eid: number, uid: number) {
-        let sql = `DELETE FROM users_events WHERE userId = ${uid} AND eventId != ${eid} AND (reltype = 1 OR reltype = 2);`
-        return db.execute(sql)
+        let sql = `DELETE FROM users_events WHERE userId = ? AND eventId != ? AND (reltype = 1 OR reltype = 2);`
+        return db.safeexe(sql, [uid, eid])
     }
 
     static async areOtherOngoingEvents(uid: number, force: boolean) {
-        const [eventsRels] = await db.execute(`SELECT * FROM users_events WHERE userId = ${uid} AND (reltype = 1 OR reltype = 2); `) as any
+        const [eventsRels] = await db.safeexe(`SELECT * FROM users_events WHERE userId = ? AND (reltype = 1 OR reltype = 2); `, [uid]) as any
 
         let str = ""
 
@@ -192,44 +206,43 @@ class Events {
             return liveEvents
 
         } else { return [] }
-
-
-
     }
 
     static changeStatus(id: number, newStatus: number) {
+        
         return db.execute(`UPDATE events SET status = ${newStatus} WHERE id = ${id}`)
     }
 
     static getUsersPermission(eventId: number, userId: number) {
-        return (db.execute(`SELECT reltype FROM users_events WHERE eventId = ${eventId} AND userId = ${userId} AND reltype != 0 ORDER BY reltype ASC;`))
+        return (db.safeexe(`SELECT reltype FROM users_events WHERE eventId = ? AND userId = ? AND reltype != 0 ORDER BY reltype ASC;`, [eventId, userId]))
     }
 
     static updateField(id: number, field: string, value: string | number) {
-        return db.execute(`UPDATE events SET ${field} = '${value}' WHERE id = ${id};`) as Promise<Array<RowDataPacket>>
+        return db.safeexe(`UPDATE events SET ${field} = ? WHERE id = ?;`, [value, id]) as Promise<Array<RowDataPacket>>
     }
 
     static searchByName(q: string) {
-        return db.execute(`SELECT id FROM events WHERE name LIKE '%${q}%' AND privateev = 0;`)
+        let query = `%${q}%`
+        return db.safeexe(`SELECT id FROM events WHERE name LIKE ? AND privateev = 0;`, [query])
     }
 
     static async reaction(uid: number, eid: number, type: number, value: boolean) {
         if (value) {
-            const [u]: { userId: number, reltype: number }[][] = await db.execute(`SELECT userId, reltype FROM users_events WHERE eventId = ${eid};`)
+            const [u]: { userId: number, reltype: number }[][] = await db.safeexe(`SELECT userId, reltype FROM users_events WHERE eventId = ?;`, [eid])
             u.map(u => {
                 if ((type == 1 || type == 2) && (u.reltype == 1 || u.reltype == 2))
                     new UserNotification({ forUserId: u.userId, fromUserId: uid, nottype: "event-manager-add", text: "can now manage your event.", itemType: "event", itemId: eid }).save()
                 else if ((type == 4 || type == 5) && (u.reltype == 1 || u.reltype == 2))
                     new UserNotification({ forUserId: u.userId, fromUserId: uid, nottype: "event-reaction", text: (type == 4 ? " is coming to" : " liked") + " your event.", itemType: "event", itemId: eid }).save()
             })
-            return db.execute(`INSERT INTO users_events (userId, eventId, reltype) VALUES (${uid}, ${eid}, ${type});`) as Promise<Array<RowDataPacket>>
+            return db.safeexe(`INSERT INTO users_events (userId, eventId, reltype) VALUES (?,?,?);`, [uid, eid, type]) as Promise<Array<RowDataPacket>>
         } else {
-            return db.execute(`DELETE FROM users_events WHERE userId = ${uid} AND eventId = ${eid} AND reltype = ${type};`) as Promise<Array<RowDataPacket>>
+            return db.safeexe(`DELETE FROM users_events WHERE userId = ? AND eventId = ? AND reltype = ?;`, [uid, eid, type]) as Promise<Array<RowDataPacket>>
         }
     }
 
     static async getMusicSuggestions(evId: number) {
-        const [suggestions] = await db.execute(`SELECT * FROM requests WHERE eventId = ${evId}`) as RowDataPacket[];
+        const [suggestions] = await db.safeexe(`SELECT * FROM requests WHERE eventId = ?`, [evId]) as RowDataPacket[];
 
         const data = await suggestions.map(async (suggestion: { songId: number, userId: number, status: number }) => {
             let [song] = (await db.execute(`SELECT * FROM songs WHERE id = ${suggestion.songId};`) as RowDataPacket[][])[0]

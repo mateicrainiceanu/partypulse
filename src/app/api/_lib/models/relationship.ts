@@ -17,16 +17,16 @@ class Relationship {
         INSERT INTO users_locations 
         (userId, locationId) 
         VALUES 
-        ('${this.id1}', '${this.id2}');`
+        (?,?);`
 
-        return db.execute(sql);
+        return db.safeexe(sql, [this.id1, this.id2]);
     }
 
     static async getLocForUser(userid: number, reltype: number) {
         let sql = `
-        SELECT * FROM users_locations WHERE userId=${userid}
-        AND reltype = ${reltype};`
-        return (await db.execute(sql)) as Array<RowDataPacket>
+        SELECT * FROM users_locations WHERE userId=?
+        AND reltype = ?;`
+        return (await db.safeexe(sql, [userid, reltype])) as Array<RowDataPacket>
     };
 }
 

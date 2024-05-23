@@ -38,7 +38,7 @@ function ChangeProfile() {
 		await axios
 			.post("/api/user/partner", {username: data.uname, donations: data.donations})
 			.then((data) => {
-				handleError("Data was upadated.", "succes");
+				handleError("Data was upadated.", "success");
 				setUser(data.data);
 				finishedLoadingItem()
 			})

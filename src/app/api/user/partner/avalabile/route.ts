@@ -17,6 +17,8 @@ export async function POST(req: NextRequest) {
         if (user.id) {
 
             const [response] = (await User.getPartners(user.id, q, role, seeSelf)) as Array<RowDataPacket>
+            console.log(response.map((user: User) => user.uname));
+            
 
             return NextResponse.json(response.map((user: User) => user.uname))
 

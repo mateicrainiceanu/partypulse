@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import {formElement} from "@/types";
 import {TextField} from "@mui/material";
 
@@ -24,15 +24,6 @@ function FormElement({name, type, label, handleChange, value, noAutoComplete}: P
 				className="w-full bg-white rounded-lg "
 				value={value}
 				onChange={handleChange}></TextField>
-			{/* <label className="" htmlFor={name}>{label}</label>
-			<input
-				id={name}
-				name={name}
-				value={value}
-				type={type}
-                onChange={handleChange}
-				className="w-full my-2 h-8 py-4 px-5 text-black rounded-lg text-center"
-			/> */}
 		</div>
 	);
 }

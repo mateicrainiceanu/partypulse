@@ -37,6 +37,7 @@ export function DJSelector({djs, setData}: IProps) {
 			<div className="w-full flex">
 				<div className="w-3/4">
 					<Autocomplete
+						isOptionEqualToValue={() => true}
 						className="bg-white rounded-lg"
 						options={opt}
 						onChange={(e: any) => {
