@@ -21,12 +21,12 @@ const Navbar = () => {
 			title: "Home",
 			needsLogIn: false,
 		},
-		{
-			id: 2,
-			link: "/about",
-			title: "About",
-			needsLogIn: false,
-		},
+		// {
+		// 	id: 2,
+		// 	link: "/about",
+		// 	title: "About",
+		// 	needsLogIn: false,
+		// },
 		{
 			id: 3,
 			title: !user.logged ? "Login" : "Logout",

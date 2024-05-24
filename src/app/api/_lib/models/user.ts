@@ -48,10 +48,6 @@ class User {
         this.verified]);
     }
 
-    static countAll() {
-        return db.execute(`SELECT count(*) FROM users;`);
-    }
-
     static findByMail(email: string) {
         let sql = `
         SELECT * FROM users WHERE email = ?;
