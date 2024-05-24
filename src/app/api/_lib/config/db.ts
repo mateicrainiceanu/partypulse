@@ -36,7 +36,7 @@ class db {
             ]
         })
 
-        const answ = await pool.promise().execute(sql, params.filter((param: any) => (param != undefined && param != false && param != null))) as any
+        const answ = await pool.promise().query(sql, params.filter((param: any) => (param != undefined && param != null))) as any
 
         pool.end()
 

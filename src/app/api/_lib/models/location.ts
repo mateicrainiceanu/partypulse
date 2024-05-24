@@ -17,8 +17,8 @@ class Location {
         this.useForAdress = useForAdress;
         this.adress = adress;
         this.city = city;
-        this.lat = lat;
-        this.lon = lon;
+        this.lat = lat ? lat : 0;
+        this.lon = lon ? lon : 0;
     }
 
     async save() {
@@ -27,6 +27,7 @@ class Location {
             ?,?,?,?,?,?
         );
         `
+
         return db.safeexe(sql, [this.name, this.useForAdress, this.adress, this.city, this.lat, this.lon]);
     }
 

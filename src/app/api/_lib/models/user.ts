@@ -34,10 +34,10 @@ class User {
 
         let sql = `
         INSERT INTO users (
-             fname, lname, uname, email, hash, verified
+             fname, lname, uname, email, hash, donations, verified
         ) 
         VALUES (
-            ?,?,?,?,?,?
+            ?,?,?,?,?,'',?
         );`
 
         return db.safeexe(sql, [this.fname,
@@ -45,6 +45,7 @@ class User {
         this.uname,
         this.email,
             hash,
+            
         this.verified]);
     }
 

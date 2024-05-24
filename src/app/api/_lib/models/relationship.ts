@@ -22,11 +22,11 @@ class Relationship {
         return db.safeexe(sql, [this.id1, this.id2]);
     }
 
-    static async getLocForUser(userid: number, reltype: number) {
+    static async getLocForUser(userid: number, reltype?: number) {
         let sql = `
         SELECT * FROM users_locations WHERE userId=?
-        AND reltype = ?;`
-        return (await db.safeexe(sql, [userid, reltype])) as Array<RowDataPacket>
+        ${reltype ? "AND reltype=?" : ""};`
+        return (await db.safeexe(sql, [userid, (reltype ? reltype : null as any)])) as Array<RowDataPacket>
     };
 }
 
