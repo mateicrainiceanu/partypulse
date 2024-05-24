@@ -48,7 +48,7 @@ class User {
         this.verified]);
     }
 
-    static count() {
+    static countAll() {
         return db.execute(`SELECT count(*) FROM users;`);
     }
 
