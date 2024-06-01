@@ -15,7 +15,7 @@ export async function SOCKET(
     let token: string
 
     client.on('message', async message => {
-        let data = JSON.parse(message.toString());
+        let data = JSON.parse(message.toString());        
 
         if (data.evId)
             evId = data.evId;
@@ -31,7 +31,7 @@ export async function SOCKET(
         if (evId) {
             suggestions = await Events.getMusicSuggestions(evId)
         }
-        client.send(new Buffer(JSON.stringify(suggestions)));
+        client.send(Buffer.from(JSON.stringify(suggestions)));
     });
 
     intervalId = setInterval(async () => {
@@ -39,8 +39,8 @@ export async function SOCKET(
 
         if (evId) {
             suggestions = await Events.getMusicSuggestions(evId)
-        }
-        client.send(new Buffer(JSON.stringify(suggestions)));
+        }       
+        client.send(Buffer.from(JSON.stringify(suggestions)));
     }, 3000) as any
 
     client.on('close', () => {
