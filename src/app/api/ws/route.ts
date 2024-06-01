@@ -48,5 +48,3 @@ export async function SOCKET(
         console.log('A client disconnected!');
     });
 }
-
-export {SOCKET as GET}
