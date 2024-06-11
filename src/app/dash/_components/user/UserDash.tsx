@@ -6,7 +6,6 @@ import Home from "./pages/Home";
 import SearchPage from "./pages/SearchPage";
 import EventsView from "./pages/EventsView";
 import Locations from "./pages/Locations";
-import Live from "./pages/Live";
 import Users from "./pages/Users";
 
 function UserDash() {
@@ -25,7 +24,6 @@ function UserDash() {
 				{view === "events" && <EventsView />}
 				{view === "locations" && <Locations />}
 				{view === "users" && <Users />}
-				{view === "live" && <Live />}
 			</div>
 			<BottomBar view={view} setView={setView}></BottomBar>
 		</div>

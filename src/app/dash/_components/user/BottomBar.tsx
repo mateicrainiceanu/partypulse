@@ -4,9 +4,12 @@ import {IoLocationOutline} from "react-icons/io5";
 import {FaRegUser} from "react-icons/fa";
 
 function BottomBar({view, setView}: {view: string; setView: (name: string) => void}) {
-	function handleViewChange(e: any) {
-		setView(e.target.id);
+	function handleViewChange(e: any) {		
 		localStorage.setItem("view", e.target.id);
+		if (view === "live") window.location.href = "/dash";
+		if (e.target.id === "live") window.location.href = "/dash/live";
+
+		setView(e.target.id);
 	}
 
 	return (

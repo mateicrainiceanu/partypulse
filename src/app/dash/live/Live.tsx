@@ -6,9 +6,11 @@ import FormBtn from "@/app/components/FormBtn";
 import {AlertContext} from "@/app/AlertContext";
 import {FullEvent} from "@/types";
 import {LoadManContext} from "@/app/LoadManContext";
+import EventWithData from "@/app/components/EventWithData";
 
 function Live() {
 	const [found, setFound] = useState(null);
+	const [tried, setTried] = useState(false);
 	const [event, setEvent] = useState({
 		id: 0,
 		name: "",
@@ -27,17 +29,23 @@ function Live() {
 	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 
 	useEffect(() => {
-		getData();
-	}, []);
+		setTimeout(
+			() => {
+				getData();
+			},
+			tried ? 5000 : 0
+		);
+	}, [event]);
 
 	function getData() {
-		addLoadingItem();
+		if (!tried) addLoadingItem();
 		axios
 			.get("/api/user/event")
 			.then((res) => {
 				setEvent(res.data.event);
 				setFound(res.data.found);
-				finishedLoadingItem();
+				if (!tried) finishedLoadingItem();
+				setTried(true);
 			})
 			.catch(handleAxiosError);
 	}
@@ -46,6 +54,11 @@ function Live() {
 		<div>
 			{found ? (
 				<div>
+					{event.status != 1 && (
+						<div className="max-w-lg mx-auto p-2 md:p-0">
+							<EventWithData ev={event} />
+						</div>
+					)}
 					{event.status == 0 && (
 						<div className="my-20 text-center font-mono max-w-lg mx-auto p-5">
 							<h1 className="text-3xl font-bold my-2">Event has not started</h1>
