@@ -1,13 +1,14 @@
 "use client";
 
-import React from "react";
-import {useWebSocket} from "next-ws/client";
+import React, {useContext} from "react";
 import {useEffect, useState} from "react";
 import {getCookie} from "cookies-next";
 import SongPreview, {Song} from "@/app/components/SongPreview";
 import {IoPlayForwardCircleSharp, IoPlayCircle} from "react-icons/io5";
 import {GoXCircleFill} from "react-icons/go";
 import {RiSortAsc, RiSortDesc} from "react-icons/ri";
+import axios from "axios";
+import {AlertContext} from "@/app/AlertContext";
 
 interface SongRequest {
 	id: number;
@@ -16,39 +17,43 @@ interface SongRequest {
 }
 
 function LiveEventUpdates({evid}: {evid: number}) {
-	const ws = useWebSocket();
-	let unmounts = 0;
-	//    ^? WebSocket on the client, null on the server
 	const [data, setData] = useState([]);
+	const [renderd, setRenderd] = useState(false);
 	const [djMiniView, setDjMiniView] = useState("live");
 	const [order, setOrder] = useState(1);
-
-	async function handleMsg(event: MessageEvent<Blob>) {
-		setData(await JSON.parse(await event.data.text()));
-	}
+	const {handleAxiosError} = useContext(AlertContext);
 
 	useEffect(() => {
-		ws?.addEventListener("message", handleMsg);
-		(ws as any).onopen = () => {
-			(ws as any).send(JSON.stringify({token: getCookie("token"), evId: evid}));
-		};
-		return () => {
-			if (unmounts == 1) {
-				console.log("Component did unmount");
-				ws?.close();
-			} else {
-				unmounts++;
-			}
-		};
+		updateData();
 		//eslint-disable-next-line
-	}, []);
+	}, [data]);
+
+	function updateData() {
+		setTimeout(
+			() => {
+				axios
+					.get("/api/event/live?evId=" + evid)
+					.then((res) => {
+						setRenderd(true);
+						setData(res.data);
+					})
+					.catch(handleAxiosError);
+			},
+			renderd ? 2000 : 0
+		);
+	}
 
 	function handleViewChange(event: any) {
 		setDjMiniView(event.target.id);
 	}
 
 	function handleStatusChange(reqId: number, newStatus: number) {
-		ws?.send(JSON.stringify({reqId: reqId, newStatus: newStatus}));
+		axios
+			.patch("/api/event/live", {reqId, newStatus, evid})
+			.then((res) => {
+				setData(res.data);
+			})
+			.catch(handleAxiosError);
 	}
 
 	function getFilter() {
