@@ -1,5 +1,3 @@
-import Image from "next/image";
-import Link from "next/link";
 import {FaMusic} from "react-icons/fa";
 
 export default function Home() {
@@ -14,7 +12,11 @@ export default function Home() {
 						</h1>
 						<h2 className="text-center font-mono text-gray-300">An app for your fun and partys</h2>
 						<div className="flex justify-center my-10">
-							<button className="bg-lime-400 text-black font-bold rounded-lg p-2 font-mono hover:bg-fuchsia-500 duration-200">
+							<button
+								className="bg-lime-400 text-black font-bold rounded-lg p-2 font-mono hover:bg-fuchsia-500 duration-200"
+								onClick={() => {
+									window.location.href = "/register";
+								}}>
 								Try out now
 							</button>
 						</div>
@@ -45,13 +47,9 @@ export default function Home() {
 				</p>
 			</div>
 			<div className="max-w-xl mx-auto tracking-wider my-12">
-				<h2 className="font-mono text-xl text-center my-2">
-					start small. dream big
-				</h2>
+				<h2 className="font-mono text-xl text-center my-2">start small. dream big</h2>
 				<hr className="mb-10" />
-				<p>
-					This one is self-explained. There is always a starting-point, but there can be no ending points.
-				</p>
+				<p>This one is self-explained. There is always a starting-point, but there can be no ending points.</p>
 			</div>
 		</div>
 	);
