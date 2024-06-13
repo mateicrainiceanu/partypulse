@@ -42,7 +42,7 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 					})
 					.catch(handleAxiosError);
 			},
-			renderd ? 2000 : 0
+			renderd ? 5000 : 0
 		);
 	}
 

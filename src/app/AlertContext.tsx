@@ -49,8 +49,7 @@ function AlertProvider({children}: {children: ReactNode}) {
 		}
 
 		finishedLoadingItem();
-
-		setAlert({severity: "error", prompt: err.response?.data || "There was an error!", autoClose: true});
+		if (err.response?.data) setAlert({severity: "error", prompt: err.response?.data, autoClose: true});
 	}
 
 	function handleError(text: string, tp: string) {
