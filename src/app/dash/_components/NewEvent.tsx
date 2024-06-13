@@ -10,7 +10,7 @@ import {AlertContext} from "@/app/AlertContext";
 import {LoadManContext} from "@/app/LoadManContext";
 
 function NewEvent({close}: {close: any}) {
-	const {handleAxiosError} = useContext(AlertContext);
+	const {handleAxiosError, handleError} = useContext(AlertContext);
 	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	const [eventData, setEventData] = useState({
 		name: "",
@@ -30,14 +30,17 @@ function NewEvent({close}: {close: any}) {
 	}
 
 	function saveEvent() {
-		addLoadingItem();
-		axios
-			.post("/api/event", eventData)
-			.then(() => {
-				close();
-				finishedLoadingItem();
-			})
-			.catch(handleAxiosError);
+		console.log(eventData);
+		if (eventData.name && eventData.date && eventData.locName) {
+			addLoadingItem();
+			axios
+				.post("/api/event", eventData)
+				.then(() => {
+					close();
+					finishedLoadingItem();
+				})
+				.catch(handleAxiosError);
+		} else handleError("Please fill out all fields!", "error");
 	}
 
 	return (

@@ -17,7 +17,7 @@ function QRCodeConfim({params}: {params: {code: string}}) {
 					finishedLoadingItem();
 				} else {
 					localStorage.setItem("view", "live");
-					window.location.replace("/dash");
+					window.location.replace("/dash/live");
 				}
 			})
 			.catch(handleAxiosError);
