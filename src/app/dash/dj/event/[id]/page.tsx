@@ -11,7 +11,7 @@ import {BsCheckCircleFill} from "react-icons/bs";
 import {UserContext} from "@/app/UserContext";
 import LiveEventUpdates from "./LiveEventUpdates";
 import {AlertContext} from "@/app/AlertContext";
-import { LoadManContext } from "@/app/LoadManContext";
+import {LoadManContext} from "@/app/LoadManContext";
 
 function DjView({params}: {params: {id: number}}) {
 	const [data, setData] = useState({
@@ -47,7 +47,7 @@ function DjView({params}: {params: {id: number}}) {
 					window.location.replace("/dash");
 				}
 				setData(parseEventForView(response.data));
-				finishedLoadingItem()
+				finishedLoadingItem();
 			})
 			.catch(handleAxiosError);
 	}, []);
@@ -143,7 +143,7 @@ function DjView({params}: {params: {id: number}}) {
 				)}
 			</div>
 			<div className="w-full md:w-2/3">
-				<LiveEventUpdates evid={params.id} />
+				<LiveEventUpdates genreVoteLive={data.genreVote} evid={params.id} />
 			</div>
 		</div>
 	);

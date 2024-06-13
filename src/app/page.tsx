@@ -1,3 +1,4 @@
+"use client";
 import {FaMusic} from "react-icons/fa";
 
 export default function Home() {

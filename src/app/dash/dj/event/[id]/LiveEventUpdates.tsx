@@ -16,8 +16,9 @@ interface SongRequest {
 	song: Song;
 }
 
-function LiveEventUpdates({evid}: {evid: number}) {
+function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: number}) {
 	const [data, setData] = useState([]);
+	const [votes, setVotes] = useState([]);
 	const [renderd, setRenderd] = useState(false);
 	const [djMiniView, setDjMiniView] = useState("live");
 	const [order, setOrder] = useState(1);
@@ -35,7 +36,8 @@ function LiveEventUpdates({evid}: {evid: number}) {
 					.get("/api/event/live?evId=" + evid)
 					.then((res) => {
 						setRenderd(true);
-						setData(res.data);
+						setData(res.data.suggestions);
+						setVotes(res.data.votes);
 					})
 					.catch(handleAxiosError);
 			},
@@ -83,6 +85,25 @@ function LiveEventUpdates({evid}: {evid: number}) {
 
 	return (
 		<div className="w-full p-3">
+			{genreVoteLive == 1 && (
+				<div className="mb-3 bg-gray-800 p-3 rounded-lg">
+					<h2 className="text-xl font-mono font-bold text-center">Genre Vote Results:</h2>
+					<hr className="my-2" />
+
+					<p className="text-center">Top 3 Votes:</p>
+
+					<ol className="list-decimal flex flex-wrap justify-center gap-8">
+						{votes
+							.sort((a, b) => ((a as any).votes > (b as any).votes) as any)
+							.slice(0, 3)
+							.map(({genreName, votes}: {genreName: string; votes: number}, i) => (
+								<li className="my-1 bg-gray-500 p-3 rounded-lg" key={i}>
+									{genreName} : {votes}
+								</li>
+							))}
+					</ol>
+				</div>
+			)}
 			<div className="bg-gray-800 rounded-lg">
 				<div className="w-full p-3">
 					<h2 className="text-xl font-mono font-bold text-center">Requests</h2>

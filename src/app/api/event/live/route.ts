@@ -16,8 +16,35 @@ export async function GET(req: NextRequest) {
         if (user.id) {
 
             const suggestions = await Events.getMusicSuggestions(evId)
+            const genreVotes = await GenreVote.getVotesForEvent(evId);
 
-            return NextResponse.json(suggestions)
+            //PARSING THE VOTES
+
+            let counted: number[] = [];
+            let processed: number[] = [];
+            const genres = await Genre.getAll()
+
+            genreVotes.map(({ genreId }: { genreId: number }) => {
+            
+                const idx = counted.findIndex((gid => gid === genreId))
+                
+                if (idx>-1)
+                    processed[idx]++;
+                else {
+                    counted.push(genreId)
+                    processed[counted.length - 1] = 1;
+                }
+            })
+
+            let votes = counted.map((genreId, i) => {
+                return {
+                    genreId,
+                    votes: processed[i],
+                    genreName: genres[genres.findIndex((genre: { id: number, name: string }) => genre.id === genreId)].name
+                }
+            })
+
+            return NextResponse.json({ suggestions, votes})
 
         } else {
             return new NextResponse("UserNotLoggedIn", { status: 403 })
@@ -29,4 +56,5 @@ export async function GET(req: NextRequest) {
 }
 
 import PATCH from "./PATCH";
+import { Genre, GenreVote } from "../../_lib/models/Genre";
 export { PATCH }; 
