@@ -12,6 +12,7 @@ import {UserContext} from "@/app/UserContext";
 import LiveEventUpdates from "./LiveEventUpdates";
 import {AlertContext} from "@/app/AlertContext";
 import {LoadManContext} from "@/app/LoadManContext";
+import MSuggestions from "@/app/dash/live/LiveComponents/MSuggestions";
 
 function DjView({params}: {params: {id: number}}) {
 	const [data, setData] = useState({
@@ -108,21 +109,25 @@ function DjView({params}: {params: {id: number}}) {
 							</div>
 						)}
 						<hr className="my-2" />
-						<h1 className="text-center text-2xl text-white font-mono font-bold">Live Changes</h1>
 						<div className="flex flex-col gap-3">
-							<span>Music Suggestions</span>
-							<span>
-								<Switch checked={data.msuggestions === 1} onChange={handleSuggestionsUpdate}></Switch>
-							</span>
+							<div className="flex flex-row mt-1">
+								<span className="my-auto mr-auto">Music Suggestions</span>
+								<span className="my-auto ms-auto">
+									<Switch checked={data.msuggestions === 1} onChange={handleSuggestionsUpdate}></Switch>
+								</span>
+							</div>
 
-							<span>Genre Vote</span>
-							<span>
-								<button
-									className={"py-1 px-3 rounded-md " + (data.genreVote == 0 ? "bg-fuchsia-500" : "bg-red-500")}
-									onClick={handleGenreUpdate}>
-									{data.genreVote == 0 ? "Start" : "Stop"}
-								</button>
-							</span>
+							<div className="flex flex-row mt-1">
+								<span className="my-auto mr-auto">Genre Vote</span>
+								<span className="my-auto ms-auto">
+									<button
+										className={"py-1 px-3 rounded-md " + (data.genreVote == 0 ? "bg-fuchsia-500" : "bg-red-500")}
+										onClick={handleGenreUpdate}>
+										{data.genreVote == 0 ? "Start" : "Stop"}
+									</button>
+								</span>
+							</div>
+							<hr className="my-2" />
 
 							<span>Donation page redirect</span>
 
@@ -138,6 +143,11 @@ function DjView({params}: {params: {id: number}}) {
 									<BsCheckCircleFill></BsCheckCircleFill>
 								</div>
 							</div>
+						</div>
+						<hr className="my-2" />
+						<h1 className="text-center text-2xl text-white font-mono font-bold">DJ Song Preview</h1>
+						<div>
+							<MSuggestions djView />
 						</div>
 					</div>
 				)}

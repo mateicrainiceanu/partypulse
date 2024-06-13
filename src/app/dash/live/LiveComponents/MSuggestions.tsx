@@ -7,7 +7,15 @@ import FormBtn from "@/app/components/FormBtn";
 import {AlertContext} from "@/app/AlertContext";
 import {FullEvent} from "@/types";
 
-function MSuggestions({eventId, setEvent}: {eventId: number; setEvent: (event: FullEvent) => void}) {
+function MSuggestions({
+	eventId,
+	setEvent,
+	djView,
+}: {
+	eventId?: number;
+	setEvent?: (event: FullEvent) => void;
+	djView?: boolean;
+}) {
 	const [search, setSearch] = useState("");
 
 	const [results, setResults] = useState([]);
@@ -28,7 +36,9 @@ function MSuggestions({eventId, setEvent}: {eventId: number; setEvent: (event: F
 	}
 
 	function suggestionStart(id: string) {
-		setSuggest(results.filter((song: Song) => song.id == id)[0]);
+		if (!djView) {
+			setSuggest(results.filter((song: Song) => song.id == id)[0]);
+		}
 	}
 
 	function handleSubmit() {
@@ -36,7 +46,9 @@ function MSuggestions({eventId, setEvent}: {eventId: number; setEvent: (event: F
 			.post("/api/user/request", {song: suggest})
 			.then((res) => {
 				///handle succes
-				setEvent(res.data);
+				if (setEvent) {
+					setEvent(res.data);
+				}
 				handleError("Sent to DJ!", "success");
 				setSuggest(null);
 			})
@@ -45,7 +57,7 @@ function MSuggestions({eventId, setEvent}: {eventId: number; setEvent: (event: F
 
 	return (
 		<div className="w-full">
-			<h2 className="text-center font-mono text-xl">Suggest a song</h2>
+			{!djView && <h2 className="text-center font-mono text-xl">Suggest a song</h2>}
 			<FormElement
 				noAutoComplete
 				name="search"
@@ -58,7 +70,7 @@ function MSuggestions({eventId, setEvent}: {eventId: number; setEvent: (event: F
 			/>
 			<div className="max-h-96 overflow-y-scroll">
 				{results.map((song: Song, i) => (
-					<SongPreview key={i} songData={song} start={suggestionStart} />
+					<SongPreview key={i} songData={song} start={suggestionStart} djView={djView} />
 				))}
 			</div>
 
