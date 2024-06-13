@@ -30,7 +30,8 @@ export async function POST(req: NextRequest) {
                     width: track.album.images[0].width,
                 },
                 artists: artists.substring(0, artists.length - 2),
-                spotifyURL: track.external_urls.spotify
+                spotifyURL: track.external_urls.spotify,
+                preview: track.preview_url
             }
         })
 

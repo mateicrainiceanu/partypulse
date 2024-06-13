@@ -1,13 +1,18 @@
-import React from "react";
-
+import React, {useEffect, useRef, useState} from "react";
+import {FaPlayCircle, FaPauseCircle} from "react-icons/fa";
 export interface Song {
 	id: string;
 	title: String;
 	artists: String;
 	imgsrc: string;
+	preview: string;
 }
 
 function SongPreview({songData, start, djView}: {songData: Song; start?: (id: string) => void; djView?: boolean}) {
+	const audioRef = useRef(null as any);
+
+	const [playStatus, setPlayStatus] = useState(false);
+
 	return (
 		<div
 			className={"w-full flex  " + (djView ? "px-3" : "p-3 my-2 hover:bg-gray-800")}
@@ -18,6 +23,20 @@ function SongPreview({songData, start, djView}: {songData: Song; start?: (id: st
 			}}>
 			<img src={songData.imgsrc} alt="Album cover" width={50} height={50}></img>
 			<span className="my-auto mx-5">{songData.title + " - " + songData.artists}</span>
+			{djView && (
+				<div className="my-auto ms-auto text-3xl flex items-center justify-center">
+					<button
+					className="my-auto"
+						onClick={() => {
+							setPlayStatus(prev => !prev)
+							if (playStatus) audioRef.current.pause();
+							else audioRef.current.play();
+						}}>
+						{!playStatus ? <FaPlayCircle className="hover:text-gray-400" /> : <FaPauseCircle className={playStatus ? "text-red-400" : ""} />}
+					</button>
+					<audio ref={audioRef} src={songData.preview}></audio>
+				</div>
+			)}
 		</div>
 	);
 }

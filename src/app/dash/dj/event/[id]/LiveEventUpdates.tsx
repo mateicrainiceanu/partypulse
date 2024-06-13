@@ -2,13 +2,14 @@
 
 import React, {useContext} from "react";
 import {useEffect, useState} from "react";
-import {getCookie} from "cookies-next";
 import SongPreview, {Song} from "@/app/components/SongPreview";
 import {IoPlayForwardCircleSharp, IoPlayCircle} from "react-icons/io5";
 import {GoXCircleFill} from "react-icons/go";
 import {RiSortAsc, RiSortDesc} from "react-icons/ri";
 import axios from "axios";
 import {AlertContext} from "@/app/AlertContext";
+import { FaCheckCircle, FaListAlt } from "react-icons/fa";
+
 
 interface SongRequest {
 	id: number;
@@ -34,7 +35,7 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 			() => {
 				axios
 					.get("/api/event/live?evId=" + evid)
-					.then((res) => {
+					.then((res) => {						
 						setRenderd(true);
 						setData(res.data.suggestions);
 						setVotes(res.data.votes);
@@ -107,9 +108,6 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 			<div className="bg-gray-800 rounded-lg">
 				<div className="w-full p-3">
 					<h2 className="text-xl font-mono font-bold text-center">Requests</h2>
-					<p className="text-xs my-2 italic text-gray-400">
-						Disclaimer: none of the buttons play one song. They just have an impact on your view.
-					</p>
 				</div>
 				<div className="mt-2">
 					<div className="mx-2 flex gap-3 flex-wrap">
@@ -175,14 +173,14 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 						.sort((sr1: SongRequest, sr2: SongRequest) => (sr1.id - sr2.id) * order)
 						.map((sr: SongRequest) => (
 							<div key={sr.id} className="flex flex-row hover:bg-lime-700 px-4 rounded-lg">
-								<div className="my-auto text-3xl flex gap-3">
-									<IoPlayCircle
+								<div className="my-auto text-2xl flex gap-3">
+									<FaCheckCircle
 										className={"hover:text-green-500 " + (sr.status == 3 ? "text-green-500" : "")}
 										onClick={() => {
 											handleStatusChange(sr.id, 3);
 										}}
 									/>
-									<IoPlayForwardCircleSharp
+									<FaListAlt
 										className={"hover:text-yellow-500 " + (sr.status == 1 ? "text-yellow-500" : "")}
 										onClick={() => {
 											handleStatusChange(sr.id, 1);

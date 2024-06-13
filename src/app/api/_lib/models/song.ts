@@ -9,7 +9,8 @@ interface Song {
     spotifyURL: string,
     youtubeId?: string,
     youtubeURL?: string,
-    imgsrc: string
+    imgsrc: string,
+    preview: string
 }
 
 class Song {
@@ -21,6 +22,7 @@ class Song {
     youtubeId?: string;
     youtubeURL?: string;
     imgsrc: string;
+    preview: string;
 
     constructor(body: Song) {
         this.title = body.title;
@@ -30,15 +32,17 @@ class Song {
         this.youtubeId = body.youtubeId;
         this.youtubeURL = body.youtubeURL;
         this.imgsrc = body.imgsrc;
+        this.preview = body.preview;
     }
 
     async save() {
-        let sql = `INSERT INTO songs (title, artists, spotifyId, spotifyURL, imgsrc) VALUES (
+        let sql = `INSERT INTO songs (title, artists, spotifyId, spotifyURL, imgsrc, preview) VALUES (
             "${this.title}",
             "${this.artists}",
             '${this.spotifyId}',
             '${this.spotifyURL}',
-            '${this.imgsrc}'
+            '${this.imgsrc}',
+            '${this.preview}'
         );`
 
         return await db.execute(sql) as Array<RowDataPacket>[0]

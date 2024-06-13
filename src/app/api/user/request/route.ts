@@ -8,7 +8,7 @@ import SongRequest from "../../_lib/models/songRequest";
 
 export async function POST(req: NextRequest) {
 
-    let { song } = await req.json()
+    let { song } = await req.json()    
 
     const url = new URL(req.url)
     const token = cookies().get("token")?.value || url.searchParams.get("token");
