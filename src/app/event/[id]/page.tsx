@@ -45,6 +45,8 @@ function ManageEvent({params}: {params: {id: number}}) {
 			.get("/api/event/" + params.id)
 			.then((response) => {
 				setData(parseEventForView(response.data));
+				console.log(response.data);
+				
 				setTComing(response.data.coming);
 				setTLiked(response.data.liked);
 				finishedLoadingItem();

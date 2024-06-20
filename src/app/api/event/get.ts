@@ -3,7 +3,6 @@ import { cookies } from "next/headers"
 import { getUserFromToken } from "../_lib/token";
 
 import Events from "../_lib/models/event";
-import { RowDataPacket } from "mysql2";
 
 
 export async function GET(req: NextRequest) {
@@ -17,30 +16,9 @@ export async function GET(req: NextRequest) {
     if (token) {
         const user = getUserFromToken(token)
         if (user.id) {
-            const [events] = await Events.getIdsForUser(user.id, onlyManaged == "true") as Array<RowDataPacket>
+            const events = await Events.getForUser(user.id, onlyManaged == 'true')
 
-            var wereIds: Array<number> = []
-
-            const updatedEv = await events.map(async (event: any) => {
-                var uq = true;
-
-                wereIds.map((id: number) => {
-                    if (id == event.eventId) {
-                        uq = false;
-                    }
-                })
-
-                wereIds.push(event.eventId)
-
-                if (uq) {
-                    return await Events.getFullForId(event.eventId, user.id);
-                } else { return null }
-
-            });
-
-            const answ = await Promise.all(updatedEv)
-
-            return NextResponse.json(answ.filter((answ: any) => answ != null))
+            return NextResponse.json(events.filter((answ: any) => answ != null))
 
         } else {
             return new NextResponse("UserNotLoggedIn", { status: 403 })

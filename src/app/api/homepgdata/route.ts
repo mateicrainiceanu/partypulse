@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
             const [locationrels] = await Relationship.getLocForUser(user.id, 0) as any
 
             const results = locationrels.map(async (rel: { locationId: number }) => {
-                return await Events.getFullForLocation(rel.locationId, user.id!)
+                return await Events.getFullForLocation(rel.locationId, user.id!, true)
             })
 
             const eventsFromLikedLocations = (await Promise.all(results)).filter((o: { events: Array<Events> }) => o.events.length > 0)

@@ -17,12 +17,11 @@ export async function POST(req: NextRequest) {
         const user = getUserFromToken(token)
         if (user.id) {
 
-            const [resp] = await Events.getIdsForUser(user.id, false, true) as Array<RowDataPacket>
+            const events = await Events.getForUser(user.id, false, true) 
 
-            const eventId = resp[0].eventId
-            const event = await Events.getFullForId(eventId, user.id)
+            const found = events.length
 
-            const found = (resp[0] != undefined ? true : false)
+            const [event] = events
 
             if (found) {
 
@@ -40,7 +39,7 @@ export async function POST(req: NextRequest) {
                         id = existingSongs[0].id as number
                     }
 
-                    const sr = new SongRequest({ eventId: eventId, userId: user.id, songId: id } as SongRequest)
+                    const sr = new SongRequest({ eventId: event.id, userId: user.id, songId: id } as SongRequest)
                     await sr.save() as RowDataPacket[]
                 }
 
