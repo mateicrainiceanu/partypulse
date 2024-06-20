@@ -24,16 +24,8 @@ export async function POST(req: NextRequest) {
     }
 
     if (category === "locations" && searchQuery != "") {
-        var [res] = await Location.findFromString(searchQuery) as Array<RowDataPacket>;
-        if (userId != 0) {
-            const userLocations = res.map(async (location: Location) => {
-                const objext = await Location.getUsersPermission(location.id, userId)
-                return { ...location, ...objext }
-            })
-
-            res = await Promise.all(userLocations) as RowDataPacket
-        }
-        return NextResponse.json({ category: "locations", results: res })
+        const locations = await Location.getContaining(searchQuery, userId)        
+        return NextResponse.json({ category: "locations", results: locations })
     }
 
     if (category === "events" && searchQuery != "") {
@@ -45,8 +37,6 @@ export async function POST(req: NextRequest) {
         })
 
         const full = await Promise.all(res)
-
-
         return NextResponse.json({ category: "events", results: full })
     }
 

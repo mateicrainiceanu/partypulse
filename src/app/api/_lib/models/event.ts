@@ -38,10 +38,7 @@ class Events {
 
         let sql = `
         INSERT INTO events (name, privateev, dateStart, duration) VALUES (
-            ?,
-            ?,
-            ?,
-           ?
+            ?,?,?, ?
         );`
         return db.safeexe(sql, [this.name, (this.privateev ? 1 : 0), (this.date + " " + this.time + ":00"), duration]);
     }
@@ -104,7 +101,7 @@ class Events {
     }
 
     static async getFullForLocation(locId: number, mainUsrId?: number) {
-        const location = (await Location.getFullLocation(locId, mainUsrId))
+        const location = (await Location.getFullLocation(locId, mainUsrId)) as any
 
         const [events] = await db.safeexe(`SELECT id FROM events WHERE locationId = ? ORDER BY status ASC, dateStart ASC ; `, [locId]) as any
 
@@ -137,6 +134,7 @@ class Events {
 
             let location: Location
             if (givenLocation == undefined)
+                //DELETE getFromIds
                 location = (await Location.getFromIds(`${event.locationId}`) as any)[0][0]
             else
                 location = givenLocation!

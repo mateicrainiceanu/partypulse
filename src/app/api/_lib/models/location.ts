@@ -9,9 +9,12 @@ interface Location {
     city: string,
     lat: number,
     lon: number,
+    userInteractions?: Array<{ userId: number, reltype: number }>
 }
 
 class Location {
+    userInteractions?: Array<{ userId: number, reltype: number }>
+
     constructor(name: string, useForAdress: string, adress: string, city: string, lat: number, lon: number) {
         this.name = name;
         this.useForAdress = useForAdress;
@@ -61,18 +64,29 @@ class Location {
         return db.safeexe(sql, [locid, uid])
     }
 
-    static getContaining(name: string) {
+    static async getContaining(name: string, userId?: number) {
         const q = `%${name}%`
-        let sql = `SELECT id, name FROM locations WHERE 
-        name LIKE ? AND 
-        private = 0;`
-        return db.safeexe(sql, [q]);
-    }
+        let sql = `SELECT 
+            locations.*,
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'userId', users_locations.userId, 
+                        'reltype', users_locations.reltype
+                    )
+                ) AS userInteractions
+            FROM 
+                locations
+            JOIN 
+                users_locations ON locations.id = users_locations.locationId
+                WHERE locations.name LIKE ?
+            GROUP BY 
+                locations.id;
+            `
+        const [locations] = (await db.safeexe(sql, [q]));
 
-    static findFromString(q: string) {
-        const q1 = `%${q}%`
-        let sql = `SELECT * FROM locations WHERE name LIKE ?;`
-        return db.safeexe(sql, [q1]) as Promise<Array<RowDataPacket>>
+        const fullLocs = locations.map(Location.getPermissionFor)
+
+        return fullLocs;
     }
 
     static async reaction(uid: number, locid: number, liked: boolean) {
@@ -88,46 +102,51 @@ class Location {
         }
     }
 
-    static async getFullLocation(id: number, uid?: number) {
-        let sql = `SELECT * FROM locations WHERE id = ?;`
-        let [locations] = await db.safeexe(sql, [id]) as Array<RowDataPacket>
+    static async getFullLocation(id: number, userId?: number) {
+        let sql = `SELECT 
+            locations.*,
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'userId', users_locations.userId, 
+                        'reltype', users_locations.reltype
+                    )
+                ) AS userInteractions
+            FROM 
+                locations
+            JOIN 
+                users_locations ON locations.id = users_locations.locationId
+                WHERE locations.id = ${id}
+            GROUP BY 
+                locations.id;
+            `
 
-        if (locations.length && uid) {
-            const location = locations[0];
-            let [rels] = await db.execute(`SELECT * FROM users_locations WHERE locationId = ${id} AND userId = ${uid};`) as Array<RowDataPacket>
-            var userHasRightToManage = false
-            var liked = false
-            rels.map((rel: { reltype: number }) => {
-                if (rel.reltype === 0) {
-                    liked = true
-                }
-                if (rel.reltype === 1) {
-                    userHasRightToManage = true
-                }
-            })
-            return { ...location, userHasRightToManage, liked }
-        } else if (locations.length)
-            return locations[0];
-        else return null
+        const locations = (await db.execute(sql))[0]
+
+        if (locations.length > 0) {
+            let [location] = locations
+            return Location.getPermissionFor(location)
+        } else
+            return null
     }
 
-    static async getUsersPermission(locid?: number, uid?: number) {
-        if (locid && uid) {
-            let [rels] = await db.safeexe(`SELECT * FROM users_locations WHERE locationId = ? AND userId = ?;`, [locid, uid]) as Array<RowDataPacket>
-            var userHasRightToManage = false
-            var liked = false
-            rels.map((rel: { reltype: number }) => {
-                if (rel.reltype === 0) {
-                    liked = true
-                }
-                if (rel.reltype === 1) {
-                    userHasRightToManage = true
-                }
-            })
-            return { userHasRightToManage, liked }
-        } else {
-            return { userHasRightToManage: false, liked: false }
-        }
+    static getPermissionFor(location: Location, userId?: number | undefined) {
+
+        let userHasRightToManage = false
+        let liked = false;
+        let nrLiked = 0;
+        location.userInteractions?.map((interaction: any) => {
+            if (interaction.userId == userId && interaction.reltype == 1)
+                userHasRightToManage = true;
+            if (interaction.userId == userId && interaction.reltype == 0) {
+                liked = true
+                nrLiked++;
+            } else if (interaction.reltype == 0) {
+                nrLiked++;
+            }
+        })
+
+        return { ...location, userInteractions: nrLiked, liked, userHasRightToManage }
+
     }
 
     static addCode(locid: number, code: string) {

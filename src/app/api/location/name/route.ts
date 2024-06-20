@@ -15,26 +15,14 @@ export async function POST(req: NextRequest) {
 
     if (token) {
         const user = getUserFromToken(token)
-        if (user.id) {
+        if (user.id)
             userId = user.id
-        }
     }
 
-    const [res] = await Location.getContaining(q) as Array<RowDataPacket>;
+    const res = await Location.getContaining(q, userId);
 
-    if (userId != 0) {
+    return NextResponse.json(res)
 
-        const userLocations = res.map(async (location: Location) => {
-            const objext = await Location.getUsersPermission(location.id, userId)
-            return { ...location, ...objext }
-        })
-
-        const final = await Promise.all(userLocations)
-        
-        return NextResponse.json(final)
-    } else {
-        return NextResponse.json(res)
-    }
 
 
 }

@@ -10,11 +10,10 @@ export function Location({eventData, setEventData}: any) {
 	useEffect(handleUpdatePublicLocation, [locationSearch]);
 
 	function handleUpdatePublicLocation() {
-		if (locationSearch !== "") {
-			axios.post("/api/location/name", {q: locationSearch}).then((res) => {
-				setOptions(res.data.map((loc: {id: Number; name: string}) => ({...loc, label: loc.name})));
+		if (locationSearch !== "")
+			axios.post("/api/search", {category: "locations", searchQuery: locationSearch}).then((res) => {
+				setOptions(res.data.results.map((loc: {id: Number; name: string}) => ({...loc, label: loc.name})));
 			});
-		}
 	}
 
 	function handleChange(e: any) {
