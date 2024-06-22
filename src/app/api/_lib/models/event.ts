@@ -257,16 +257,23 @@ class Events {
     }
 
     static async getMusicSuggestions(evId: number) {
-        const [suggestions] = await db.safeexe(`SELECT * FROM requests WHERE eventId = ?`, [evId]) as RowDataPacket[];
+        let sql = `
+        SELECT songs.*,
+        JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'uname', users.uname
+            )
+        ) as requests,
+        MIN(requests.status) AS status
+        FROM requests
+        JOIN songs ON songs.id = requests.songId
+        JOIN users ON requests.userId = users.id
+        WHERE requests.eventId=?
+        GROUP BY songs.id;
+    `
 
-        const data = await suggestions.map(async (suggestion: { songId: number, userId: number, status: number }) => {
-            let [song] = (await db.execute(`SELECT * FROM songs WHERE id = ${suggestion.songId};`) as RowDataPacket[][])[0]
-            return { ...suggestion, song }
-        })
-
-        //MAYBE ADD SORT FOR EACH SONG TO NOT APPEAR TWICE
-
-        return await Promise.all(data)
+        let [res] = await db.safeexe(sql, [evId])
+        return res
     }
 
 }
