@@ -99,11 +99,11 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 
 					<ol className="list-decimal flex flex-wrap justify-center gap-8">
 						{votes
-							.sort((a, b) => ((a as any).votes > (b as any).votes) as any)
+							.sort((b, a) => ((a as any).votes.length - (b as any).votes.length) as any)
 							.slice(0, 3)
-							.map(({genreName, votes}: {genreName: string; votes: number}, i) => (
+							.map(({genreName, votes}: {genreName: string; votes: Array<{uname: string}>}, i) => (
 								<li className="my-1 bg-gray-500 p-3 rounded-lg" key={i}>
-									{genreName} : {votes}
+									{genreName} : {votes.length}
 								</li>
 							))}
 					</ol>

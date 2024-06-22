@@ -7,6 +7,7 @@ export interface Song {
 	artists: String;
 	imgsrc: string;
 	preview: string;
+	requests:Array<string>
 }
 
 function SongPreview({
@@ -31,7 +32,9 @@ function SongPreview({
 			<img src={songData.imgsrc} alt="Album cover" width={50} height={50}></img>
 			<span className="my-auto mx-5">{songData.title + " - " + songData.artists}</span>
 			{djView && (
-				<div className="my-auto ms-auto text-3xl flex items-center justify-center">
+				<div className="my-auto ms-auto text-3xl flex items-center justify-center gap-2">
+					<span className="text-lg">{songData.requests.length}</span>
+
 					<button
 						className="my-auto"
 						onClick={() => {
