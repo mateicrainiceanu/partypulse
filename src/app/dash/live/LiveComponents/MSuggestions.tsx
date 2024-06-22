@@ -35,9 +35,9 @@ function MSuggestions({
 			});
 	}
 
-	function suggestionStart(id: string) {
+	function suggestionStart(id:number) {
 		if (!djView) {
-			setSuggest(results.filter((song: Song) => song.id == id)[0]);
+			setSuggest(results.filter((song: Song) => (song.id) == id)[0]);
 		}
 	}
 

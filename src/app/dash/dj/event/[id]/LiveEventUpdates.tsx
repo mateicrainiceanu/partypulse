@@ -11,10 +11,14 @@ import {AlertContext} from "@/app/AlertContext";
 import { FaCheckCircle, FaListAlt } from "react-icons/fa";
 
 
-interface SongRequest {
+export interface SongRequest {
 	id: number;
+	title: String;
+	artists: string;
+	imgsrc: string;
+	preview:string; 
+	requests: Array<string>;
 	status: number;
-	song: Song;
 }
 
 function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: number}) {
@@ -95,11 +99,11 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 
 					<ol className="list-decimal flex flex-wrap justify-center gap-8">
 						{votes
-							.sort((a, b) => ((a as any).votes > (b as any).votes) as any)
+							.sort((b, a) => ((a as any).votes.length - (b as any).votes.length) as any)
 							.slice(0, 3)
-							.map(({genreName, votes}: {genreName: string; votes: number}, i) => (
+							.map(({genreName, votes}: {genreName: string; votes: Array<{uname: string}>}, i) => (
 								<li className="my-1 bg-gray-500 p-3 rounded-lg" key={i}>
-									{genreName} : {votes}
+									{genreName} : {votes.length}
 								</li>
 							))}
 					</ol>
@@ -193,7 +197,7 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 										}}
 									/>
 								</div>
-								<SongPreview songData={sr.song} djView></SongPreview>
+								<SongPreview songData={sr} djView></SongPreview>
 							</div>
 						))}
 				</div>

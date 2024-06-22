@@ -36,7 +36,19 @@ export class GenreVote {
     }
 
     static async getVotesForEvent(evid: number) {
-        return (await db.safeexe("SELECT * FROM genrevotes WHERE eventId = ?;", [evid]))[0]
+        return (await db.safeexe(`
+        SELECT genres.name AS genreName,
+            JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'uname', users.uname
+                )
+            ) as votes
+        FROM genrevotes
+        JOIN genres ON genrevotes.genreId = genres.id
+        JOIN users ON genrevotes.userId = users.id
+        WHERE genrevotes.eventId = ?
+        GROUP BY genres.id
+        ;`, [evid]))[0]
     }
 
     static async changeVote(uid: number, evid: number, gid: number) {
@@ -51,7 +63,7 @@ export class GenreVote {
         return (await db.safeexe("SELECT * FROM genrevotes WHERE eventId = ?;", [evid]))[0]
     }
 
-    static async clearEvent(evid: number){ 
+    static async clearEvent(evid: number) {
         return db.safeexe("DELETE FROM genrevotes WHERE eventId = ?;", [evid])
     }
 }

@@ -32,8 +32,8 @@ class SongRequest {
         return db.execute(sql)
     }
 
-    static changeReqStatus(id: string, newstatus: string) {
-        return db.execute(`UPDATE requests SET status = ${newstatus} WHERE id = ${id};`)
+    static changeReqStatus(id: string, newstatus: string, evId: string) {
+        return db.execute(`UPDATE requests SET status = ${newstatus} WHERE songId = ${id} AND eventId = ${evId};`)
     }
 }
 

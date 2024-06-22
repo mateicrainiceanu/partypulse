@@ -14,7 +14,9 @@ interface Events {
     customLoc: boolean,
     locId: number,
     locName: string,
-    locAdress: string
+    locAdress: string,
+    userRelations?: Array<{ userId: number, reltype: number, uname: string }>
+
 }
 
 class Events {
@@ -29,6 +31,7 @@ class Events {
         this.locId = obj.locId;
         this.locName = obj.locName;
         this.locAdress = obj.locAdress;
+
     }
 
     async save() {
@@ -38,10 +41,7 @@ class Events {
 
         let sql = `
         INSERT INTO events (name, privateev, dateStart, duration) VALUES (
-            ?,
-            ?,
-            ?,
-           ?
+            ?,?,?, ?
         );`
         return db.safeexe(sql, [this.name, (this.privateev ? 1 : 0), (this.date + " " + this.time + ":00"), duration]);
     }
@@ -79,23 +79,31 @@ class Events {
         return db.safeexe(sql, [locId, eventId]);
     }
 
-    static getIdsForUser(id: number, onlyManaged?: boolean, there?: boolean) {
-        let sql = `SELECT eventId FROM users_events WHERE userId = ?`
-        sql += onlyManaged ? ` AND (reltype = 1 OR reltype = 2);` : ""
-        sql += there ? ` AND reltype = 3 ORDER BY id DESC;` : ""
-        sql += ";"
+    static async getForUser(id: number, onlyManaged?: boolean, there?: boolean) {
 
-        return db.safeexe(sql, [id]) as Promise<Array<RowDataPacket>>
+        let query = `events.id IN ( SELECT eventId FROM users_events WHERE userId = ? AND reltype ${there ? '= 3' : (onlyManaged ? "< 3" : '> 3')} )`
+        const [events] = await db.safeexe(getEventQuery(query), [id])
+        return events.filter((p: Events) => p != null).map((e: Events) => Events.process(e, id))
+
     }
 
     static async getEventsForRelsUserId(uid: number, mainUsrId: number) {
-        const [rels] = await db.safeexe(`SELECT eventId, reltype FROM users_events WHERE userId = ?;`, [uid]) as any;
-        const eventsWithData = rels.map(async (rel: { eventId: number, reltype: number }) => {
-            const event = await Events.getFullForId(rel.eventId, mainUsrId, true)
-            return { reltype: rel.reltype, event }
+        //TO BE REVISITED
+
+        const [events] = await db.safeexe(getEventQuery("users_events.userId = ? AND events.status = 0"), [uid]) as any
+        const processed = events.map((e: Events) => {
+            return Events.process(e, mainUsrId)
         })
 
-        const matches = (await Promise.all(eventsWithData)).filter((o: { event: Events | null }) => (o.event != null))
+        const matches = processed.map((e: Events) => {
+            let rel = 0
+            e.userRelations?.map((inter: { userId: number, reltype: number }) => {
+                if (inter.userId = uid)
+                    rel = inter.reltype
+            });
+
+            return { event: e, reltype: rel }
+        })
 
         if (matches.length)
             return matches
@@ -103,16 +111,13 @@ class Events {
             return null
     }
 
-    static async getFullForLocation(locId: number, mainUsrId?: number) {
-        const location = (await Location.getFullLocation(locId, mainUsrId))
+    static async getFullForLocation(locId: number, mainUsrId?: number, isNotOver?: boolean) {
+        const location = (await Location.getFullLocation(locId, mainUsrId)) as any
 
-        const [events] = await db.safeexe(`SELECT id FROM events WHERE locationId = ? ORDER BY status ASC, dateStart ASC ; `, [locId]) as any
+        const [events] = await db.safeexe(getEventQuery("events.locationId = ? " + (isNotOver ? "AND events.status < 2" : "")), [locId]) as any
+        const processedEvents = events.filter((p: Events) => p != null).map((e: Events) => Events.process(e, mainUsrId))
 
-        const data = events.map(async (e: { id: number }) => {
-            return await Events.getFullForId(e.id, mainUsrId, true, location)
-        })
-
-        return { location, events: await Promise.all(data) }
+        return { location, events: processedEvents }
     }
 
     static getLocId(eventId: number) {
@@ -127,52 +132,63 @@ class Events {
         return db.execute(`SELECT * FROM events WHERE locationId IN (${locString})`);
     }
 
-    static async getFullForId(id: number | string, userId?: number, isNotOver?: boolean, givenLocation?: Location | undefined) {
+    static async getFullForId(id: number | string, uid?: number, isNotOver?: boolean, givenLocation?: Location | undefined) {
 
-        const [events] = await Events.getForId(Number(id), isNotOver) as Array<RowDataPacket>
+        const [res] = await db.safeexe(getEventQuery("events.id = ?"), [id])
 
-        if (events.length > 0) {
+        const [event] = res
+        if (res.length > 0)
+            return Events.process(event, uid)
+        else return null
+    }
 
-            const event = events[0]
+    static async getForIdRange(idrange: number | string, uid?: number, isNotOver?: boolean, givenLocation?: Location | undefined) {
 
-            let location: Location
-            if (givenLocation == undefined)
-                location = (await Location.getFromIds(`${event.locationId}`) as any)[0][0]
-            else
-                location = givenLocation!
+        const [res] = await db.execute(getEventQuery(`events.id IN ${idrange}`))
 
-            const djs = (await User.getDjsForId(event.id))
+        const [event] = res
+        if (res.length > 0)
+            return Events.process(event, uid)
+        else return null
+    }
 
-            const djsToReturn = (await Promise.all(djs)).filter((s: string) => s != null);
+    static process(event: Events, uid?: number) {
+        let djs: string[] = []
+        let userHasRightToManage = false
+        let userIsDJ = false
+        let there = false
+        let coming = false
+        let liked = false
 
-            var userHasRightToManage = 0
-            var liked = false;
-            var coming = false;
-            var there = false;
-
-            if (userId) {
-                let [result] = (await Events.getUsersPermission(id as number, userId) as Array<RowDataPacket>)
-
-                if (result.length > 0) {
-                    userHasRightToManage = (result[0].reltype == 1 || result[0].reltype == 2 ? result[0].reltype : 0);
-                    result.map(({ reltype }: { reltype: number }) => {
-                        if (reltype == 3) {
-                            there = true
-                        }
-                        if (reltype == 4) {
-                            coming = true
-                        }
-                        if (reltype == 5) {
-                            liked = true
-                        }
-                    })
+        event.userRelations?.map((rel) => {
+            if (rel.userId === uid) {
+                switch (rel.reltype) {
+                    case 1:
+                        userHasRightToManage = true
+                        break;
+                    case 2:
+                        userIsDJ = true
+                        break;
+                    case 3:
+                        there = true
+                        break;
+                    case 4:
+                        coming = true
+                        break;
+                    case 5:
+                        liked = true
+                        break;
+                    default:
+                        break;
                 }
             }
 
-            return { ...event, djs: djsToReturn, location: location.name, locationData: location, locationId: location.id, userHasRightToManage, there, coming, liked }
-        } else {
-            return null
-        }
+            if (rel.reltype === 2 && djs.indexOf(rel.uname) == -1)
+                djs.push(rel.uname)
+
+        })
+
+        return { ...event, djs, userHasRightToManage, userIsDJ, there, liked, coming }
     }
 
     static deleteForId(id: number) {
@@ -209,7 +225,6 @@ class Events {
     }
 
     static changeStatus(id: number, newStatus: number) {
-        
         return db.execute(`UPDATE events SET status = ${newStatus} WHERE id = ${id}`)
     }
 
@@ -242,18 +257,61 @@ class Events {
     }
 
     static async getMusicSuggestions(evId: number) {
-        const [suggestions] = await db.safeexe(`SELECT * FROM requests WHERE eventId = ?`, [evId]) as RowDataPacket[];
+        let sql = `
+        SELECT songs.*,
+        JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'uname', users.uname
+            )
+        ) as requests,
+        MIN(requests.status) AS status
+        FROM requests
+        JOIN songs ON songs.id = requests.songId
+        JOIN users ON requests.userId = users.id
+        WHERE requests.eventId=?
+        GROUP BY songs.id;
+    `
 
-        const data = await suggestions.map(async (suggestion: { songId: number, userId: number, status: number }) => {
-            let [song] = (await db.execute(`SELECT * FROM songs WHERE id = ${suggestion.songId};`) as RowDataPacket[][])[0]
-            return { ...suggestion, song }
-        })
-
-        //MAYBE ADD SORT FOR EACH SONG TO NOT APPEAR TWICE
-
-        return await Promise.all(data)
+        let [res] = await db.safeexe(sql, [evId])
+        return res
     }
 
+}
+
+function getEventQuery(query: string) {
+    return `
+        SELECT 
+            events.*, 
+            locations.name AS location, 
+            JSON_OBJECT(
+                'id', locations.id,
+                'name', locations.name,
+                'adress', locations.adress,
+                'useForAdress', locations.useForAdress,
+                'lat', locations.lat,
+                'lon', locations.lon,
+                'city', locations.city,
+                'userInteractions', JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'userId', users_locations.userId,
+                    'reltype', users_locations.reltype
+                ))
+            ) AS locationData, 
+            JSON_ARRAYAGG(
+               JSON_OBJECT(
+                    'userId', users_events.userId,
+                    'reltype', users_events.reltype,
+                    'uname', users.uname
+                )
+            ) AS userRelations
+        FROM events
+        JOIN locations ON locations.id = events.locationId
+        JOIN users_events ON users_events.eventId = events.id
+        JOIN users ON users.id = users_events.userId
+        JOIN users_locations ON users_locations.locationId = locations.id
+        WHERE ${query}
+        GROUP BY events.id, locations.id;
+        ;`
 }
 
 export default Events;

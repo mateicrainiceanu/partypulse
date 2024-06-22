@@ -15,7 +15,7 @@ export default async function PATCH(req: NextRequest) {
     if (token && evid && reqId && newStatus != undefined) {
         const user = getUserFromToken(token)
         if (user.id) {
-            await SongRequest.changeReqStatus(reqId, newStatus)
+            await SongRequest.changeReqStatus(reqId, newStatus, evid)
 
             const suggestions = await Events.getMusicSuggestions(evid)
 

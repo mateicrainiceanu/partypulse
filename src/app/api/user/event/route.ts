@@ -13,13 +13,9 @@ export async function GET(req: NextRequest) {
         const user = getUserFromToken(token)
         if (user.id) {
 
-            const [resp] = await Events.getIdsForUser(user.id, false, true) as Array<RowDataPacket>
-            
-            if (resp.length > 0) {
-                const event = await Events.getFullForId(resp[0].eventId)
-                return NextResponse.json({ event, found: (resp[0] != undefined ? true : false) })
-            } else
-                return NextResponse.json({ found: false })
+            const resp = await Events.getForUser(user.id, false, true) as Array<RowDataPacket>            
+
+            return NextResponse.json({ found: resp.length > 0, event: resp[0] })
 
         } else {
             return new NextResponse("UserNotLoggedIn", { status: 403 })
