@@ -60,14 +60,17 @@ export default class UserNotification {
         const [notifications]: UserNotification[][] = await db.execute(`SELECT * FROM users_notifications WHERE forUserId = ${uid} ORDER BY id DESC;`) as any
 
         const fullNotifications = notifications.map(async notif => {
-            const [{ uname, role }] = (await User.findById(notif.fromUserId) as any)[0]
+
+            const [user] = (await User.findById(notif.fromUserId) as any)
+
+            const { uname, role } = user[0]
 
             let fullNotif = { ...notif, from: { uname, role } }
 
             if (notif.itemType == "location" && notif.itemId)
-                fullNotif = { ...fullNotif, location: await Location.getFullLocation(notif.itemId, uid) }
+                fullNotif = { ...fullNotif, location: (await Location.getFullLocation(notif.itemId, uid)) as any }
             else if (notif.itemType == "event" && notif.itemId)
-                fullNotif = { ...fullNotif, event: await Events.getFullForId(notif.itemId, uid) }
+                fullNotif = { ...fullNotif, event: (await Events.getFullForId(notif.itemId, uid)) as any }
 
             return fullNotif
         })
@@ -81,9 +84,9 @@ export default class UserNotification {
         let fullNotif = { ...notif, from: { uname, role } }
 
         if (notif.itemType == "location" && notif.itemId)
-            fullNotif = { ...fullNotif, location: await Location.getFullLocation(notif.itemId, uid) }
+            fullNotif = { ...fullNotif, location: (await Location.getFullLocation(notif.itemId, uid)) as any }
         else if (notif.itemType == "event" && notif.itemId)
-            fullNotif = { ...fullNotif, event: await Events.getFullForId(notif.itemId, uid) }
+            fullNotif = { ...fullNotif, event: (await Events.getFullForId(notif.itemId, uid)) as any }
 
         return fullNotif
     }
