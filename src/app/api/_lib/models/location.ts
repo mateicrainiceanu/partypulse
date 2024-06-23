@@ -158,7 +158,7 @@ class Location {
     }
 
     static async getLocationsForUser(uid: number) {
-        let [rels] = await db.safeexe(`SELECT * FROM users_locaitons WHERE userId = ?`, [uid])
+        let [rels] = await db.safeexe(`SELECT * FROM users_locations WHERE userId = ?`, [uid])
         return rels
     }
 

@@ -87,8 +87,8 @@ export interface IUserNotification {
 	dateTime: string;
 	forUserId: number;
 	fromUserId: number;
-	from: {uname: string; role: number};
-	nottyp?: string;
+	fromUser: {uname: string; role: number};
+	nottype?: string;
 	text?: string;
 	itemType?: string;
 	itemId?: number;
