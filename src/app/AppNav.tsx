@@ -8,23 +8,29 @@ import {UserContext} from "./UserContext";
 import {IUserNotification, UserNotifContext} from "./UserNotifContext";
 import {IoIosNotifications} from "react-icons/io";
 import {IoNotificationsOff} from "react-icons/io5";
+import { deleteCookie } from "cookies-next";
 
 const Navbar = () => {
 	const [nav, setNav] = useState(false);
 	const {user} = useContext(UserContext);
 	const {showNotif, hideNotif, show, notifications} = useContext(UserNotifContext);
 
+	function handleLogout() {
+		deleteCookie('token');
+		deleteCookie('userId');
+		deleteCookie('uname');
+		deleteCookie('fname');
+		deleteCookie('role');
+		deleteCookie('email');
+		deleteCookie('donations');
+		window.location.replace('/')
+	}
+
 	const links = [
 		{
 			id: 1,
 			link: "/",
 			title: "Home",
-			needsLogIn: false,
-		},
-		{
-			id: 3,
-			title: !user.logged ? "Login" : "Logout",
-			link: !user.logged ? "/login" : "/logout",
 			needsLogIn: false,
 		},
 		{
@@ -51,13 +57,18 @@ const Navbar = () => {
 				</div>
 
 				<ul className="hidden lg:flex">
-					{links.map(({id, title, link, needsLogIn}) => (
-						<li
-							key={id}
-							className="nav-links px-4 cursor-pointer capitalize font-mono font-medium text-gray-500 hover:scale-105 hover:text-white duration-200 link-underline my-auto">
-							{(!needsLogIn || user.logged) && <Link href={link}>{title}</Link>}
-						</li>
-					))}
+					{links
+						.filter(({needsLogIn}) => !needsLogIn || user.logged)
+						.map(({id, title, link, needsLogIn}) => (
+							<li
+								key={id}
+								className="nav-links px-4 cursor-pointer capitalize font-mono font-medium text-gray-500 hover:scale-105 hover:text-white duration-200 link-underline my-auto">
+								{<Link href={link}>{title}</Link>}
+							</li>
+						))}
+					<li className="nav-links px-4 cursor-pointer capitalize font-mono font-medium text-gray-500 hover:scale-105 hover:text-white duration-200 link-underline my-auto">
+						{user.logged ? <button onClick={handleLogout}>Logout</button> : <Link href={"/login"}>Login</Link>}
+					</li>
 
 					<li className="my-auto">
 						{!show && user.logged && (
@@ -96,15 +107,18 @@ const Navbar = () => {
 
 				{nav && (
 					<ul className="flex flex-col justify-center items-center absolute top-0 left-0 w-full h-screen bg-gradient-to-b from-black to-violet-800 text-gray-500">
-						{links.map(({id, title, link, needsLogIn}) => (
-							<li key={id} className="px-4 cursor-pointer py-6 font-mono text-4xl hover:text-white">
-								{(!needsLogIn || user.logged) && (
-									<Link onClick={() => setNav(!nav)} href={link}>
-										{title}
-									</Link>
-								)}
-							</li>
-						))}
+						{links
+							.filter(({needsLogIn}) => !needsLogIn || user.logged)
+							.map(({id, title, link, needsLogIn}) => (
+								<li key={id} className="px-4 cursor-pointer py-6 font-mono text-4xl hover:text-white">
+										<Link onClick={() => setNav(!nav)} href={link}>
+											{title}
+										</Link>
+								</li>
+							))}
+						<li className="px-4 cursor-pointer py-6 font-mono text-4xl hover:text-white">
+							{user.logged ? <button onClick={handleLogout}>Logout</button> : <Link href={"/login"}>Login</Link>}
+						</li>
 					</ul>
 				)}
 			</div>

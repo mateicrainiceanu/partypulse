@@ -97,9 +97,6 @@ function DjView({params}: {params: {id: number}}) {
 					<div className="my-2 bg-cyan-900 rounded-lg p-3">
 						<h1 className="text-center text-2xl text-white font-mono font-bold">Menu</h1>
 						<h2 className="font-mono text-xl">{data.name}</h2>
-						<div className="my-1 flex justify-center">
-							<StatusPointer status={data.status} lg></StatusPointer>
-						</div>
 						<UpdateStauts data={data} setData={setData} />
 						{data.userHasRightToManage === 1 && (
 							<div className="m-4">

@@ -33,7 +33,7 @@ function SongPreview({
 			<span className="my-auto mx-5">{songData.title + " - " + songData.artists}</span>
 			{djView && (
 				<div className="my-auto ms-auto text-3xl flex items-center justify-center gap-2">
-					<span className="text-lg">{songData.requests.length}</span>
+					<span className="text-lg">{songData.requests?.length || ""}</span>
 
 					<button
 						className="my-auto"

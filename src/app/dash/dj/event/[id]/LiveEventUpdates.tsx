@@ -3,7 +3,6 @@
 import React, {useContext} from "react";
 import {useEffect, useState} from "react";
 import SongPreview, {Song} from "@/app/components/SongPreview";
-import {IoPlayForwardCircleSharp, IoPlayCircle} from "react-icons/io5";
 import {GoXCircleFill} from "react-icons/go";
 import {RiSortAsc, RiSortDesc} from "react-icons/ri";
 import axios from "axios";
@@ -164,7 +163,7 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 							onClick={() => {
 								setOrder((prev) => prev * -1);
 							}}>
-							<p className="text-xs my-2 italic text-gray-400 my-auto mx-2 select-none">
+							<p className="text-xs italic text-gray-400 my-auto mx-2 select-none">
 								{order < 0 ? "Newest" : "Oldest"}
 							</p>
 							{order == 1 ? <RiSortAsc /> : <RiSortDesc />}
