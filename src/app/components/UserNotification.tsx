@@ -47,7 +47,7 @@ function UserNotification({n}: {n: IUserNotification}) {
 						setExpanded(true);
 					}}>
 					<div className="flex gap-1">
-						<UserXsView uname={n.from.uname} role={n.from.role} mono /> {n.text}
+						<UserXsView uname={n.fromUser.uname} role={n.fromUser.role} mono /> {n.text}
 						<div className="ms-auto flex gap-2">
 							{expanded ? (
 								<BsXCircleFill className="text-xl my-auto" onClick={handleExpand} />
@@ -71,7 +71,7 @@ function UserNotification({n}: {n: IUserNotification}) {
 							</span>
 						</div>
 						<div className="rounded-lg bg-fuchsia-800 my-2">
-							<UserSmView uname={n.from.uname} role={n.from.role} rounded />
+							<UserSmView uname={n.fromUser.uname} role={n.fromUser.role} rounded />
 						</div>
 						{n.itemType == "location" && n.location && (
 							<LocationSmView locationData={n.location} showManage={n.location.userHasRightToManage} />

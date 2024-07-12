@@ -55,40 +55,131 @@ export default class UserNotification {
         return db.execute(sql)
     }
 
-    static async getForUser(uid: number) {
+    static async getFullNotification(notid: number, uid: number){
+        let sql = `
+SELECT
+    users_notifications.*,
+    JSON_OBJECT(
+        'uname', users.uname,
+        'role', users.role
+    ) AS fromUser,
+    JSON_OBJECT(
+        'name', COALESCE(events.name, ''),
+        'privateev', COALESCE(events.privateev, ''),
+        'dateStart', COALESCE(events.dateStart, ''),
+        'status', COALESCE(events.status, ''),
+        'duration', COALESCE(events.duration, ''),
+        'locationId', COALESCE(events.locationId, ''),
+        'msuggestions', COALESCE(events.msuggestions, ''),
+        'genreVote', COALESCE(events.genreVote, ''),
+        'location', COALESCE(locations.name, ''),
+        'usersRelations', COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'userId', users_events.userId,
+                'reltype', users_events.reltype
+            )
+        ), JSON_ARRAY())
+    ) AS event,
+    JSON_OBJECT(
+        'name', COALESCE(locations.name, ''),
+        'userInteractions', COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'userId', users_locations.userId,
+                'reltype', users_locations.reltype
+            )
+        ), JSON_ARRAY())
+    ) AS location
+FROM users_notifications
+LEFT JOIN events ON (users_notifications.itemId = events.id AND users_notifications.itemType = 'event')
+LEFT JOIN users_events ON (users_events.eventId = events.id AND users_notifications.itemType = 'event')
+LEFT JOIN locations ON ((users_notifications.itemId = locations.id AND users_notifications.itemType = 'location') OR events.locationId = locations.id)
+LEFT JOIN users_locations ON (users_locations.locationId = locations.id AND users_notifications.itemType = 'location') 
+JOIN users ON users_notifications.fromUserId = users.id
+WHERE users_notifications.id = ?
+GROUP BY
+    users_notifications.id,
+    users.uname,
+    locations.name
+ORDER BY users_notifications.id DESC;
 
-        const [notifications]: UserNotification[][] = await db.execute(`SELECT * FROM users_notifications WHERE forUserId = ${uid} ORDER BY id DESC;`) as any
+    `
+        let [notifications] = await db.safeexe(sql, [notid])
 
-        const fullNotifications = notifications.map(async notif => {
-
-            const [user] = (await User.findById(notif.fromUserId) as any)
-
-            const { uname, role } = user[0]
-
-            let fullNotif = { ...notif, from: { uname, role } }
-
-            if (notif.itemType == "location" && notif.itemId)
-                fullNotif = { ...fullNotif, location: (await Location.getFullLocation(notif.itemId, uid)) as any }
-            else if (notif.itemType == "event" && notif.itemId)
-                fullNotif = { ...fullNotif, event: (await Events.getFullForId(notif.itemId, uid)) as any }
-
-            return fullNotif
+        const res = notifications.map((notif: any) => {
+            let processedNotif = notif
+            if (notif.itemType == 'event') {
+                processedNotif = { ...processedNotif, event: Events.process(notif.event, uid), location: null }
+            } else if (notif.itemType == 'location') {
+                processedNotif = { ...processedNotif, location: Location.getPermissionFor(notif.location, uid), event: null }
+            }
+            return processedNotif
         })
 
-        return await Promise.all(fullNotifications)
+        return res
     }
 
-    static async getFullNotification(notif: UserNotification, uid: number) {
-        const [{ uname, role }] = (await User.findById(notif.fromUserId) as any)[0]
+    static async getForUser(uid: number) {
 
-        let fullNotif = { ...notif, from: { uname, role } }
+        let sql = `
+SELECT
+    users_notifications.*,
+    JSON_OBJECT(
+        'uname', users.uname,
+        'role', users.role
+    ) AS fromUser,
+    JSON_OBJECT(
+        'name', COALESCE(events.name, ''),
+        'privateev', COALESCE(events.privateev, ''),
+        'dateStart', COALESCE(events.dateStart, ''),
+        'status', COALESCE(events.status, ''),
+        'duration', COALESCE(events.duration, ''),
+        'locationId', COALESCE(events.locationId, ''),
+        'msuggestions', COALESCE(events.msuggestions, ''),
+        'genreVote', COALESCE(events.genreVote, ''),
+        'location', COALESCE(locations.name, ''),
+        'usersRelations', COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'userId', users_events.userId,
+                'reltype', users_events.reltype
+            )
+        ), JSON_ARRAY())
+    ) AS event,
+    JSON_OBJECT(
+        'name', COALESCE(locations.name, ''),
+        'userInteractions', COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'userId', users_locations.userId,
+                'reltype', users_locations.reltype
+            )
+        ), JSON_ARRAY())
+    ) AS location
+FROM users_notifications
+LEFT JOIN events ON (users_notifications.itemId = events.id AND users_notifications.itemType = 'event')
+LEFT JOIN users_events ON (users_events.eventId = events.id AND users_notifications.itemType = 'event')
+LEFT JOIN locations ON ((users_notifications.itemId = locations.id AND users_notifications.itemType = 'location') OR events.locationId = locations.id)
+LEFT JOIN users_locations ON (users_locations.locationId = locations.id AND users_notifications.itemType = 'location') 
+JOIN users ON users_notifications.fromUserId = users.id
+WHERE users_notifications.forUserId = ?
+GROUP BY
+    users_notifications.id,
+    users.uname,
+    locations.name
+ORDER BY users_notifications.id DESC;
 
-        if (notif.itemType == "location" && notif.itemId)
-            fullNotif = { ...fullNotif, location: (await Location.getFullLocation(notif.itemId, uid)) as any }
-        else if (notif.itemType == "event" && notif.itemId)
-            fullNotif = { ...fullNotif, event: (await Events.getFullForId(notif.itemId, uid)) as any }
+    `
+        let [notifications] = await db.safeexe(sql, [uid])
 
-        return fullNotif
+        const res = notifications.map((notif: any) => {
+            let processedNotif = notif
+            if (notif.itemType == 'event') {
+                processedNotif = { ...processedNotif, event: Events.process(notif.event, uid), location: null }
+            } else if (notif.itemType == 'location') {
+                processedNotif = { ...processedNotif, location: Location.getPermissionFor(notif.location, uid), event: null }
+            }
+            return processedNotif
+        })
+
+        return res
     }
 
     static updateStatus(notid: number, newstatus: number, markAllAsRead: boolean, userId?: number) {

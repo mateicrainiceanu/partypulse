@@ -51,7 +51,7 @@ export default class Email {
 
     static async getNotificationEmail(n: UserNotification) {
 
-        const fullnotiv = await UserNotification.getFullNotification(n, n.forUserId)
+        const fullnotiv = await UserNotification.getFullNotification(Number(n.id), n.forUserId)
 
         return `<div>
     <style>
@@ -75,7 +75,7 @@ export default class Email {
     </style>
     <div class="all">
       <h1>Notification from Partypulse!</h1>
-      <p>${fullnotiv.from.uname + " " + fullnotiv.text}</p>
+      <p>${fullnotiv.fromUser.uname + " " + fullnotiv.text}</p>
       <a href="http://localhost:3000/">Open the app and sign in to see more</a>
     </div>
 </div>`

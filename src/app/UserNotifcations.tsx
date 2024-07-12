@@ -4,7 +4,7 @@ import UserNotification from "./components/UserNotification";
 
 function UserNotifcations({n}: {n: IUserNotification[]}) {
 	return (
-		<div>
+		<div className="pb-24">
 			{n
 				.sort((n1, n2) => n1.status - n2.status)
 				.map((n) => (
