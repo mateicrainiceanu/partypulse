@@ -94,7 +94,7 @@ function DjView({params}: {params: {id: number}}) {
 		<div className="flex flex-wrap w-11/12 mx-auto">
 			<div className="w-full md:w-1/3 text-center font-mono max-w-lg mx-auto ">
 				{data.userHasRightToManage > 0 && (
-					<div className="my-2 bg-yellow-900 bg-opacity-50 rounded-lg p-3">
+					<div className="my-2 bg-yellow-900 bg-opacity-50 dark:bg-gray-900 rounded-lg p-3">
 						<h1 className="text-center text-2xl text-white font-mono font-bold">Menu</h1>
 						<h2 className="font-mono text-xl">{data.name}</h2>
 						<UpdateStauts data={data} setData={setData} />
@@ -143,7 +143,7 @@ function DjView({params}: {params: {id: number}}) {
 						</div>
 						<hr className="my-2" />
 						<h1 className="text-center text-2xl text-white font-mono font-bold">DJ Song Preview</h1>
-						<div>
+						<div className="font-sans text-sm text-left">
 							<MSuggestions djView />
 						</div>
 					</div>

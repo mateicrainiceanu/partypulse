@@ -7,15 +7,14 @@ import {GoXCircleFill} from "react-icons/go";
 import {RiSortAsc, RiSortDesc} from "react-icons/ri";
 import axios from "axios";
 import {AlertContext} from "@/app/AlertContext";
-import { FaCheckCircle, FaListAlt } from "react-icons/fa";
-
+import {FaCheckCircle, FaListAlt} from "react-icons/fa";
 
 export interface SongRequest {
 	id: number;
 	title: String;
 	artists: string;
 	imgsrc: string;
-	preview:string; 
+	preview: string;
 	requests: Array<string>;
 	status: number;
 }
@@ -38,7 +37,7 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 			() => {
 				axios
 					.get("/api/event/live?evId=" + evid)
-					.then((res) => {						
+					.then((res) => {
 						setRenderd(true);
 						setData(res.data.suggestions);
 						setVotes(res.data.votes);
@@ -87,10 +86,33 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 		return filter;
 	}
 
+	let viewOptions = [
+		{
+			title: "all",
+			color: "bg-gray-200",
+		},
+		{
+			title: "live",
+			color: "bg-green-200",
+		},
+		{
+			title: "qued",
+			color: "bg-yellow-200",
+		},
+		{
+			title: "canceld",
+			color: "bg-red-200",
+		},
+		{
+			title: "played",
+			color: "bg-blue-200",
+		},
+	];
+
 	return (
 		<div className="w-full p-3">
 			{genreVoteLive == 1 && (
-				<div className="mb-3 bg-gray-800 p-3 rounded-lg">
+				<div className="mb-3 p-3 rounded-lg bg-gray-900">
 					<h2 className="text-xl font-mono font-bold text-center">Genre Vote Results:</h2>
 					<hr className="my-2" />
 
@@ -108,74 +130,37 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 					</ol>
 				</div>
 			)}
-			<div className="bg-gray-800 rounded-lg">
+			<div className="rounded-lg">
 				<div className="w-full p-3">
 					<h2 className="text-xl font-mono font-bold text-center">Requests</h2>
 				</div>
 				<div className="mt-2">
 					<div className="mx-2 flex gap-3 flex-wrap">
-						<button
-							className={
-								"rounded-t-lg py-2 px-3 text-black " +
-								(djMiniView == "all" ? "bg-lime-800 text-white" : "bg-fuchsia-300")
-							}
-							onClick={handleViewChange}
-							id="all">
-							All
-						</button>
-						<button
-							className={
-								"rounded-t-lg py-2 px-3 text-black " + (djMiniView == "live" ? "bg-lime-800 text-white" : "bg-lime-300")
-							}
-							onClick={handleViewChange}
-							id="live">
-							Live Requests
-						</button>
-						<button
-							className={
-								"rounded-t-lg py-2 px-3 text-black " +
-								(djMiniView == "queued" ? "bg-lime-800 text-white" : "bg-yellow-300")
-							}
-							onClick={handleViewChange}
-							id="queued">
-							Queued
-						</button>
-						<button
-							className={
-								"rounded-t-lg py-2 px-3 text-black " +
-								(djMiniView == "canceled" ? "bg-lime-800 text-white" : "bg-red-400")
-							}
-							onClick={handleViewChange}
-							id="canceled">
-							Canceled
-						</button>
-						<button
-							className={
-								"rounded-t-lg py-2 px-3 text-black " +
-								(djMiniView == "played" ? "bg-lime-800 text-white" : "bg-blue-400")
-							}
-							onClick={handleViewChange}
-							id="played">
-							Played
-						</button>
+						{viewOptions.map(({title, color}, i) => (
+							<ViewOption
+								key={i}
+								name={title}
+								color={color}
+								handleViewChange={handleViewChange}
+								djMiniView={djMiniView}
+							/>
+						))}
 						<div
 							className="text-2xl ms-auto my-auto mx-2 flex"
 							onClick={() => {
 								setOrder((prev) => prev * -1);
 							}}>
-							<p className="text-xs italic text-gray-400 my-auto mx-2 select-none">
-								{order < 0 ? "Newest" : "Oldest"}
-							</p>
+							<p className="text-xs italic text-gray-400 my-auto mx-2 select-none">{order < 0 ? "Newest" : "Oldest"}</p>
 							{order == 1 ? <RiSortAsc /> : <RiSortDesc />}
 						</div>
 					</div>
 				</div>
-				<div className="py-3 rounded-b-lg px-1 bg-lime-800">
+				<div className="py-3 rounded-b-lg px-1 bg-yellow-800 dark:bg-fuchsia-950 bg-opacity-20 ">
 					{data
 						.filter((sr: SongRequest) => (getFilter() != "" ? sr.status == Number(getFilter()) : true))
 						.sort((sr1: SongRequest, sr2: SongRequest) => (sr1.id - sr2.id) * order)
 						.map((sr: SongRequest) => (
-							<div key={sr.id} className="flex flex-row hover:bg-lime-700 px-4 rounded-lg">
+							<div key={sr.id} className="flex flex-row hover:bg-fuchsia-800 px-4 rounded-lg">
 								<div className="my-auto text-2xl flex gap-3">
 									<FaCheckCircle
 										className={"hover:text-green-500 " + (sr.status == 3 ? "text-green-500" : "")}
@@ -196,12 +181,38 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 										}}
 									/>
 								</div>
+
 								<SongPreview songData={sr} djView></SongPreview>
 							</div>
 						))}
 				</div>
 			</div>
 		</div>
+	);
+}
+
+function ViewOption({
+	djMiniView,
+	handleViewChange,
+	name,
+	color,
+}: {
+	djMiniView: string;
+	handleViewChange: (e: any) => void;
+	name: string;
+	color: string;
+}) {
+	
+	return (
+		<button
+			className={
+				"rounded-t-lg py-2 px-3 text-black " +
+				(djMiniView == name ? "bg-yellow-800 bg-opacity-20 dark:bg-fuchsia-950 text-white" : color)
+			}
+			onClick={handleViewChange}
+			id={name}>
+			{name[0].toLocaleUpperCase() + name.substring(1)}
+		</button>
 	);
 }
 

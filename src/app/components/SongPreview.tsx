@@ -25,7 +25,7 @@ function SongPreview({
 
 	return (
 		<div
-			className={"w-full flex  " + (djView ? "px-3" : "p-3 my-2 hover:bg-gray-800")}
+			className={"w-full flex " + (djView ? "px-3" : "p-3 my-2 hover:bg-gray-800")}
 			onClick={() => {
 				if (start) start(songData.id);
 			}}>

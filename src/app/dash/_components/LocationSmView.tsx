@@ -28,9 +28,9 @@ function LocationSmView({
 	}
 
 	return (
-		<div className="w-full bg-yellow-400 rounded-lg">
+		<div className="w-full dark:bg-purple-300 dark:bg-opacity-40 bg-blue-300 bg-opacity-25 rounded-lg ">
 			<div
-				className="relative w-full bg-yellow-300 hover:bg-yellow-200 rounded-xl my-2 text-black text-left p-3 "
+				className="relative w-full bg-blue-300 bg-opacity-25 dark:bg-purple-300 dark:bg-opacity-20 rounded-xl my-2 text-gray-200 text-left p-3 "
 				onClick={() => {
 					window.location.href = "/location/" + locationData.id;
 				}}>
@@ -52,9 +52,7 @@ function LocationSmView({
 			</div>
 			<div className="flex text-3xl p-1 px-3 justify-end">
 				<button onClick={handleLike}>
-					<IoHeart
-						className={!tliked ? "text-gray-800 hover:text-gray-700" : "text-red-500 hover:text-red-400"}
-					/>
+					<IoHeart className={!tliked ? "text-gray-300 hover:text-gray-500" : "text-red-500 hover:text-red-400"} />
 				</button>
 			</div>
 		</div>
