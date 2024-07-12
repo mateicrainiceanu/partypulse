@@ -49,9 +49,7 @@ function EventView({
 	function djable() {
 		var djable = false;
 		djs.map((dj) => {
-			if (dj === user.uname) {
-				djable = true;
-			}
+			if (dj === user.uname) djable = true;
 		});
 
 		return djable;
@@ -64,30 +62,24 @@ function EventView({
 	}
 
 	return (
-		<div className="w-full rounded-xl bg-gray-900">
+		<div className="w-full rounded-xl bg-gray-900 dark:bg-fuchsia-800 dark:bg-opacity-20 bg-opacity-20 dark:text-gray-100 my-2">
 			<div
-				className=" bg-slate-800 hover:bg-slate-900 text-left p-4 rounded-xl my-2 relative"
+				className=" bg-gray-900 bg-opacity-20 dark:bg-fuchsia-800 dark:bg-opacity-20 hover:bg-opacity-30 text-left p-4 rounded-t-xl "
 				onClick={() => {
 					window.location.href = "/event/" + id;
 				}}>
 				{/* TOP BAR */}
 				<div className="flex w-full">
 					{status === 1 && (
-						<>
-							<div className="my-auto mr-2 text-green-500">
-								<BsCircleFill></BsCircleFill>
-							</div>
-							{/* <span className="absolute left-10 top-3 text-green-500">Live</span> */}
-						</>
+						<div className="my-auto mr-2 text-green-500">
+							<BsCircleFill></BsCircleFill>
+						</div>
 					)}
 
 					{status === 2 && (
-						<>
-							<div className="my-auto mr-2 text-red-500 flex">
-								<BsCircleFill></BsCircleFill>
-							</div>
-							{/* <span className="absolute left-6 text-red-500">Ended</span> */}
-						</>
+						<div className="my-auto mr-2 text-red-500 flex">
+							<BsCircleFill></BsCircleFill>
+						</div>
 					)}
 					<h5 className="text-center font-bold text-lg font-mono my-auto">{name}</h5>
 					<div className="ms-auto my-auto flex">
@@ -114,7 +106,7 @@ function EventView({
 					</div>
 				</div>
 
-				<hr className="my-2" />
+				<hr className="my-2 border-gray-500" />
 				<div className="text-wrap flex">
 					<div className="text-gray-300 leading-8">
 						<p className="font-mono flex">

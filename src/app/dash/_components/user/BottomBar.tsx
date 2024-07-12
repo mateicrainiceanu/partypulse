@@ -4,7 +4,8 @@ import {IoLocationOutline} from "react-icons/io5";
 import {FaRegUser} from "react-icons/fa";
 
 function BottomBar({view, setView}: {view: string; setView: (name: string) => void}) {
-	function handleViewChange(e: any) {		
+	function handleViewChange(e: any) {
+		console.log(e.target.id);
 		localStorage.setItem("view", e.target.id);
 		if (view === "live") window.location.href = "/dash";
 		if (e.target.id === "live") window.location.href = "/dash/live";
@@ -13,38 +14,44 @@ function BottomBar({view, setView}: {view: string; setView: (name: string) => vo
 	}
 
 	return (
-		<div className="fixed bottom-0 w-screen left-0 bg-black border-top p-3">
-			<div className="w-full flex justify-center md:gap-10 gap-5 text-xl text-white">
-				<BsHouse
-					className={"hover:text-gray-500 " + (view === "home" ? "text-gray-400" : "")}
+		<div className="fixed bottom-0 w-screen left-0 bg-black border-top p-1">
+			<div className="w-full flex justify-evenly md:justify-center gap-2 text-xl text-white select-none">
+				<button
+					className={"p-2 px-3 rounded-md hover:bg-gray-800 " + (view === "home" ? "bg-gray-900" : "")}
 					id="home"
-					onClick={handleViewChange}
-				/>
-				<BsSearch
-					className={"hover:text-gray-500 " + (view === "search" ? "text-gray-400" : "")}
+					onClick={handleViewChange}>
+					<BsHouse />
+				</button>
+				<button
+					className={"p-2 px-3 rounded-md hover:bg-gray-800 " + (view === "search" ? "bg-gray-900" : "")}
 					id="search"
-					onClick={handleViewChange}
-				/>
-				<BsCalendar
-					className={"hover:text-gray-500 " + (view === "events" ? "text-gray-400" : "")}
+					onClick={handleViewChange}>
+					<BsSearch />
+				</button>
+				<button
+					className={"p-2 px-3 rounded-md hover:bg-gray-800 " + (view === "events" ? "bg-gray-900" : "")}
 					id="events"
-					onClick={handleViewChange}
-				/>
-				<IoLocationOutline
-					className={"hover:text-gray-500 " + (view === "locations" ? "text-gray-400" : "")}
+					onClick={handleViewChange}>
+					<BsCalendar />
+				</button>
+				<button
+					className={"p-2 px-3 rounded-md hover:bg-gray-800 " + (view === "locations" ? "bg-gray-900" : "")}
 					id="locations"
-					onClick={handleViewChange}
-				/>
-				<FaRegUser
-					className={"hover:text-gray-500 " + (view === "users" ? "text-gray-400" : "")}
+					onClick={handleViewChange}>
+					<IoLocationOutline />
+				</button>
+				<button
+					className={"p-2 px-3 rounded-md hover:bg-gray-800 " + (view === "users" ? "bg-gray-900" : "")}
 					id="users"
-					onClick={handleViewChange}
-				/>
-				<BsBullseye
-					className={"hover:text-gray-500 " + (view === "live" ? "text-gray-400" : "")}
+					onClick={handleViewChange}>
+					<FaRegUser />
+				</button>
+				<button
+					className={"p-2 px-3 rounded-md hover:bg-gray-800 " + (view === "live" ? "bg-gray-900" : "")}
 					id="live"
-					onClick={handleViewChange}
-				/>
+					onClick={handleViewChange}>
+					<BsBullseye />
+				</button>
 			</div>
 		</div>
 	);

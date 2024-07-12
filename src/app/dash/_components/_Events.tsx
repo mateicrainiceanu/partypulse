@@ -108,7 +108,7 @@ function Events({
 					onClick={() => {
 						setShowFilterByDate((prev) => !prev);
 					}}>
-					Filter by date
+					Date
 				</Button>
 			</div>
 			{showFilterByDate && (
