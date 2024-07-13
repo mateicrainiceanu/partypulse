@@ -9,6 +9,7 @@ import AddUser from "./AddUser";
 import EditUsers from "./EditUsers";
 import {AlertContext} from "@/app/AlertContext";
 import { LoadManContext } from "@/app/LoadManContext";
+import CitySelector from "@/app/components/CitySelector";
 
 function ManageLocation({params}: {params: {id: string}}) {
 	const locationid = params.id;
@@ -70,8 +71,7 @@ function ManageLocation({params}: {params: {id: string}}) {
 			<h1 className="text-3xl font-mono font-bold text-center">Manage location</h1>
 			<div className="max-w-lg mx-auto my-2">
 				<h2 className="text-lg font-bold">Preview</h2>
-				<LocationSmView
-					locationData={locationData as any}></LocationSmView>
+				<LocationSmView locationData={locationData as any}></LocationSmView>
 			</div>
 			<div className="flex my-4 flex-wrap">
 				<h1 className="text-2xl font-mono font-bold text-center w-full">Edit data</h1>
@@ -85,7 +85,12 @@ function ManageLocation({params}: {params: {id: string}}) {
 							value={locationData.adress}
 							handleChange={handleChange}
 						/>
-						<FormElement label="City" type="text" name="city" value={locationData.city} handleChange={handleChange} />
+						<CitySelector
+							cityString={locationData.city}
+							setCityString={(newCity) => {
+								setLocationData((prev) => ({...prev, city: newCity}));
+							}}
+						/>
 						<div>
 							<button
 								className="bg-purple-500 hover:bg-purple-600 my-2 mt-5 py-1 px-2 rounded-lg w-full"

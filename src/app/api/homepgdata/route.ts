@@ -15,34 +15,8 @@ export async function GET(req: NextRequest) {
     if (token) {
         const user = getUserFromToken(token)
         if (user.id) {
-            let [friends] = await User.getFriends(user.id) as any
 
-            //EVENTS THAT FRIENDS LIKE, ATTEND, DJ, ORGANISE
-
-            const data = friends.map(async (friend: { secUserId: number }) => {
-                const friendsData = (await User.findById(friend.secUserId) as any)[0]                
-                if (friendsData.length > 0) {
-                    let [friendData] = friendsData;
-                    const eventMatches = (await Events.getEventsForRelsUserId(friend.secUserId, user.id as number) as any)
-                    const obj = { uname: (friendData.uname), role: friendData.role, eventMatches }
-                    return obj;
-                } else return {uname: ""}
-            })            
-
-            const eventsFromOtherUsers = ((await Promise.all(data)).filter(o => (o.eventMatches != null && o.uname != "")));
-
-            // EVENTS FORM LIKED LOCATIONS
-
-            const [locationrels] = await Relationship.getLocForUser(user.id, 0) as any
-
-            const results = locationrels.map(async (rel: { locationId: number }) => {
-                return await Events.getFullForLocation(rel.locationId, user.id!, true)
-            })
-
-            const eventsFromLikedLocations = (await Promise.all(results)).filter((o: { events: Array<Events> }) => o.events.length > 0)
-            //console.log(eventsFromLikedLocations);
-
-            return NextResponse.json({ eventsFromOtherUsers, eventsFromLikedLocations })
+            return NextResponse.json({})
 
         } else {
             return new NextResponse("Failed To authenticate user", { status: 403 })

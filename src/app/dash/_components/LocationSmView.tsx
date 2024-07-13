@@ -40,7 +40,7 @@ function LocationSmView({
 				<div className="mx-auto text-center">
 					{showManage && (
 						<button
-							className="absolute right-2 top-2 border-2 border-gray-500 hover:bg-black hover:border-black text-gray-500 hover:text-white rounded-3xl p-2"
+							className="absolute right-2 top-2 border-2 border-gray-200 hover:bg-black hover:border-black text-gray-200 hover:text-white rounded-3xl p-2"
 							onClick={(e: any) => {
 								e.stopPropagation();
 								window.location.href = "/dash/em/manage-location/" + locationData.id;

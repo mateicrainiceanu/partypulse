@@ -123,13 +123,14 @@ class Location {
 
         if (locations.length > 0) {
             let [location] = locations
-            return Location.getPermissionFor(location)
+            return Location.getPermissionFor(location, userId)
         } else
             return null
     }
 
-    static getPermissionFor(location: Location, userId?: number | undefined) {
 
+
+    static getPermissionFor(location: Location, userId?: number | undefined) {
         let userHasRightToManage = false
         let liked = false;
         let nrLiked = 0;
@@ -156,9 +157,24 @@ class Location {
         return db.safeexe(`SELECT * FROM codes WHERE usedFor = 'location' AND itemId = ?`, [locid])
     }
 
-    static async getLocationsForUser(uid: number) {
-        let [rels] = await db.safeexe(`SELECT * FROM users_locations WHERE userId = ?`, [uid])
-        return rels
+    static async getLocationsForUser(uid: number, status: number) {
+        let [rels] = await db.safeexe(`SELECT 
+            locations.*,
+            JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'userId', users_locations.userId,
+                    'reltype', users_locations.reltype
+                )
+            ) AS userInteractions
+            FROM 
+                locations
+            JOIN 
+                users_locations ON locations.id = users_locations.locationId
+            WHERE users_locations.userId = ? AND users_locations.reltype = ${status}
+            GROUP BY 
+                locations.id, users_locations.userId;
+            `, [uid])
+        return rels.map((rel:any) => Location.getPermissionFor(rel, uid))
     }
 
 }

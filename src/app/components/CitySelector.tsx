@@ -70,8 +70,12 @@ function CitySelector({
 				}}>
 				<AccordionSummary className="flex">
 					<div className="my-auto">
-						{country && city && state
-							? country.flag + " " + country.isoCode + ", " + state.isoCode + ", " + city.name
+						{userLocation
+							? country && city && state
+								? country.flag + " " + country.isoCode + ", " + state.isoCode + ", " + city.name
+								: "Please select city"
+							: cityField
+							? cityField
 							: "Please select city"}
 					</div>
 					<AccordionActions className="ms-auto">
