@@ -2,16 +2,11 @@ import React, {useContext, useState} from "react";
 import {IoHeart, IoSettingsSharp} from "react-icons/io5";
 import {BiHeart} from "react-icons/bi";
 import axios from "axios";
-import { AlertContext } from "@/app/AlertContext";
-import { FullLocation } from "@/types";
+import {AlertContext} from "@/app/AlertContext";
+import {FullLocation} from "@/types";
+import {MdQrCode} from "react-icons/md";
 
-function LocationSmView({
-	locationData,
-	showManage,
-}: {
-	locationData: FullLocation;
-	showManage?: boolean;
-}) {	
+function LocationSmView({locationData, showManage}: {locationData: FullLocation; showManage?: boolean}) {
 	const [tliked, setTLiked] = useState(locationData.liked);
 	const {handleAxiosError} = useContext(AlertContext);
 
@@ -22,7 +17,7 @@ function LocationSmView({
 				console.log(response);
 			})
 			.catch((err) => {
-				handleAxiosError(err)
+				handleAxiosError(err);
 			});
 		setTLiked((prev) => !prev);
 	}
@@ -34,21 +29,31 @@ function LocationSmView({
 				onClick={() => {
 					window.location.href = "/location/" + locationData.id;
 				}}>
-				<h3 className="font-bold font-mono">{locationData.name}</h3>
-				<p className="italic">{locationData.adress}</p>
-				<p className="italic">{locationData.city}</p>
-				<div className="mx-auto text-center">
+				<div className="flex">
+					<h3 className="font-bold font-mono">{locationData.name}</h3>
 					{showManage && (
-						<button
-							className="absolute right-2 top-2 border-2 border-gray-200 hover:bg-black hover:border-black text-gray-200 hover:text-white rounded-3xl p-2"
-							onClick={(e: any) => {
-								e.stopPropagation();
-								window.location.href = "/dash/em/manage-location/" + locationData.id;
-							}}>
-							<IoSettingsSharp className="" />
-						</button>
+						<div className="flex gap-2 ms-auto">
+							<button
+								onClick={(e: any) => {
+									e.stopPropagation();
+									window.location.href = "/dash/em/manage-location/" + locationData.id + "/codes";
+								}}>
+								<MdQrCode size={20} />
+							</button>
+							<button
+								className="border-2 border-gray-200 hover:bg-black hover:border-black text-gray-200 hover:text-white rounded-3xl p-2"
+								onClick={(e: any) => {
+									e.stopPropagation();
+									window.location.href = "/dash/em/manage-location/" + locationData.id;
+								}}>
+								<IoSettingsSharp className="" />
+							</button>
+						</div>
 					)}
 				</div>
+				<p className="italic">{locationData.adress}</p>
+				<p className="italic">{locationData.city}</p>
+				<div className="mx-auto text-center"></div>
 			</div>
 			<div className="flex text-3xl p-1 px-3 justify-end">
 				<button onClick={handleLike}>

@@ -13,6 +13,7 @@ import LiveEventUpdates from "./LiveEventUpdates";
 import {AlertContext} from "@/app/AlertContext";
 import {LoadManContext} from "@/app/LoadManContext";
 import MSuggestions from "@/app/dash/live/LiveComponents/MSuggestions";
+import FormBtn from "@/app/components/FormBtn";
 
 function DjView({params}: {params: {id: number}}) {
 	const [data, setData] = useState({
@@ -141,6 +142,12 @@ function DjView({params}: {params: {id: number}}) {
 								</div>
 							</div>
 						</div>
+						<hr className="my-2" />
+						<FormBtn
+							name="Manage Codes"
+							onClick={() => {
+								window.location.href = "/dash/dj/codes";
+							}}></FormBtn>
 						<hr className="my-2" />
 						<h1 className="text-center text-2xl text-white font-mono font-bold">DJ Song Preview</h1>
 						<div className="font-sans text-sm text-left">
