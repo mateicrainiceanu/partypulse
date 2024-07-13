@@ -132,6 +132,13 @@ class Events {
         return db.execute(`SELECT * FROM events WHERE locationId IN (${locString})`);
     }
 
+    static async getForCity(city: string, uid?: number) {
+        const [res] = await db.safeexe(getEventQuery(`locations.city = ? AND events.dateStart > CURRENT_DATE AND events.privateev != 1`), [city])
+
+        return res.map((ev: any) => Events.process(ev, uid))
+
+    }
+
     static async getFullForId(id: number | string, uid?: number, isNotOver?: boolean, givenLocation?: Location | undefined) {
 
         const [res] = await db.safeexe(getEventQuery("events.id = ?"), [id])
