@@ -4,7 +4,7 @@ import {FormControl, Select, MenuItem, InputLabel} from "@mui/material";
 import Users from "./SearchPageComp/Users";
 import axios from "axios";
 import Locations from "./SearchPageComp/Locations";
-import Events from "../../_Events";
+import Events from "../../Events";
 
 function SearchPage() {
 	const [searchData, setSearchData] = useState({

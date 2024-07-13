@@ -5,8 +5,8 @@ import axios from "axios";
 import React, {useContext, useEffect, useState} from "react";
 import FormElement from "@/app/components/FormElement";
 import {Switch} from "@mui/material";
-import {DJSelector} from "@/app/dash/_components/new-event-comp/DJSelector";
-import {Location} from "@/app/dash/_components/new-event-comp/Location";
+import {DJSelector} from "@/app/dash/em/_components/DJSelector";
+import {LocationSelector} from "../../_components/LocationSelector";
 import FormBtn from "@/app/components/FormBtn";
 import {parseEventForView} from "@/app/dash/_lib/data-manager";
 import UpdateStauts from "./UpdateStauts";
@@ -134,7 +134,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 									}}
 								/>
 							) : (
-								<Location eventData={data} setEventData={setData} />
+								<LocationSelector eventData={data} setEventData={setData} />
 							)}
 						</div>
 					</div>

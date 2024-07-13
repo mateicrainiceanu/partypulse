@@ -2,7 +2,6 @@ import {useState, useContext} from "react";
 import React from "react";
 import "./dash.css";
 import {UserContext} from "../../UserContext";
-import {LoadingContext} from "../../LoadingContext";
 import { LoadManContext } from "@/app/LoadManContext";
 
 interface IProps {

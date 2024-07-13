@@ -1,6 +1,5 @@
 import React, {useContext, useState} from "react";
 import {IoHeart, IoSettingsSharp} from "react-icons/io5";
-import {BiHeart} from "react-icons/bi";
 import axios from "axios";
 import {AlertContext} from "@/app/AlertContext";
 import {FullLocation} from "@/types";

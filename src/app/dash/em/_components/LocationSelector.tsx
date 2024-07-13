@@ -4,7 +4,7 @@ import axios from "axios";
 import FormElement from "@/app/components/FormElement";
 import CitySelector from "@/app/components/CitySelector";
 
-export function Location({eventData, setEventData}: any) {
+export function LocationSelector({eventData, setEventData}: any) {
 	const [locationSearch, setLocationSearch] = useState("");
 	const [options, setOptions] = useState([]);
 

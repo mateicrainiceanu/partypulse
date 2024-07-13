@@ -1,5 +1,5 @@
 import React from "react";
-import PaLocation from "../../PaLocation";
+import PaLocation from "@/app/dash/em/_components/PaLocation";
 
 function Locations() {
 	return (

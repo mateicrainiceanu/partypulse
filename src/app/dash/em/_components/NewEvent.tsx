@@ -1,5 +1,5 @@
-import {DJSelector} from "./new-event-comp/DJSelector";
-import {Location} from "./new-event-comp/Location";
+import {DJSelector} from "./DJSelector";
+import {LocationSelector} from "./LocationSelector";
 import React, {useCallback, useContext, useState} from "react";
 import {IoMdCloseCircle} from "react-icons/io";
 import FormElement from "@/app/components/FormElement";
@@ -23,7 +23,7 @@ function NewEvent({close}: {close: any}) {
 		locId: 0,
 		locName: "",
 		locAdress: "",
-		locCity: ""
+		locCity: "",
 	});
 
 	function handleChange(e: any) {
@@ -103,7 +103,7 @@ function NewEvent({close}: {close: any}) {
 
 					<hr className="my-2" />
 					<h3 className="font-bold text-lg mt-2">Event location</h3>
-					<Location eventData={eventData} setEventData={setEventData} />
+					<LocationSelector eventData={eventData} setEventData={setEventData} />
 					<FormBtn name="Save" onClick={saveEvent}></FormBtn>
 				</div>
 			</div>

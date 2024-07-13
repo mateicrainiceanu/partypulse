@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import Events from "../../_Events";
+import Events from "../../Events";
 import FormElement from "@/app/components/FormElement";
 
 function EventsView() {

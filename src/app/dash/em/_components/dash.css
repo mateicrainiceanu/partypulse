@@ -1,0 +1,23 @@
+.sel{
+    background-color: blueviolet;
+}
+.sel:hover{
+    background-color: blueviolet;
+}
+
+.MuiPaginationItem-text .MuiPaginationItem-root, .MuiPagination-ul {
+    color: white;
+}
+
+.MuiPaginationItem-root{
+    color: white;
+}
+
+.css-yuzg60-MuiButtonBase-root-MuiPaginationItem-root{
+    color: white;
+}
+
+.border-btm {
+    border-bottom-style:solid;
+    border-bottom-width: 1px;
+}

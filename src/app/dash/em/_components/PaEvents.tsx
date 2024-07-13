@@ -3,7 +3,7 @@ import React, {useState, useEffect, useContext} from "react";
 import NewEvent from "./NewEvent";
 import FormElement from "@/app/components/FormElement";
 import "./dash.css";
-import Events from "./_Events";
+import Events from "../../_components/Events";
 
 function PaEvents() {
 	const [showAdd, setShowAdd] = useState(false);

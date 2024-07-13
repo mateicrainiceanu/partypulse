@@ -1,6 +1,6 @@
 import React from "react";
-import PaEvents from "../_components/PaEvents";
-import PaLocation from "../_components/PaLocation";
+import PaEvents from "./_components/PaEvents";
+import PaLocation from "./_components/PaLocation";
 
 function EMDashHome() {
 	return (

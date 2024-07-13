@@ -3,7 +3,7 @@ import React, {useContext, useEffect, useState} from "react";
 
 import NewLocation from "./NewLocation";
 import axios from "axios";
-import LocationSmView from "./LocationSmView";
+import LocationSmView from "../../_components/LocationSmView";
 import FormElement from "@/app/components/FormElement";
 import {Pagination} from "@mui/material";
 import {AlertContext} from "@/app/AlertContext";
