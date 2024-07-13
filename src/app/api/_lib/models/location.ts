@@ -30,13 +30,12 @@ class Location {
             ?,?,?,?,?,?
         );
         `
-
         return db.safeexe(sql, [this.name, this.useForAdress, this.adress, this.city, this.lat, this.lon]);
     }
 
-    static async privateLoc(name: string, adress: string) {
-        let sql = `INSERT INTO locations (name, adress, useForAdress, city, private) VALUES (?,?, 'adress', '', 1)`
-        return (await db.safeexe(sql, [name, adress]) as Array<RowDataPacket>)[0].insertId
+    static async privateLoc(name: string, adress: string, city: string) {
+        let sql = `INSERT INTO locations (name, adress, useForAdress, city, private) VALUES (?,?, 'adress', ?, 1)`
+        return (await db.safeexe(sql, [name, adress, city]) as Array<RowDataPacket>)[0].insertId
     }
 
     static getFromIds(idrange: string) {

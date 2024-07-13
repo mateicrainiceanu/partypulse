@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Switch, Autocomplete, TextField} from "@mui/material";
 import axios from "axios";
 import FormElement from "@/app/components/FormElement";
+import CitySelector from "@/app/components/CitySelector";
 
 export function Location({eventData, setEventData}: any) {
 	const [locationSearch, setLocationSearch] = useState("");
@@ -34,6 +35,12 @@ export function Location({eventData, setEventData}: any) {
 				<div>
 					<FormElement name="locName" label="Name" value={eventData.locName} handleChange={handleChange} />
 					<FormElement name="locAdress" label="Adress" value={eventData.locAdress} handleChange={handleChange} />
+					<CitySelector
+						cityString={eventData.locCity}
+						setCityString={(city) => {
+							setEventData((prev: any) => ({...prev, locCity: city}));
+						}}
+					/>
 				</div>
 			) : (
 				<Autocomplete

@@ -6,6 +6,7 @@ import { getUserFromToken } from "../_lib/token";
 import User from "../_lib/models/user";
 import Location from "../_lib/models/location";
 import UserNotification from "../_lib/models/notifications";
+import Relationship from "../_lib/models/relationship";
 
 export async function POST(req: NextRequest) {
     // const { name, privateev, duration, date, time, djs, customLoc, locId, locName, locAdress } = await req.json();
@@ -33,8 +34,9 @@ export async function POST(req: NextRequest) {
                 //user-notifcation : Notify location owners
                 Events.setLocation(event.insertId, body.locId)
             } else {
-                let locinsertid = await Location.privateLoc(body.locName, body.locAdress)
-                Events.setLocation(event.insertId, locinsertid)
+                let locinsertid = await Location.privateLoc(body.locName, body.locAdress, body.locCity)
+                Events.setLocation(event.insertId, locinsertid);
+                (new Relationship(user.id, locinsertid)).saveUsrLoc()
             }
 
             return NextResponse.json({ stat: "OK" })

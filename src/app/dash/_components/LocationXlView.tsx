@@ -7,7 +7,7 @@ function LocationXlView({
 	data,
 }: {
 	data: {id: number; name: string; useForAdress: string; adress: string; city?: string; lon?: Number; lat?: number};
-}) {
+}) {	
 	return (
 		<div className="w-max-xl my-2">
 			<div className="rounded-xl bg-yellow-300 p-2 text-black font-mono">

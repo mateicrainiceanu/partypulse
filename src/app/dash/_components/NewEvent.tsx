@@ -23,6 +23,7 @@ function NewEvent({close}: {close: any}) {
 		locId: 0,
 		locName: "",
 		locAdress: "",
+		locCity: ""
 	});
 
 	function handleChange(e: any) {

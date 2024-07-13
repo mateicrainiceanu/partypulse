@@ -5,6 +5,7 @@ import Map from "@/app/components/Map";
 import axios from "axios";
 import {IoMdCloseCircle} from "react-icons/io";
 import {AlertContext} from "@/app/AlertContext";
+import CitySelector from "@/app/components/CitySelector";
 
 interface IProps {
 	close: () => void;
@@ -64,12 +65,12 @@ function NewLocation({close}: IProps) {
 						name="adress"
 						value={locData.adress}
 						handleChange={handleChange}></FormElement>
-					<FormElement
-						label="City"
-						type="text"
-						name="city"
-						value={locData.city}
-						handleChange={handleChange}></FormElement>
+					<CitySelector
+						cityString={locData.city}
+						setCityString={(newCity) => {
+							setLocData((prev) => ({...prev, city: newCity}));
+						}}
+					/>
 
 					<h4 className="my-2 font-bold">GPS Location</h4>
 					<p className="italic text-xs">

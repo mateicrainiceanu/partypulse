@@ -280,9 +280,9 @@ class Events {
 
 function getEventQuery(query: string) {
     return `
-        SELECT 
-            events.*, 
-            locations.name AS location, 
+    SELECT
+            events.*,
+            locations.name AS location,
             JSON_OBJECT(
                 'id', locations.id,
                 'name', locations.name,
@@ -296,7 +296,7 @@ function getEventQuery(query: string) {
                     'userId', users_locations.userId,
                     'reltype', users_locations.reltype
                 ))
-            ) AS locationData, 
+            ) AS locationData,
             JSON_ARRAYAGG(
                JSON_OBJECT(
                     'userId', users_events.userId,
@@ -311,7 +311,7 @@ function getEventQuery(query: string) {
         JOIN users_locations ON users_locations.locationId = locations.id
         WHERE ${query}
         GROUP BY events.id, locations.id;
-        ;`
+        `
 }
 
 export default Events;
