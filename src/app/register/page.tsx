@@ -18,9 +18,8 @@ function Register() {
 	const [formData, setFormData] = useState({fname: "", lname: "", uname: "", email: "", password: ""});
 	const [avalabile, setAvalabile] = useState(false);
 	const {addLoadingItem} = useContext(LoadManContext);
-	const [passStrength, setPassStrength] = useState();
 
-	const {user, setUser} = useContext(UserContext);
+	const {setUser} = useContext(UserContext);
 	const {handleAxiosError, dialogToUser} = useContext(AlertContext);
 
 	useEffect(() => {

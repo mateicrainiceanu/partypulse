@@ -45,7 +45,7 @@ class User {
         this.uname,
         this.email,
             hash,
-            
+
         this.verified]);
     }
 
@@ -79,12 +79,12 @@ class User {
 
     static getPartners(uid: number, q: string, role?: number, seeSelf?: boolean) {
         let q1 = `%${q}%`;
-        
+
         let sql = `
         SELECT uname FROM users 
         WHERE (uname LIKE ? OR email LIKE ?) 
         AND ${role ? "role = " + role : "role != 0"}  
-        ${seeSelf ? "" : ("AND id != " + "?")};`        
+        ${seeSelf ? "" : ("AND id != " + "?")};`
 
         return db.safeexe(sql, [q1, q1, (seeSelf ? null as any : uid)]);
     }
@@ -142,8 +142,12 @@ class User {
         })
     }
 
-    static addCode(uid: number, code: string) {
-        return db.safeexe(`INSERT INTO codes (usedFor, itemId, code) VALUES('user' , ?, ?);`, [uid, code])
+    static addCode(uid: number, code: string, recovery?: boolean) {
+        return db.safeexe(`INSERT INTO codes (usedFor, itemId, code) VALUES('${recovery ? "recovery" : "user"}' , ?, ?);`, [uid, code])
+    }
+
+    static getForRecoveryCode(code: string){
+        return db.safeexe(`SELECT users.*, codes.code FROM codes JOIN users ON users.id = codes.itemId WHERE codes.usedFor = 'recovery' AND codes.code = ?; `, [code])
     }
 
     static async validateCode(uid: number, code: string) {

@@ -51,6 +51,9 @@ function Login() {
 					handleChange={handleChange}
 					value={formData.password}
 				/>
+				<Link className="text-gray-300 hover:text-gray-100" href="/login/forgot-password">
+					{"Password reset"}
+				</Link>
 				<button
 					onClick={handeSubmit}
 					type="submit"
@@ -69,7 +72,7 @@ function Login() {
 				</button>
 				<button
 					onClick={() => {
-						signIn("spotify")
+						signIn("spotify");
 					}}
 					type="submit"
 					className="rounded-md w-full mb-2 px-3 py-2 text-sm bg-white hover:bg-gray-300 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">

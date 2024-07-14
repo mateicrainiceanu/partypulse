@@ -49,6 +49,18 @@ export default class Email {
         })
     }
 
+    async recovery(code: string) {
+        const opt = { ...this.mailOptions, subject: "PasswordRecovery", html: await Email.getPasswordResetEmail(code) }        
+
+        this.transporter.sendMail(opt, (err: any, info: any) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(info);
+            }
+        })
+    }
+
     static async getNotificationEmail(n: UserNotification) {
 
         const fullnotiv = await UserNotification.getFullNotification(Number(n.id), n.forUserId)
@@ -76,7 +88,6 @@ export default class Email {
     <div class="all">
       <h1>Notification from Partypulse!</h1>
       <p>${fullnotiv.fromUser.uname + " " + fullnotiv.text}</p>
-      <a href="http://localhost:3000/">Open the app and sign in to see more</a>
     </div>
 </div>`
     }
@@ -111,6 +122,41 @@ export default class Email {
       <h1>Welcome to Partypulse!</h1>
       <p>Your verificarion code is: </p>
       <p class="code">${code}</p>
+      <a href="http://${process.env.HOMEPAGE}/dash/verify/${code}">Or click here to verify your account</a>
+    </div></div>
+
+    `;
+    }
+
+    static getPasswordResetEmail(code: string) {
+        return `
+        <div>
+       <style>
+        .all{
+      padding: 2%;
+      height: 100vh;
+      width: 100vw;
+      background: black;
+      color: white;
+      overflow-y:scroll;
+      font-family: sans-serif;
+        }
+        h1 {    
+      text-align: left;
+      font-family: monospace;
+    }
+    .code{
+      color: yellow;
+      font-family: monospace;
+      font-size: 2rem;
+    }
+    a {
+      color: white
+    }
+    </style>
+    <div class="all">
+      <h1>Welcome to Partypulse!</h1>
+      <p>Your reset link is: </p>
       <a href="http://${process.env.HOMEPAGE}/dash/verify/${code}">Or click here to verify your account</a>
     </div></div>
 
