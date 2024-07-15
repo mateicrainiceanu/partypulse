@@ -49,11 +49,16 @@ export default class UserNotification {
             ${this.itemId ? ", '" + this.itemId + "'" : ""}
         );`
 
-        const user = (await User.findById(this.forUserId) as any)[0][0]
-        const mail = new Email(user.email)
-        const resp = (await db.execute(sql))[0]
-        //VERIFY IF USER HAS NOTIFICATIONS ON       
-        mail.notification({ ...this, id: resp.insertId })
+        const [users] = (await User.findById(this.forUserId) as any)
+        
+        if (users.length) {
+            const [user] = users;
+            const mail = new Email(user.email)
+            const resp = (await db.execute(sql))[0]      
+            
+            if (user.emailNotif === 1)
+                mail.notification({ ...this, id: resp.insertId })
+        }
     }
 
     static async getFullNotification(notid: number, uid: number) {

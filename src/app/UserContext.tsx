@@ -28,6 +28,7 @@ function UserProvider({children}: {children: ReactNode}) {
 		token: "",
 		logged: false,
 		donations: "",
+		emailNotif: 1
 	});
 	const [tried, setTried] = useState(false);
 	const {handleAxiosError} = useContext(AlertContext);
@@ -47,6 +48,7 @@ function UserProvider({children}: {children: ReactNode}) {
 			role: Number(getCookie("role")) || 0,
 			verified: Number(getCookie("verified")) || 0,
 			donations: getCookie("donations") || "",
+			emailNotif: Number(getCookie("emailNotif")) || 1
 		};
 
 		setUser(startUser);

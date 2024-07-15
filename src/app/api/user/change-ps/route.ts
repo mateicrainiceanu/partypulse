@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
         cookies().set("email", user.email)
         cookies().set("donations", user.donations)
         cookies().set("verified", user.verified)
+        cookies().set("emailNotif", user.emailNotif)
 
         User.deleteCode(code)
 

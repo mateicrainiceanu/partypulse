@@ -3,7 +3,6 @@ import User from "../../_lib/models/user";
 import { RowDataPacket } from "mysql2";
 import { signtoken } from "../../_lib/token";
 import { cookies } from "next/headers";
-import { sendMail } from "./sendregistermail"
 import random from "random-string-alphanumeric-generator"
 import Email from "../../_lib/models/Email";
 
@@ -37,6 +36,8 @@ export async function POST(req: NextRequest) {
         cookies().set("verified", '0')
         cookies().set("email", newuser.email)
         cookies().set("donations", '')
+        cookies().set("emailNotif", '1')
+
 
         return Response.json({ id: id, newuser: { ...newuser, password: "" }, token: token });
     } else {

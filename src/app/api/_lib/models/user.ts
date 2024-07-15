@@ -14,7 +14,8 @@ interface User {
     role?: number,
     password: string,
     hash: string,
-    verified: number
+    verified: number,
+    emailNotif: number
 }
 
 class User {
@@ -242,6 +243,10 @@ class User {
 
     static getFriends(uid: number) {
         return db.safeexe(`SELECT * FROM users_users WHERE userId = ? ORDER BY id desc;`, [uid])
+    }
+
+    static changeNotifSet(uid: number, val: boolean) {
+        return db.safeexe(`UPDATE users SET emailNotif = ? WHERE id = ?`, [(val ? 1 : 0), uid])
     }
 }
 
