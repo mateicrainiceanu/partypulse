@@ -295,6 +295,11 @@ class Events {
         return res
     }
 
+    static async userHasPermissons(eid: number | string, uid: number | string) {
+        let [res] = await db.safeexe(`SELECT * FROM users_events WHERE userId = ? AND eventId = ? AND (reltype <= 2)`, [uid, eid])        
+        return res.length > 0
+    }
+
 }
 
 function getEventQuery(query: string) {

@@ -11,22 +11,27 @@ export async function PATCH(req: NextRequest) {
     const tok = url.searchParams.get("token")
     const token = cookies().get("token")?.value || tok
 
-    var userId
-
     if (token) {
         const user = getUserFromToken(token)
-        if (user.id) { userId = user.id }
-    }
+        if (user.id) {
+            console.log(id + " " + user.id);
+            
+            if (!(await Events.userHasPermissons(id, user.id)))
+                return new NextResponse("Permission denied", { status: 402 })
 
-    if (msuggestions != undefined) {
-        await Events.updateField(id, "msuggestions", msuggestions)
-    }
-    if (genreVote != undefined) {
-        await Events.updateField(id, "genreVote", genreVote)
-        await GenreVote.clearEvent(id)
-    }
+            if (msuggestions != undefined) {
+                await Events.updateField(id, "msuggestions", msuggestions)
+            }
+            if (genreVote != undefined) {
+                await Events.updateField(id, "genreVote", genreVote)
+                await GenreVote.clearEvent(id)
+            }
 
-    const answ = await Events.getFullForId(id, userId)
+            const answ = await Events.getFullForId(id, user.id)
 
-    return NextResponse.json(answ)
+            return NextResponse.json(answ)
+        } else
+            return new NextResponse("UserNotLoggedIn", { status: 403 })
+    } else
+        return new NextResponse("UserNotLoggedIn", { status: 403 })
 }

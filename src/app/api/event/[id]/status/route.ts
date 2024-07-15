@@ -14,7 +14,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: number
         const user = getUserFromToken(token)
         if (user.id) {
 
-            //handleCheck if user HAS RIGHT TO MANAGE
+            if (!(await Events.userHasPermissons(params.id, user.id)))
+                return new NextResponse("Permission denied", { status: 402 })
 
             if (endAssoc)
                 await Events.endAssoc(params.id, user.id)

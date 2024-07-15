@@ -18,6 +18,9 @@ export async function PATCH(req: NextRequest) {
 
             const event = new Events(body)
 
+            if (!(await Events.userHasPermissons(body.id, user.id)))
+                return new NextResponse("Permission denied", { status: 402 })
+
             const [_] = await event.update(body.id) as Array<RowDataPacket>;
 
             body.djs.map(async (dj: string) => { User.addEventRelation(await User.getId(dj), body.id, 2) })

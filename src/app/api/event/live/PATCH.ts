@@ -15,6 +15,9 @@ export default async function PATCH(req: NextRequest) {
     if (token && evid && reqId && newStatus != undefined) {
         const user = getUserFromToken(token)
         if (user.id) {
+            if (!(await Events.userHasPermissons(evid, user.id)))
+                return new NextResponse("Permission denied", { status: 402 })
+
             await SongRequest.changeReqStatus(reqId, newStatus, evid)
 
             const suggestions = await Events.getMusicSuggestions(evid)
