@@ -128,8 +128,6 @@ class Location {
             return null
     }
 
-
-
     static getPermissionFor(location: Location, userId?: number | undefined) {
         let userHasRightToManage = false
         let liked = false;
@@ -175,6 +173,11 @@ class Location {
                 locations.id, users_locations.userId;
             `, [uid])
         return rels.map((rel:any) => Location.getPermissionFor(rel, uid))
+    }
+
+    static async userHasRights(locId: number, uid:number){
+        const [res] = await db.safeexe(`SELECT * FROM users_locations WHERE userId = ? AND locationId = ? AND reltype = 1`, [uid, locId])
+        return res.length > 0
     }
 
 }

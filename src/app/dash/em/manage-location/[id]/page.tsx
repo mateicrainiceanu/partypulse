@@ -58,9 +58,9 @@ function ManageLocation({params}: {params: {id: string}}) {
 
 		await axios
 			.patch("/api/location", locationData)
-			.then((response) => {
+			.then(() => {
 				finishedLoadingItem();
-				window.location.replace("/dash/em");
+				window.location.href="/dash/em";
 				handleError("ok", "success");
 			})
 			.catch(handleAxiosError);
