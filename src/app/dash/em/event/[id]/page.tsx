@@ -29,6 +29,8 @@ function ManageEvent({params}: {params: {id: number}}) {
 		there: false,
 		coming: false,
 		liked: false,
+		nrliked: 0,
+		nrcoming: 0,
 	});
 
 	const [edit, setEdit] = useState(false);
@@ -79,6 +81,8 @@ function ManageEvent({params}: {params: {id: number}}) {
 						there={data.there}
 						coming={data.coming}
 						liked={data.liked}
+						nrliked={data.nrliked}
+						nrcoming={data.nrcoming}
 					/>
 				)}
 			</div>

@@ -24,6 +24,8 @@ function EventView({
 	there,
 	coming,
 	liked,
+	nrliked,
+	nrcoming,
 }: {
 	id: number;
 	name: string;
@@ -35,6 +37,8 @@ function EventView({
 	there: boolean;
 	coming: boolean;
 	liked: boolean;
+	nrliked: number;
+	nrcoming: number;
 }) {
 	const {user} = useContext(UserContext);
 
@@ -123,7 +127,7 @@ function EventView({
 					</div>
 				</div>
 			</div>
-			{EventReactions(id, reacted, tcoming, setTComing, tliked, setTLiked)}
+			{EventReactions(id, reacted, tcoming, setTComing, tliked, setTLiked, nrliked, nrcoming)}
 		</div>
 	);
 }
@@ -136,38 +140,46 @@ export function EventReactions(
 	tcoming: boolean,
 	setTComing: React.Dispatch<React.SetStateAction<boolean>>,
 	tliked: boolean,
-	setTLiked: React.Dispatch<React.SetStateAction<boolean>>
+	setTLiked: React.Dispatch<React.SetStateAction<boolean>>,
+	nrliked: number,
+	nrcoming: number
 ) {
 	return (
 		<div className="p-3 flex text-2xl gap-10 justify-end">
 			<Link href={"/event/" + id}>
 				<CgMoreVertical />
 			</Link>
-			<button
-				name="participating"
-				onClick={() => {
-					reacted("participating", !tcoming);
-					setTComing((prev) => {
-						return !prev;
-					});
-				}}>
-				{tcoming ? (
-					<FaHandPeace className="text-green-500" />
-				) : (
-					<FaHandFist className="text-white hover:text-gray-300" />
-				)}
-			</button>
-			<button
-				name="like"
-				className={tliked ? "text-red-500 hover:text-red-400" : "text-white hover:text-gray-300"}
-				onClick={() => {
-					reacted("like", !tliked);
-					setTLiked((prev) => {
-						return !prev;
-					});
-				}}>
-				<FaHeart />
-			</button>
+			<div className="flex gap-2">
+				<span className="text-lg my-auto">{nrcoming}</span>
+				<button
+					name="participating"
+					onClick={() => {
+						reacted("participating", !tcoming);
+						setTComing((prev) => {
+							return !prev;
+						});
+					}}>
+					{tcoming ? (
+						<FaHandPeace className="text-green-500" />
+					) : (
+						<FaHandFist className="text-white hover:text-gray-300" />
+					)}
+				</button>
+			</div>
+			<div className="flex gap-2">
+				<span className="text-lg my-auto">{nrliked}</span>
+				<button
+					name="like"
+					className={tliked ? "text-red-500 hover:text-red-400" : "text-white hover:text-gray-300"}
+					onClick={() => {
+						reacted("like", !tliked);
+						setTLiked((prev) => {
+							return !prev;
+						});
+					}}>
+					<FaHeart />
+				</button>
+			</div>
 		</div>
 	);
 }

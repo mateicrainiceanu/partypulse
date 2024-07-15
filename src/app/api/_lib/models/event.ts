@@ -162,6 +162,8 @@ class Events {
         let there = false
         let coming = false
         let liked = false
+        let nrliked = 0
+        let nrcoming = 0
 
         event.userRelations?.map((rel) => {
             if (rel.userId === uid) {
@@ -177,12 +179,24 @@ class Events {
                         break;
                     case 4:
                         coming = true
+                        nrcoming++
                         break;
                     case 5:
                         liked = true
+                        nrliked++
                         break;
                     default:
                         break;
+                }
+            } else {
+                switch (rel.reltype) {
+                    case 5:
+                        nrliked++;
+                        break;
+                    case 4:
+                        nrcoming++;
+                        break;
+                    default: break;
                 }
             }
 
@@ -191,7 +205,7 @@ class Events {
 
         })
 
-        return { ...event, djs, userHasRightToManage, userIsDJ, there, liked, coming }
+        return { ...event, djs, userHasRightToManage, userIsDJ, there, liked, coming, nrliked, nrcoming }
     }
 
     static deleteForId(id: number) {
@@ -215,7 +229,7 @@ class Events {
         })
 
         if (force) {
-            let [res] = await db.execute(`UPDATE events SET status = 0 WHERE id IN (${str.substring(0, str.length - 2)}) AND status = 1; `) as RowDataPacket[][]
+            let [_] = await db.execute(`UPDATE events SET status = 0 WHERE id IN (${str.substring(0, str.length - 2)}) AND status = 1; `) as RowDataPacket[][]
             return []
         }
 
@@ -248,8 +262,8 @@ class Events {
     static async reaction(uid: number, eid: number, type: number, value: boolean) {
         if (value) {
             const [u]: { userId: number, reltype: number }[][] = await db.safeexe(`SELECT userId, reltype FROM users_events WHERE eventId = ?;`, [eid])
-            
-            u.map(u => {                
+
+            u.map(u => {
                 if ((type == 1 || type == 2) && (u.reltype == 1 || u.reltype == 2))
                     new UserNotification({ forUserId: u.userId, fromUserId: uid, nottype: "event-manager-add", text: "can now manage your event.", itemType: "event", itemId: eid }).save()
                 else if ((type == 4 || type == 5) && (u.reltype == 1 || u.reltype == 2))

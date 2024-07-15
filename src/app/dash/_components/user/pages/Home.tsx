@@ -1,12 +1,10 @@
 import React, {useContext, useEffect, useState} from "react";
-import EventsFromUsers from "./HomeComponents/EventsFromUsers";
 import axios from "axios";
 import {AlertContext} from "@/app/AlertContext";
-import EventsFormLocations from "./HomeComponents/EventsFormLocations";
 import {LoadManContext} from "@/app/LoadManContext";
 import CitySelector from "@/app/components/CitySelector";
 import {FullEvent} from "@/types";
-import EventWithData from "@/app/components/EventWithData";
+import EventWithData from "../../EventWithData";
 
 function Home() {
 	const {handleAxiosError} = useContext(AlertContext);

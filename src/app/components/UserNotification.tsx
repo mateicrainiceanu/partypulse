@@ -8,6 +8,7 @@ import EventView from "../dash/_components/EventView";
 import {parseEventForView} from "../dash/_lib/data-manager";
 import {BsXCircleFill} from "react-icons/bs";
 import moment from "moment";
+import EventWithData from "../dash/_components/EventWithData";
 
 function UserNotification({n}: {n: IUserNotification}) {
 	const [status, setStatus] = useState(n.status);
@@ -77,18 +78,7 @@ function UserNotification({n}: {n: IUserNotification}) {
 							<LocationSmView locationData={n.location} showManage={n.location.userHasRightToManage} />
 						)}
 						{n.itemType == "event" && n.event && (
-							<EventView
-								id={ev.id}
-								name={ev.name}
-								date={ev.dateStart}
-								location={ev.location}
-								djs={ev.djs}
-								showManage={ev.userHasRightToManage > 0}
-								status={ev.status}
-								there={ev.there}
-								coming={ev.coming}
-								liked={ev.liked}
-							/>
+							<EventWithData ev={n.event}/>
 						)}
 					</div>
 				)}

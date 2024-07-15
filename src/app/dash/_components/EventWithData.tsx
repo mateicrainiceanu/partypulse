@@ -1,5 +1,5 @@
 import React from "react";
-import EventView from "../dash/_components/EventView";
+import EventView from "./EventView";
 import {FullEvent} from "@/types";
 
 function EventWithData({ev}: {ev: FullEvent}) {
@@ -15,6 +15,8 @@ function EventWithData({ev}: {ev: FullEvent}) {
 			there={ev.there}
 			coming={ev.coming}
 			liked={ev.liked}
+			nrliked={ev.nrliked}
+			nrcoming={ev.nrcoming}
 		/>
 	);
 }

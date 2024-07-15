@@ -31,6 +31,8 @@ function ManageEvent({params}: {params: {id: number}}) {
 		userHasRightToManage: 0,
 		liked: false,
 		coming: false,
+		nrliked: 0,
+		nrcoming: 0
 	});
 
 	const [tliked, setTLiked] = useState(data.liked);
@@ -44,9 +46,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 		axios
 			.get("/api/event/" + params.id)
 			.then((response) => {
-				setData(parseEventForView(response.data));
-				console.log(response.data);
-				
+				setData(parseEventForView(response.data));				
 				setTComing(response.data.coming);
 				setTLiked(response.data.liked);
 				finishedLoadingItem();
@@ -55,9 +55,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 	}, []);
 
 	function reacted(name: string, value: boolean) {
-		axios.post("/api/event/reaction", {eventId: data.id, name: name === "like" ? 5 : 4, value: value}).then((res) => {
-			console.log(res);
-		});
+		axios.post("/api/event/reaction", {eventId: data.id, name: name === "like" ? 5 : 4, value: value}).then().catch(handleAxiosError);
 	}
 
 	return (
@@ -86,7 +84,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 			<div className="mx-auto max-w-xl my-2"></div>
 			<DJView djs={data.djs}></DJView>
 			<div className="my-2 bg-gray-700 rounded-lg">
-				{EventReactions(data.id, reacted, tcoming, setTComing, tliked, setTLiked)}
+				{EventReactions(data.id, reacted, tcoming, setTComing, tliked, setTLiked, data.nrliked, data.nrcoming)}
 			</div>
 		</div>
 	);

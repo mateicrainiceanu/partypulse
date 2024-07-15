@@ -27,6 +27,8 @@ function Events({
 		there: boolean;
 		coming: boolean;
 		liked: boolean;
+		nrliked: number; 
+		nrcoming:number;
 	}>;
 }) {
 	const [events, setEvents] = useState(givenEvents || []);
@@ -104,7 +106,7 @@ function Events({
 				<Button
 					color="warning"
 					variant="outlined"
-					className={" " + (showFilterByDate ? " bg-orange-900 " :"")}
+					className={" " + (showFilterByDate ? " bg-orange-900 " : "")}
 					onClick={() => {
 						setShowFilterByDate((prev) => !prev);
 					}}>
@@ -156,6 +158,8 @@ function Events({
 											coming: boolean;
 											liked: boolean;
 											userHasRightToManage?: number;
+											nrliked: number;
+											nrcoming: number;
 										},
 										i
 									) => (
@@ -171,6 +175,8 @@ function Events({
 											there={event.there}
 											coming={event.coming}
 											liked={event.liked}
+											nrliked={event.nrliked}
+											nrcoming={event.nrcoming}
 										/>
 									)
 								)}
@@ -207,6 +213,8 @@ function Events({
 											coming: boolean;
 											liked: boolean;
 											userHasRightToManage?: number;
+											nrliked: number;
+											nrcoming: number;
 										},
 										i
 									) => (
@@ -223,6 +231,8 @@ function Events({
 												there={event.there}
 												coming={event.coming}
 												liked={event.liked}
+												nrliked={event.nrliked}
+												nrcoming={event.nrcoming}
 											/>{" "}
 										</div>
 									)

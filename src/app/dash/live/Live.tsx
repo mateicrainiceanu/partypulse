@@ -6,7 +6,7 @@ import FormBtn from "@/app/components/FormBtn";
 import {AlertContext} from "@/app/AlertContext";
 import {FullEvent} from "@/types";
 import {LoadManContext} from "@/app/LoadManContext";
-import EventWithData from "@/app/components/EventWithData";
+import EventWithData from "../_components/EventWithData";
 
 function Live() {
 	const [found, setFound] = useState(null);
@@ -24,6 +24,8 @@ function Live() {
 		userHasRightToManage: 0,
 		msuggestions: 0,
 		genreVote: 0,
+		nrliked: 0,
+		nrcoming: 0
 	});
 	const {handleAxiosError} = useContext(AlertContext);
 	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
