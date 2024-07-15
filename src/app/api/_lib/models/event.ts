@@ -239,15 +239,17 @@ class Events {
         return db.safeexe(`UPDATE events SET ${field} = ? WHERE id = ?;`, [value, id]) as Promise<Array<RowDataPacket>>
     }
 
-    static searchByName(q: string) {
+    static async searchByName(q: string, uid?: number) {
         let query = `%${q}%`
-        return db.safeexe(`SELECT id FROM events WHERE name LIKE ? AND privateev = 0;`, [query])
+        const [events] = await db.safeexe(getEventQuery("events.name LIKE ? AND privateev = 0"), [query])
+        return events.map((e: Events) => Events.process(e, uid))
     }
 
     static async reaction(uid: number, eid: number, type: number, value: boolean) {
         if (value) {
             const [u]: { userId: number, reltype: number }[][] = await db.safeexe(`SELECT userId, reltype FROM users_events WHERE eventId = ?;`, [eid])
-            u.map(u => {
+            
+            u.map(u => {                
                 if ((type == 1 || type == 2) && (u.reltype == 1 || u.reltype == 2))
                     new UserNotification({ forUserId: u.userId, fromUserId: uid, nottype: "event-manager-add", text: "can now manage your event.", itemType: "event", itemId: eid }).save()
                 else if ((type == 4 || type == 5) && (u.reltype == 1 || u.reltype == 2))
@@ -284,36 +286,44 @@ class Events {
 function getEventQuery(query: string) {
     return `
     SELECT
-            events.*,
-            locations.name AS location,
-            JSON_OBJECT(
-                'id', locations.id,
-                'name', locations.name,
-                'adress', locations.adress,
-                'useForAdress', locations.useForAdress,
-                'lat', locations.lat,
-                'lon', locations.lon,
-                'city', locations.city,
-                'userInteractions', JSON_ARRAYAGG(
+    events.*,
+    locations.name AS location,
+    JSON_OBJECT(
+        'id', locations.id,
+        'name', locations.name,
+        'adress', locations.adress,
+        'useForAdress', locations.useForAdress,
+        'lat', locations.lat,
+        'lon', locations.lon,
+        'city', locations.city,
+        'userInteractions', COALESCE(
+            JSON_ARRAYAGG(
                 JSON_OBJECT(
                     'userId', users_locations.userId,
                     'reltype', users_locations.reltype
-                ))
-            ) AS locationData,
-            JSON_ARRAYAGG(
-               JSON_OBJECT(
-                    'userId', users_events.userId,
-                    'reltype', users_events.reltype,
-                    'uname', users.uname
                 )
-            ) AS userRelations
-        FROM events
-        JOIN locations ON locations.id = events.locationId
-        JOIN users_events ON users_events.eventId = events.id
-        JOIN users ON users.id = users_events.userId
-        JOIN users_locations ON users_locations.locationId = locations.id
-        WHERE ${query}
-        GROUP BY events.id, locations.id;
+            ),
+            JSON_ARRAY()
+        )
+    ) AS locationData,
+    COALESCE(
+        JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'userId', users_events.userId,
+                'reltype', users_events.reltype,
+                'uname', users.uname
+            )
+        ),
+        JSON_ARRAY()
+    ) AS userRelations
+FROM events
+JOIN locations ON locations.id = events.locationId
+LEFT JOIN users_events ON users_events.eventId = events.id
+LEFT JOIN users ON users.id = users_events.userId
+LEFT JOIN users_locations ON users_locations.locationId = locations.id
+WHERE ${query}
+GROUP BY events.id, locations.id;
+
         `
 }
 

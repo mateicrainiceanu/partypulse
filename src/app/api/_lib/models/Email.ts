@@ -62,9 +62,9 @@ export default class Email {
     }
 
     static async getNotificationEmail(n: UserNotification) {
-
-        const fullnotiv = await UserNotification.getFullNotification(Number(n.id), n.forUserId)
-
+      
+    const [fullnotiv] = await UserNotification.getFullNotification(Number(n.id), n.forUserId)
+    
         return `<div>
     <style>
     .all{

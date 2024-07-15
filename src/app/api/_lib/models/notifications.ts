@@ -51,11 +51,12 @@ export default class UserNotification {
 
         const user = (await User.findById(this.forUserId) as any)[0][0]
         const mail = new Email(user.email)
-        mail.notification(this)
-        return db.execute(sql)
+        const resp = (await db.execute(sql))[0]
+        //VERIFY IF USER HAS NOTIFICATIONS ON       
+        mail.notification({ ...this, id: resp.insertId })
     }
 
-    static async getFullNotification(notid: number, uid: number){
+    static async getFullNotification(notid: number, uid: number) {
         let sql = `
 SELECT
     users_notifications.*,

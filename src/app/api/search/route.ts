@@ -29,14 +29,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (category === "events" && searchQuery != "") {
-        const [ids] = await Events.searchByName(searchQuery) as Array<RowDataPacket>;
-
-        const res = await ids.map(async (evid: { id: number }) => {
-            const fullEvent = await Events.getFullForId(evid.id, userId)
-            return fullEvent;
-        })
-
-        const full = await Promise.all(res)
+        const full = await Events.searchByName(searchQuery, userId)        
         return NextResponse.json({ category: "events", results: full })
     }
 
