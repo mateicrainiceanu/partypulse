@@ -106,7 +106,6 @@ class User {
     }
 
     static async getId(uname: string) {
-
         let sql = `SELECT id FROM users WHERE uname = ?;`
         const [response] = (await db.safeexe(sql, [uname])) as Array<RowDataPacket>
         return response[0].id

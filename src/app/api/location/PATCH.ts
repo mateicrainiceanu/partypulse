@@ -26,8 +26,8 @@ export default async function PATCH(req: NextRequest) {
             } else
                 return new NextResponse("Permission denied", { status: 403 })
         } else
-            return new NextResponse("Invalid request", { status: 400 })
+            return new NextResponse("Invalid request", { status: 403 })
     } else
-        return new NextResponse("Invalid request", { status: 400 })
+        return new NextResponse("Invalid request", { status: 403 })
 
 }

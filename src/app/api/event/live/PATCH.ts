@@ -29,6 +29,6 @@ export default async function PATCH(req: NextRequest) {
         }
 
     } else {
-        return new NextResponse("Invalid Request", { status: 400 })
+        return new NextResponse("Invalid Request", { status: 403 })
     }
 }

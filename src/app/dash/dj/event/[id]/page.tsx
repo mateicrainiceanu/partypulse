@@ -45,9 +45,7 @@ function DjView({params}: {params: {id: number}}) {
 		axios
 			.get("/api/event/" + params.id + "?isLive=true")
 			.then((response) => {
-				if (response.data.userHasRightToManage === 0) {
-					window.location.replace("/dash");
-				}
+				if (response.data.userHasRightToManage === 0) window.location.replace("/dash");
 				setData(parseEventForView(response.data));
 				finishedLoadingItem();
 			})
@@ -66,9 +64,7 @@ function DjView({params}: {params: {id: number}}) {
 				.then((data) => {
 					setUpdated(true);
 				})
-				.catch((err) => {
-					handleAxiosError(err);
-				});
+				.catch(handleAxiosError);
 		}
 	}
 

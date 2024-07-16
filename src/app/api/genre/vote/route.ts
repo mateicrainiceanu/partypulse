@@ -24,9 +24,11 @@ export async function POST(req: NextRequest) {
         }
 
     } else {
-        return new NextResponse("Invalid Request", { status: 400 })
+        return new NextResponse("Invalid Request", { status: 403 })
     }
 }
+
+//TODO: Figure out if something is missing
 
 export async function GET(req: NextRequest) {
     const url = new URL(req.url)
@@ -41,7 +43,7 @@ export async function GET(req: NextRequest) {
         if (user.id) {
 
 
-            // return NextResponse.json(suggestions)
+            //return NextResponse.json(suggestions)
 
         } else {
             return new NextResponse("UserNotLoggedIn", { status: 403 })

@@ -1,13 +1,9 @@
 "use client";
 
 import React, {ReactNode, createContext, useContext, useEffect, useState} from "react";
-import axios, {AxiosResponse} from "axios";
-import {LoadingContext} from "./LoadingContext";
 import {getCookie} from "cookies-next";
 import {AlertContext} from "./AlertContext";
-import {useSession} from "next-auth/react";
-import {verify} from "crypto";
-import LoadManProvider, {LoadManContext} from "./LoadManContext";
+import {LoadManContext} from "./LoadManContext";
 interface IUser {
 	id: number;
 	fname: string;
@@ -31,7 +27,6 @@ function UserProvider({children}: {children: ReactNode}) {
 		emailNotif: 1
 	});
 	const [tried, setTried] = useState(false);
-	const {handleAxiosError} = useContext(AlertContext);
 	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	//addLoadingItem();
 
