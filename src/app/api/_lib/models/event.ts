@@ -58,20 +58,6 @@ class Events {
         return db.execute(sql);
     }
 
-    // async update(id: number) {
-    //     const dur = this.duration
-    //     const duration = Number(dur.split(":")[0]) + ((Number(dur.split(":")[1])) * (10 / 6) / 100)
-
-    //     let sql = `UPDATE events SET 
-    //     name=?,
-    //     privateev=?,
-    //     dateStart=?,
-    //     duration=? 
-    //     WHERE id=?;
-    //     `
-    //     return db.safeexe(sql, [this.name, (this.privateev ? 1 : 0), (this.date + "T" + this.time + ":00"), duration, id]);
-    // }
-
     static setLocation(eventId: number, locId: number) {
         let sql = `UPDATE events SET locationId = ? WHERE id = ?;`
         return db.safeexe(sql, [locId, eventId]);
@@ -80,7 +66,7 @@ class Events {
     static async getForUser(id: number, onlyManaged?: boolean, there?: boolean) {
 
         let query = `events.id IN ( SELECT eventId FROM users_events WHERE userId = ? AND reltype ${there ? '= 3' : (onlyManaged ? "< 3" : '> 3')} )`
-        const [events] = await db.safeexe(getEventQuery(query), [id])
+        const [events] = await db.safeexe(getEventQuery(query, id), [id])
         return events.filter((p: Events) => p != null).map((e: Events) => Events.process(e, id))
 
     }
@@ -88,7 +74,7 @@ class Events {
     static async getEventsForRelsUserId(uid: number, mainUsrId: number) {
         //TO BE REVISITED
 
-        const [events] = await db.safeexe(getEventQuery("users_events.userId = ? AND events.status = 0"), [uid]) as any
+        const [events] = await db.safeexe(getEventQuery("users_events.userId = ? AND events.status = 0", mainUsrId), [uid]) as any
         const processed = events.map((e: Events) => {
             return Events.process(e, mainUsrId)
         })
@@ -112,7 +98,7 @@ class Events {
     static async getFullForLocation(locId: number, mainUsrId?: number, isNotOver?: boolean) {
         const location = (await Location.getFullLocation(locId, mainUsrId)) as any
 
-        const [events] = await db.safeexe(getEventQuery("events.locationId = ? " + (isNotOver ? "AND events.status < 2" : "")), [locId]) as any
+        const [events] = await db.safeexe(getEventQuery("events.locationId = ? " + (isNotOver ? "AND events.status < 2" : ""), mainUsrId), [locId]) as any
         const processedEvents = events.filter((p: Events) => p != null).map((e: Events) => Events.process(e, mainUsrId))
 
         return { location, events: processedEvents }
@@ -131,13 +117,13 @@ class Events {
     }
 
     static async getForCity(city: string, uid?: number) {
-        const [res] = await db.safeexe(getEventQuery(`locations.city = ? AND events.dateStart > CURRENT_DATE AND events.privateev != 1`), [city])
+        const [res] = await db.safeexe(getEventQuery(`locations.city = ? AND events.dateStart > CURRENT_DATE`, uid), [city])
         return res.map((ev: any) => Events.process(ev, uid))
     }
 
-    static async getFullForId(id: number | string, uid?: number, isNotOver?: boolean, givenLocation?: Location | undefined) {
+    static async getFullForId(id: number | string, uid?: number) {
 
-        const [res] = await db.safeexe(getEventQuery("events.id = ?"), [id])
+        const [res] = await db.safeexe(getEventQuery("events.id = ?", uid), [id])
 
         const [event] = res
         if (res.length > 0)
@@ -147,7 +133,7 @@ class Events {
 
     static async getForIdRange(idrange: number | string, uid?: number, isNotOver?: boolean, givenLocation?: Location | undefined) {
 
-        const [res] = await db.execute(getEventQuery(`events.id IN ${idrange}`))
+        const [res] = await db.execute(getEventQuery(`events.id IN ${idrange}`, uid))
 
         const [event] = res
         if (res.length > 0)
@@ -296,15 +282,15 @@ class Events {
     }
 
     static async userHasPermissons(eid: number | string, uid: number | string) {
-        let [res] = await db.safeexe(`SELECT * FROM users_events WHERE userId = ? AND eventId = ? AND (reltype <= 2)`, [uid, eid])        
+        let [res] = await db.safeexe(`SELECT * FROM users_events WHERE userId = ? AND eventId = ? AND (reltype <= 2)`, [uid, eid])
         return res.length > 0
     }
 
 }
 
-function getEventQuery(query: string) {
+function getEventQuery(query: string, showPrivate?: number) {
     return `
-    SELECT
+   SELECT
     events.*,
     locations.name AS location,
     JSON_OBJECT(
@@ -340,7 +326,22 @@ JOIN locations ON locations.id = events.locationId
 LEFT JOIN users_events ON users_events.eventId = events.id
 LEFT JOIN users ON users.id = users_events.userId
 LEFT JOIN users_locations ON users_locations.locationId = locations.id
-WHERE ${query}
+WHERE
+    ${query} 
+    AND (
+        events.privateev = 0 
+       ${showPrivate ? `OR (
+            events.privateev = 1 
+            AND EXISTS (
+                SELECT 1 
+                FROM users_events ue 
+                WHERE ue.eventId = events.id 
+                  AND ue.userId = ${showPrivate} 
+                  AND ue.reltype = 1
+            )
+        )` : ""
+        }
+    )
 GROUP BY events.id, locations.id;
 
         `

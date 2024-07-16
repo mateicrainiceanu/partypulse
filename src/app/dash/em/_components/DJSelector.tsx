@@ -63,7 +63,7 @@ export function DJSelector({djs, setData}: IProps) {
 						}
 						onClick={() => {
 							if (selected !== "") {
-								if (djs.filter((djname) => djname === selected).length > 0) {
+								if (djs?.filter((djname) => djname === selected).length > 0) {
 									alert("Already exists");
 								} else {
 									setData((prev: any) => ({...prev, djs: [selected, ...prev.djs]}));
@@ -75,7 +75,7 @@ export function DJSelector({djs, setData}: IProps) {
 				</div>
 			</div>
 			<div>
-				{djs.length > 0 && (
+				{djs?.length > 0 && (
 					<div className="table-container">
 						<table className="my-2 w-full text-left">
 							<thead className="bg-gray-800 h-9">
@@ -85,7 +85,7 @@ export function DJSelector({djs, setData}: IProps) {
 								</tr>
 							</thead>
 							<tbody>
-								{djs.map((dj, i) => (
+								{djs?.map((dj, i) => (
 									<tr className="h-9" key={i}>
 										<td
 											onClick={() => {

@@ -77,7 +77,7 @@ class Location {
                 locations
             JOIN 
                 users_locations ON locations.id = users_locations.locationId
-                WHERE locations.name LIKE ?
+                WHERE locations.name LIKE ? ${userId ? "AND users_locations.reltype = 1 AND users_locations.userId = " + userId : ""}
             GROUP BY 
                 locations.id;
             `
@@ -132,6 +132,7 @@ class Location {
         let userHasRightToManage = false
         let liked = false;
         let nrLiked = 0;
+
         location.userInteractions?.map((interaction: any) => {
             if (interaction.userId == userId && interaction.reltype == 1)
                 userHasRightToManage = true;
@@ -157,31 +158,36 @@ class Location {
 
     static async getLocationsForUser(uid: number, status: number) {
         let [rels] = await db.safeexe(`SELECT 
-            locations.*,
-            JSON_ARRAYAGG(
-                JSON_OBJECT(
-                    'userId', users_locations.userId,
-                    'reltype', users_locations.reltype
-                )
-            ) AS userInteractions
-            FROM 
-                locations
-            JOIN 
-                users_locations ON locations.id = users_locations.locationId
-            WHERE users_locations.userId = ? AND users_locations.reltype = ${status}
-            GROUP BY 
-                locations.id, users_locations.userId;
+    locations.*,
+    JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'userId', all_users_locations.userId, 
+            'reltype', all_users_locations.reltype
+        )
+    ) AS userInteractions
+FROM 
+    locations
+JOIN 
+    users_locations AS filtered_users_locations 
+    ON locations.id = filtered_users_locations.locationId
+    AND filtered_users_locations.userId = ?
+    AND filtered_users_locations.reltype = ${status}
+LEFT JOIN 
+    users_locations AS all_users_locations 
+    ON locations.id = all_users_locations.locationId
+GROUP BY 
+    locations.id;
+
             `, [uid])
-        return rels.map((rel:any) => Location.getPermissionFor(rel, uid))
+
+        return rels.map((rel: any) => Location.getPermissionFor(rel, uid))
     }
 
-    static async userHasRights(locId: number, uid:number){
+    static async userHasRights(locId: number, uid: number) {
         const [res] = await db.safeexe(`SELECT * FROM users_locations WHERE userId = ? AND locationId = ? AND reltype = 1`, [uid, locId])
         return res.length > 0
     }
 
 }
-
-
 
 export default Location;

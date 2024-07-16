@@ -15,19 +15,19 @@ import axios from "axios";
 import { FullEvent } from "@/types";
 
 function EventView({evdata}: {evdata: FullEvent}) {
-	const {user} = useContext(UserContext);
+	const {user} = useContext(UserContext);	
 
 	const [tliked, setTLiked] = useState(evdata.liked);
 	const [tcoming, setTComing] = useState(evdata.coming);
 
 	var str = "";
-	evdata.djs.map((dj) => {
+	evdata.djs?.map((dj) => {
 		str += dj + ", ";
 	});
 
 	function djable() {
 		var djable = false;
-		evdata.djs.map((dj) => {
+		evdata.djs?.map((dj) => {
 			if (dj === user.uname) djable = true;
 		});
 

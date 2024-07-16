@@ -10,6 +10,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: number }
     const tok = url.searchParams.get("token")
     const token = cookies().get("token")?.value || tok
 
+    const prv = url.searchParams.get("private")
+
+
     var userId
 
     if (token) {

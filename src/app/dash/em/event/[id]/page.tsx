@@ -12,19 +12,20 @@ import {parseEventForView} from "@/app/dash/_lib/data-manager";
 import UpdateStauts from "./UpdateStauts";
 import {AlertContext} from "@/app/AlertContext";
 import {FullEvent} from "@/types";
+import { LoadManContext } from "@/app/LoadManContext";
 
 function ManageEvent({params}: {params: {id: number}}) {
 	const [data, setData] = useState<null | FullEvent>(null);
 
 	const [edit, setEdit] = useState(false);
 
-	const {addLoadingItem, finishedLoadingItem} = useContext(LoadingContext);
+	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	const handleAxiosError = useContext(AlertContext);
 
 	useEffect(() => {
 		addLoadingItem();
 		axios
-			.get("/api/event/" + params.id)
+			.get("/api/event/" + params.id + '?private=true')
 			.then((response) => {
 				setData(parseEventForView(response.data));
 				finishedLoadingItem();

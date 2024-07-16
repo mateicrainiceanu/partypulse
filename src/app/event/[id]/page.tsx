@@ -1,5 +1,4 @@
 "use client";
-import {LoadingContext} from "@/app/LoadingContext";
 import axios from "axios";
 import React, {useContext, useEffect, useState} from "react";
 import moment from "moment";
@@ -14,6 +13,7 @@ import {IoSettings} from "react-icons/io5";
 import {EventReactions} from "@/app/dash/_components/EventView";
 import {LoadManContext} from "@/app/LoadManContext";
 import {FullEvent} from "@/types";
+import UserSelector from "@/app/dash/_components/UserSelector";
 
 function ManageEvent({params}: {params: {id: number}}) {
 	const [data, setData] = useState<null | FullEvent>(null);
@@ -22,17 +22,22 @@ function ManageEvent({params}: {params: {id: number}}) {
 	const [tcoming, setTComing] = useState(false);
 
 	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
-	const {handleAxiosError} = useContext(AlertContext);
+	const {handleAxiosError, handleError} = useContext(AlertContext);
 
 	useEffect(() => {
 		addLoadingItem();
 		axios
 			.get("/api/event/" + params.id)
 			.then((response) => {
-				setData(parseEventForView(response.data));
-				setTComing(response.data.coming);
-				setTLiked(response.data.liked);
-				finishedLoadingItem();
+				if (response.data.id) {
+					setData(parseEventForView(response.data));
+					setTComing(response.data.coming);
+					setTLiked(response.data.liked);
+					finishedLoadingItem();
+				} else {
+					window.location.replace("/");
+					handleError("Failed to load event", "error");
+				}
 			})
 			.catch(handleAxiosError);
 	}, []);
@@ -51,7 +56,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 				<div className="text-center font-mono max-w-lg mx-auto m-4">
 					<h1 className="text-center text-2xl text-white font-mono font-bold">{data.name}</h1>
 					{data.userHasRightToManage > 0 && (
-						<div className="my-1 bg-cyan-900 rounded-lg p-2">
+						<div className="my-1 bg-cyan-900 bg-opacity-70 rounded-lg p-2">
 							<div className="flex gap-4 justify-center">
 								<UpdateStauts data={data} setData={setData} />
 
@@ -61,6 +66,13 @@ function ManageEvent({params}: {params: {id: number}}) {
 									<IoSettings className="m-2 text-2xl" />
 								</Link>
 							</div>
+							{data.privateev && (
+								<div className="w-full">
+									<hr className="my-2" />
+									<h3 className="text-center font-bold">Invite users</h3>
+									<UserSelector evid={params.id}/>
+								</div>
+							)}
 						</div>
 					)}
 					<div className="flex justify-center">

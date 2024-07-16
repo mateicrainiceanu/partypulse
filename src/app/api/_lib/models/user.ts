@@ -92,7 +92,7 @@ class User {
 
     static getFromUname(uname: string, userId?: number) {
         const q = `%${uname}%`
-        return db.safeexe(`SELECT uname, role FROM users 
+        return db.safeexe(`SELECT uname, role, id FROM users 
         WHERE (uname LIKE ? OR email LIKE ?) ${userId ? "AND id != " + userId : ""};`, [q, q])
     }
 
