@@ -58,6 +58,11 @@ class Location {
         return db.safeexe(sql, [this.name, this.useForAdress, this.adress, this.city, this.lat, this.lon, id])
     }
 
+    static delete(locid: number) {
+        db.safeexe(`DELETE FROM locations WHERE id = ?`, [locid])
+        db.safeexe(`DELETE FROM users_locations WHERE locationId = ?`, [locid])
+    }
+
     static deleteUserAccess(uid: string, locid: string) {
         let sql = `DELETE from users_locations WHERE locationId=? AND userId=?`
         return db.safeexe(sql, [locid, uid])

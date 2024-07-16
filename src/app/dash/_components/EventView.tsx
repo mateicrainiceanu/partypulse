@@ -12,13 +12,16 @@ import {UserContext} from "@/app/UserContext";
 import {FaHeart, FaHandFist, FaHandPeace} from "react-icons/fa6";
 import {CgMoreVertical} from "react-icons/cg";
 import axios from "axios";
-import { FullEvent } from "@/types";
+import {FullEvent} from "@/types";
+import {AlertContext} from "@/app/AlertContext";
 
 function EventView({evdata}: {evdata: FullEvent}) {
-	const {user} = useContext(UserContext);	
+	const {user} = useContext(UserContext);
 
 	const [tliked, setTLiked] = useState(evdata.liked);
 	const [tcoming, setTComing] = useState(evdata.coming);
+
+	const {handleAxiosError, dialogToUser} = useContext(AlertContext);
 
 	var str = "";
 	evdata.djs?.map((dj) => {
@@ -35,9 +38,29 @@ function EventView({evdata}: {evdata: FullEvent}) {
 	}
 
 	function reacted(name: string, value: boolean) {
-		axios.post("/api/event/reaction", {eventId: evdata.id, name: name === "like" ? 5 : 4, value: value}).then((res) => {
-			console.log(res);
-		});
+		if (name != "like" && !value && evdata.privateev) {
+			dialogToUser({
+				title: "Are you sure?",
+				content:
+					"This is a private event. If you deselect the going button you will not see this event, unless the host invites you one more time.",
+				actionButtons: [
+					{btnName: "Cancel", func: () => {}},
+					{
+						btnName: "Proceed",
+						func: () => {
+							setTComing((prev) => !prev);
+							axios.post("/api/event/reaction", {eventId: evdata.id, name: 4, value: value}).catch(handleAxiosError);
+						},
+					},
+				],
+			});
+		} else {
+			if (name == "like") setTLiked((prev) => !prev);
+			else setTComing((prev) => !prev);
+			axios
+				.post("/api/event/reaction", {eventId: evdata.id, name: name === "like" ? 5 : 4, value: value})
+				.catch(handleAxiosError);
+		}
 	}
 
 	return (
@@ -47,7 +70,6 @@ function EventView({evdata}: {evdata: FullEvent}) {
 				onClick={() => {
 					window.location.href = "/event/" + evdata.id;
 				}}>
-				{/* TOP BAR */}
 				<div className="flex w-full">
 					{evdata.status === 1 && (
 						<div className="my-auto mr-2 text-green-500">
@@ -89,7 +111,8 @@ function EventView({evdata}: {evdata: FullEvent}) {
 				<div className="text-wrap flex">
 					<div className="text-gray-300 leading-8">
 						<p className="font-mono flex">
-							<MdDateRange className="mr-2 mt-2" /> {moment(evdata.dateStart, "YYYY-MM-DDTHH:mm").format("HH:mm DD.MMMM.YYYY")}
+							<MdDateRange className="mr-2 mt-2" />{" "}
+							{moment(evdata.dateStart, "YYYY-MM-DDTHH:mm").format("HH:mm DD.MMMM.YYYY")}
 						</p>
 						<p className="italic flex">
 							<CiLocationOn className="mr-2 mt-2" />
@@ -102,7 +125,7 @@ function EventView({evdata}: {evdata: FullEvent}) {
 					</div>
 				</div>
 			</div>
-			{EventReactions(evdata.id, reacted, tcoming, setTComing, tliked, setTLiked, evdata.nrliked, evdata.nrcoming)}
+			{EventReactions(evdata.id, reacted, tcoming, tliked, evdata.nrliked, evdata.nrcoming)}
 		</div>
 	);
 }
@@ -113,9 +136,7 @@ export function EventReactions(
 	id: number,
 	reacted: (name: string, value: boolean) => void,
 	tcoming: boolean,
-	setTComing: React.Dispatch<React.SetStateAction<boolean>>,
 	tliked: boolean,
-	setTLiked: React.Dispatch<React.SetStateAction<boolean>>,
 	nrliked: number,
 	nrcoming: number
 ) {
@@ -130,9 +151,6 @@ export function EventReactions(
 					name="participating"
 					onClick={() => {
 						reacted("participating", !tcoming);
-						setTComing((prev) => {
-							return !prev;
-						});
 					}}>
 					{tcoming ? (
 						<FaHandPeace className="text-green-500" />
@@ -148,9 +166,6 @@ export function EventReactions(
 					className={tliked ? "text-red-500 hover:text-red-400" : "text-white hover:text-gray-300"}
 					onClick={() => {
 						reacted("like", !tliked);
-						setTLiked((prev) => {
-							return !prev;
-						});
 					}}>
 					<FaHeart />
 				</button>

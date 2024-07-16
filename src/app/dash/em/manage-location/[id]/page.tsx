@@ -138,6 +138,20 @@ function ManageLocation({params}: {params: {id: string}}) {
 				</div>
 			</div>
 			<FormBtn name="Save changes" onClick={handleSave} />
+			<button
+				className="w-full p-1 bg-red-500 hover:bg-red-400 rounded-lg my-2"
+				onClick={() => {
+					axios
+						.delete("/api/location?id=" + params.id)
+						.then((_) => {
+							window.location.replace("/dash/em");
+						})
+						.catch((err) => {
+							handleAxiosError(err);
+						});
+				}}>
+				Delete
+			</button>
 		</div>
 	);
 }

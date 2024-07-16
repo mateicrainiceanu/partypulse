@@ -14,7 +14,7 @@ function UserNotification({n}: {n: IUserNotification}) {
 	const {updateNotifcationStatus} = useContext(UserNotifContext);
 	const [expanded, setExpanded] = useState(false);
 
-	let ev;
+	let ev;	
 
 	if (n.event) {
 		ev = parseEventForView(n.event);
@@ -77,7 +77,7 @@ function UserNotification({n}: {n: IUserNotification}) {
 							<LocationSmView locationData={n.location} showManage={n.location.userHasRightToManage} />
 						)}
 						{n.itemType == "event" && n.event && (
-							<EventView evdata={n.event}/>
+							<EventView evdata={{...n.event, id: n.itemId!}}/>
 						)}
 					</div>
 				)}

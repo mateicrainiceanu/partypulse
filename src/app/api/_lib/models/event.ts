@@ -292,15 +292,15 @@ function getEventQuery(query: string, showPrivate?: number) {
     return `
    SELECT
     events.*,
-    locations.name AS location,
+    COALESCE(locations.name, 'NO LOCATION') AS location,
     JSON_OBJECT(
-        'id', locations.id,
-        'name', locations.name,
-        'adress', locations.adress,
-        'useForAdress', locations.useForAdress,
-        'lat', locations.lat,
-        'lon', locations.lon,
-        'city', locations.city,
+        'id', COALESCE(locations.id, 0),
+        'name', COALESCE(locations.name, 'NO LOCATION'),
+        'adress', COALESCE(locations.adress, 'Contact organiser or dj for updates on this event'),
+        'useForAdress', COALESCE(locations.useForAdress, 'coordinates'),
+        'lat', COALESCE(locations.lat, 0),
+        'lon', COALESCE(locations.lon, 0),
+        'city', COALESCE(locations.city, ''),
         'userInteractions', COALESCE(
             JSON_ARRAYAGG(
                 JSON_OBJECT(
@@ -322,7 +322,7 @@ function getEventQuery(query: string, showPrivate?: number) {
         JSON_ARRAY()
     ) AS userRelations
 FROM events
-JOIN locations ON locations.id = events.locationId
+LEFT JOIN locations ON locations.id = events.locationId
 LEFT JOIN users_events ON users_events.eventId = events.id
 LEFT JOIN users ON users.id = users_events.userId
 LEFT JOIN users_locations ON users_locations.locationId = locations.id
@@ -337,12 +337,12 @@ WHERE
                 FROM users_events ue 
                 WHERE ue.eventId = events.id 
                   AND ue.userId = ${showPrivate} 
-                  AND ue.reltype = 1
+                  AND (ue.reltype = 1 OR ue.reltype = 4)
             )
-        )` : ""
-        }
+        )` : ""}
     )
 GROUP BY events.id, locations.id;
+
 
         `
 }

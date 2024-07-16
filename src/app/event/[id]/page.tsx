@@ -22,7 +22,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 	const [tcoming, setTComing] = useState(false);
 
 	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
-	const {handleAxiosError, handleError} = useContext(AlertContext);
+	const {handleAxiosError, handleError, dialogToUser} = useContext(AlertContext);
 
 	useEffect(() => {
 		addLoadingItem();
@@ -43,11 +43,29 @@ function ManageEvent({params}: {params: {id: number}}) {
 	}, []);
 
 	function reacted(name: string, value: boolean) {
-		if (data)
+		if (name != "like" && !value) {
+			dialogToUser({
+				title: "Are you sure?",
+				content:
+					"This is a private event. If you deselect the going button you will not see this event, unless the host invites you one more time.",
+				actionButtons: [
+					{btnName: "Cancel", func: () => {}},
+					{
+						btnName: "Proceed",
+						func: () => {
+							setTComing((prev) => !prev);
+							axios.post("/api/event/reaction", {eventId: data?.id, name: 4, value: value}).catch(handleAxiosError);
+						},
+					},
+				],
+			});
+		} else {
+			if (name == "like") setTLiked((prev) => !prev);
+			else setTComing((prev) => !prev);
 			axios
-				.post("/api/event/reaction", {eventId: data.id, name: name === "like" ? 5 : 4, value: value})
-				.then()
+				.post("/api/event/reaction", {eventId: data?.id, name: name === "like" ? 5 : 4, value: value})
 				.catch(handleAxiosError);
+		}
 	}
 
 	return (
@@ -70,7 +88,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 								<div className="w-full">
 									<hr className="my-2" />
 									<h3 className="text-center font-bold">Invite users</h3>
-									<UserSelector evid={params.id}/>
+									<UserSelector evid={params.id} />
 								</div>
 							)}
 						</div>
@@ -85,7 +103,7 @@ function ManageEvent({params}: {params: {id: number}}) {
 					<div className="mx-auto max-w-xl my-2"></div>
 					<DJView djs={data.djs}></DJView>
 					<div className="my-2 bg-gray-700 rounded-lg">
-						{EventReactions(data.id, reacted, tcoming, setTComing, tliked, setTLiked, data.nrliked, data.nrcoming)}
+						{EventReactions(data.id, reacted, tcoming, tliked, data.nrliked, data.nrcoming)}
 					</div>
 				</div>
 			)}
