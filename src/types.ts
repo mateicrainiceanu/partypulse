@@ -20,6 +20,7 @@ export interface FullEvent {
     id: number;
     name: string;
     location: string;
+    locationData: FullLocation;
     dateStart: string;
     djs: Array<string>;
     status: number;
@@ -31,4 +32,8 @@ export interface FullEvent {
     msuggestions: number;
     nrliked: number;
     nrcoming: number;
+    privateev: boolean;
+    date: string;
+    time: string;
+    duration: string
 } 

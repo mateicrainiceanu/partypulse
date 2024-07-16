@@ -4,7 +4,7 @@ import {AlertContext} from "@/app/AlertContext";
 import {LoadManContext} from "@/app/LoadManContext";
 import CitySelector from "@/app/components/CitySelector";
 import {FullEvent} from "@/types";
-import EventWithData from "../../EventWithData";
+import EventView from "../../EventView";
 
 function Home() {
 	const {handleAxiosError} = useContext(AlertContext);
@@ -30,7 +30,7 @@ function Home() {
 			<h1 className="text-center font-mono font-bold text-2xl my-2">Home</h1>
 			<CitySelector userLocation cityString={cityString} setCityString={setCityString} />
 			{data.map((ev: FullEvent) => (
-				<EventWithData key={ev.id} ev={ev} />
+				<EventView key={ev.id} evdata={ev} />
 			))}
 		</div>
 	);

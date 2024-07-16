@@ -12,47 +12,22 @@ import {UserContext} from "@/app/UserContext";
 import {FaHeart, FaHandFist, FaHandPeace} from "react-icons/fa6";
 import {CgMoreVertical} from "react-icons/cg";
 import axios from "axios";
+import { FullEvent } from "@/types";
 
-function EventView({
-	id,
-	name,
-	date,
-	location,
-	djs,
-	showManage,
-	status,
-	there,
-	coming,
-	liked,
-	nrliked,
-	nrcoming,
-}: {
-	id: number;
-	name: string;
-	date: string;
-	location: string;
-	djs: Array<string>;
-	showManage: boolean;
-	status: number;
-	there: boolean;
-	coming: boolean;
-	liked: boolean;
-	nrliked: number;
-	nrcoming: number;
-}) {
+function EventView({evdata}: {evdata: FullEvent}) {
 	const {user} = useContext(UserContext);
 
-	const [tliked, setTLiked] = useState(liked);
-	const [tcoming, setTComing] = useState(coming);
+	const [tliked, setTLiked] = useState(evdata.liked);
+	const [tcoming, setTComing] = useState(evdata.coming);
 
 	var str = "";
-	djs.map((dj) => {
+	evdata.djs.map((dj) => {
 		str += dj + ", ";
 	});
 
 	function djable() {
 		var djable = false;
-		djs.map((dj) => {
+		evdata.djs.map((dj) => {
 			if (dj === user.uname) djable = true;
 		});
 
@@ -60,7 +35,7 @@ function EventView({
 	}
 
 	function reacted(name: string, value: boolean) {
-		axios.post("/api/event/reaction", {eventId: id, name: name === "like" ? 5 : 4, value: value}).then((res) => {
+		axios.post("/api/event/reaction", {eventId: evdata.id, name: name === "like" ? 5 : 4, value: value}).then((res) => {
 			console.log(res);
 		});
 	}
@@ -70,39 +45,39 @@ function EventView({
 			<div
 				className=" bg-gray-900 bg-opacity-20 dark:bg-fuchsia-800 dark:bg-opacity-20 hover:bg-opacity-30 text-left p-4 rounded-t-xl "
 				onClick={() => {
-					window.location.href = "/event/" + id;
+					window.location.href = "/event/" + evdata.id;
 				}}>
 				{/* TOP BAR */}
 				<div className="flex w-full">
-					{status === 1 && (
+					{evdata.status === 1 && (
 						<div className="my-auto mr-2 text-green-500">
 							<BsCircleFill></BsCircleFill>
 						</div>
 					)}
 
-					{status === 2 && (
+					{evdata.status === 2 && (
 						<div className="my-auto mr-2 text-red-500 flex">
 							<BsCircleFill></BsCircleFill>
 						</div>
 					)}
-					<h5 className="text-center font-bold text-lg font-mono my-auto">{name}</h5>
+					<h5 className="text-center font-bold text-lg font-mono my-auto">{evdata.name}</h5>
 					<div className="ms-auto my-auto flex">
 						{djable() && (
 							<button
 								className="relative mx-1 border-2 border-fuchsia-500 hover:bg-fuchsia-500 hover:border-fuchsia-500 text-gray-500 hover:text-white rounded-3xl p-2"
 								onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 									e.stopPropagation();
-									window.location.href = "/dash/dj/event/" + id;
+									window.location.href = "/dash/dj/event/" + evdata.id;
 								}}>
 								<FaHeadphones className="" />
 							</button>
 						)}
-						{showManage && (
+						{evdata.userHasRightToManage && (
 							<button
 								className="relative border-2 border-blue-500 hover:bg-blue-300 hover:border-blue-300 text-gray-500 hover:text-white rounded-3xl p-2"
 								onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 									e.stopPropagation();
-									window.location.href = "/dash/em/event/" + id;
+									window.location.href = "/dash/em/event/" + evdata.id;
 								}}>
 								<IoSettingsSharp className="" />
 							</button>
@@ -114,11 +89,11 @@ function EventView({
 				<div className="text-wrap flex">
 					<div className="text-gray-300 leading-8">
 						<p className="font-mono flex">
-							<MdDateRange className="mr-2 mt-2" /> {moment(date, "YYYY-MM-DDTHH:mm").format("HH:mm DD.MMMM.YYYY")}
+							<MdDateRange className="mr-2 mt-2" /> {moment(evdata.dateStart, "YYYY-MM-DDTHH:mm").format("HH:mm DD.MMMM.YYYY")}
 						</p>
 						<p className="italic flex">
 							<CiLocationOn className="mr-2 mt-2" />
-							{location}
+							{evdata.location}
 						</p>
 						<p className="flex ">
 							<FaHeadphones className="mr-2 mt-2" />
@@ -127,7 +102,7 @@ function EventView({
 					</div>
 				</div>
 			</div>
-			{EventReactions(id, reacted, tcoming, setTComing, tliked, setTLiked, nrliked, nrcoming)}
+			{EventReactions(evdata.id, reacted, tcoming, setTComing, tliked, setTLiked, evdata.nrliked, evdata.nrcoming)}
 		</div>
 	);
 }

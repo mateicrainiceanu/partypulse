@@ -9,6 +9,7 @@ import {LoadManContext} from "@/app/LoadManContext";
 import FormElement from "@/app/components/FormElement";
 import moment from "moment";
 import FormBtn from "@/app/components/FormBtn";
+import {FullEvent} from "@/types";
 
 function Events({
 	givenEvents,
@@ -17,19 +18,7 @@ function Events({
 }: {
 	onlyManaged?: boolean;
 	filter?: string;
-	givenEvents?: Array<{
-		id: number;
-		name: string;
-		location: string;
-		dateStart: string;
-		djs: Array<string>;
-		status: number;
-		there: boolean;
-		coming: boolean;
-		liked: boolean;
-		nrliked: number; 
-		nrcoming:number;
-	}>;
+	givenEvents?: Array<FullEvent>;
 }) {
 	const [events, setEvents] = useState(givenEvents || []);
 	const [pg, setPg] = useState(1);
@@ -145,41 +134,9 @@ function Events({
 										filterDataByStatus(status) && filterDataByDate(dateStart)
 								)
 								.slice((pg - 1) * showOnPg, pg * showOnPg)
-								.map(
-									(
-										event: {
-											id: number;
-											name: string;
-											location: string;
-											dateStart: string;
-											djs: Array<string>;
-											status: number;
-											there: boolean;
-											coming: boolean;
-											liked: boolean;
-											userHasRightToManage?: number;
-											nrliked: number;
-											nrcoming: number;
-										},
-										i
-									) => (
-										<EventView
-											showManage={event.userHasRightToManage == 1 || event.userHasRightToManage == 2}
-											status={event.status}
-											name={event.name}
-											location={event.location}
-											id={event.id}
-											date={event.dateStart}
-											djs={event.djs}
-											key={event.id}
-											there={event.there}
-											coming={event.coming}
-											liked={event.liked}
-											nrliked={event.nrliked}
-											nrcoming={event.nrcoming}
-										/>
-									)
-								)}
+								.map((event: FullEvent) => (
+									<EventView key={event.id} evdata={event} />
+								))}
 							{(givenEvents?.length || 0) > showOnPg && (
 								<div className="flex justify-center my-2">
 									<Pagination
@@ -200,43 +157,11 @@ function Events({
 										name.includes(filter || "") && filterDataByStatus(status) && filterDataByDate(dateStart)
 								)
 								.slice((pg - 1) * showOnPg, pg * showOnPg)
-								.map(
-									(
-										event: {
-											id: number;
-											name: string;
-											location: string;
-											dateStart: string;
-											djs: Array<string>;
-											status: number;
-											there: boolean;
-											coming: boolean;
-											liked: boolean;
-											userHasRightToManage?: number;
-											nrliked: number;
-											nrcoming: number;
-										},
-										i
-									) => (
-										<div key={(pg - 1) * showOnPg + i}>
-											<EventView
-												showManage={event.userHasRightToManage == 1 || event.userHasRightToManage == 2}
-												status={event.status}
-												name={event.name}
-												location={event.location}
-												id={event.id}
-												date={event.dateStart}
-												djs={event.djs}
-												key={event.id}
-												there={event.there}
-												coming={event.coming}
-												liked={event.liked}
-												nrliked={event.nrliked}
-												nrcoming={event.nrcoming}
-											/>{" "}
-										</div>
-									)
-								)}
+								.map((event: FullEvent, i) => (
+									<div key={(pg - 1) * showOnPg + i}>
+										<EventView evdata={event} />
+									</div>
+								))}
 							{events.length > showOnPg && (
 								<div className="flex justify-center my-2">
 									<Pagination

@@ -4,11 +4,10 @@ import UserSmView, {UserXsView} from "../dash/_components/UserSmView";
 import {TbDotsCircleHorizontal} from "react-icons/tb";
 import {FaCheckCircle} from "react-icons/fa";
 import LocationSmView from "../dash/_components/LocationSmView";
-import EventView from "../dash/_components/EventView";
 import {parseEventForView} from "../dash/_lib/data-manager";
 import {BsXCircleFill} from "react-icons/bs";
 import moment from "moment";
-import EventWithData from "../dash/_components/EventWithData";
+import EventView from "../dash/_components/EventView";
 
 function UserNotification({n}: {n: IUserNotification}) {
 	const [status, setStatus] = useState(n.status);
@@ -78,7 +77,7 @@ function UserNotification({n}: {n: IUserNotification}) {
 							<LocationSmView locationData={n.location} showManage={n.location.userHasRightToManage} />
 						)}
 						{n.itemType == "event" && n.event && (
-							<EventWithData ev={n.event}/>
+							<EventView evdata={n.event}/>
 						)}
 					</div>
 				)}

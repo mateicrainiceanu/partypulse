@@ -6,27 +6,12 @@ import FormBtn from "@/app/components/FormBtn";
 import {AlertContext} from "@/app/AlertContext";
 import {FullEvent} from "@/types";
 import {LoadManContext} from "@/app/LoadManContext";
-import EventWithData from "../_components/EventWithData";
+import EventView from "../_components/EventView";
 
 function Live() {
 	const [found, setFound] = useState(null);
 	const [tried, setTried] = useState(false);
-	const [event, setEvent] = useState({
-		id: 0,
-		name: "",
-		location: "",
-		dateStart: "",
-		djs: [],
-		status: 0,
-		there: false,
-		coming: false,
-		liked: false,
-		userHasRightToManage: 0,
-		msuggestions: 0,
-		genreVote: 0,
-		nrliked: 0,
-		nrcoming: 0
-	});
+	const [event, setEvent] = useState<null | FullEvent>(null);
 	const {handleAxiosError} = useContext(AlertContext);
 	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 
@@ -54,11 +39,11 @@ function Live() {
 
 	return (
 		<div>
-			{found ? (
+			{found && event ? (
 				<div>
 					{event.status != 1 && (
 						<div className="max-w-lg mx-auto p-2 md:p-0">
-							<EventWithData ev={event} />
+							<EventView evdata={event} />
 						</div>
 					)}
 					{event.status == 0 && (
