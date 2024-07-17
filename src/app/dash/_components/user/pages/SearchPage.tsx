@@ -1,16 +1,22 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import FormElement from "@/app/components/FormElement";
 import {FormControl, Select, MenuItem, InputLabel} from "@mui/material";
 import Users from "./SearchPageComp/Users";
 import axios from "axios";
 import Locations from "./SearchPageComp/Locations";
 import Events from "../../Events";
+import { LoadManContext } from "@/app/LoadManContext";
+import { AlertContext } from "@/app/AlertContext";
 
 function SearchPage() {
 	const [searchData, setSearchData] = useState({
 		searchQuery: "",
 		category: "users",
 	});
+
+	const {handleAxiosError} = useContext(AlertContext)
+
+	const {addSmallLoad, finishSmallLoad} = useContext(LoadManContext)
 
 	const [responseData, setResponseData] = useState([]);
 
@@ -29,8 +35,6 @@ function SearchPage() {
 		setSearchData((prev) => ({...prev, [e.target.name]: e.target.value}));
 
 		if (e.target.name === "category") {
-			console.log("Clearing responses");
-
 			setResponseData([]);
 			localStorage.setItem("category", e.target.value);
 		} else if (e.target.name === "searchQuery" && e.target.value != "") {
@@ -42,6 +46,7 @@ function SearchPage() {
 
 	function search() {
 		if (searchData.searchQuery != "") {
+			addSmallLoad()
 			axios
 				.post("/api/search", {
 					category: searchData.category,
@@ -50,8 +55,9 @@ function SearchPage() {
 				.then((response) => {
 					if (response.data.category == searchData.category) {
 						setResponseData(response.data.results);
+						finishSmallLoad()
 					}
-				});
+				}).catch(handleAxiosError);
 		}
 	}
 

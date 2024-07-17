@@ -9,17 +9,17 @@ import EventView from "../../EventView";
 function Home() {
 	const {handleAxiosError} = useContext(AlertContext);
 	const [data, setData] = useState([]);
-	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
+	const {addSmallLoad, finishSmallLoad} = useContext(LoadManContext);
 	const [cityString, setCityString] = useState("");
 
 	useEffect(() => {
 		if (cityString) {
-			addLoadingItem();
+			addSmallLoad();
 			axios
 				.post("/api/homepgdata", {city: cityString})
 				.then((res) => {
 					setData(res.data);
-					finishedLoadingItem();
+					finishSmallLoad();
 				})
 				.catch(handleAxiosError);
 		}
