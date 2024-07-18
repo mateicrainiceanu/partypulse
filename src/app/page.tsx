@@ -8,13 +8,14 @@ export default function Home() {
 				<div className="min-h-11/12 flex items-center justify-center py-24">
 					<div>
 						<FaMusic className="text-7xl mx-auto mb-10" />
-						<h1 className="text-5xl font-sans leading-snug text-center">
+						<h1 className="text-5xl font-sans leading-snug text-center" data-testid="title">
 							Welcome to <b className="font-bold animate-pulse">PartyPulse!</b>
 						</h1>
 						<h2 className="text-center font-mono text-gray-300">An app for your fun and partys</h2>
 						<div className="flex justify-center my-10">
 							<button
 								className="bg-lime-400 text-black font-bold rounded-lg p-2 font-mono hover:bg-fuchsia-500 duration-200"
+								data-testid="cta-button"
 								onClick={() => {
 									window.location.href = "/register";
 								}}>
