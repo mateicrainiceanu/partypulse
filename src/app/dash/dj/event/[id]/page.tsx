@@ -93,12 +93,12 @@ function DjView({params}: {params: {id: number}}) {
 	return (
 		<div className="flex flex-wrap w-11/12 mx-auto">
 			<div className="w-full md:w-1/3 text-center font-mono max-w-lg mx-auto ">
-				{data.userHasRightToManage || data.userIsDJ && (
+				{(data.userHasRightToManage || data.userIsDJ) && (
 					<div className="my-2 bg-yellow-900 bg-opacity-50 dark:bg-gray-900 rounded-lg p-3">
 						<h1 className="text-center text-2xl text-white font-mono font-bold">Menu</h1>
 						<h2 className="font-mono text-xl">{data.name}</h2>
 						<UpdateStauts data={data} setData={setData} />
-						{data.userHasRightToManage === 1 && (
+						{data.userHasRightToManage && (
 							<div className="m-4">
 								<Link className="p-3 bg-fuchsia-700 hover:bg-fuchsia-800 rounded-lg" href={`/dash/em/event/${data.id}`}>
 									Manage Event Data
