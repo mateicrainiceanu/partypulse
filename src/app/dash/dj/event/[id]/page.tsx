@@ -48,8 +48,7 @@ function DjView({params}: {params: {id: number}}) {
 			.then((response) => {
 				if (response.data.userHasRightToManage === 0) window.location.replace("/dash");
 				setData(parseEventForView(response.data));
-				console.log(response.data);
-				
+		
 				finishedLoadingItem();
 			})
 			.catch(handleAxiosError);

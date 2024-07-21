@@ -83,8 +83,6 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 			default:
 				break;
 		}
-		console.log(Number(filter));
-
 		return filter;
 	}
 

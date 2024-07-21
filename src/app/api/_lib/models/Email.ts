@@ -157,7 +157,7 @@ export default class Email {
     <div class="all">
       <h1>Welcome to Partypulse!</h1>
       <p>Your reset link is: </p>
-      <a href="http://${process.env.HOMEPAGE}/dash/verify/${code}">Or click here to verify your account</a>
+      <a href="http://${process.env.HOMEPAGE}/verify/${code}">HERE</a>
     </div></div>
 
     `;
