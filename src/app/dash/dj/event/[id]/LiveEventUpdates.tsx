@@ -83,6 +83,8 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 			default:
 				break;
 		}
+		console.log(Number(filter));
+
 		return filter;
 	}
 
@@ -96,11 +98,11 @@ function LiveEventUpdates({evid, genreVoteLive}: {evid: number; genreVoteLive: n
 			color: "bg-green-200",
 		},
 		{
-			title: "qued",
+			title: "queued",
 			color: "bg-yellow-200",
 		},
 		{
-			title: "canceld",
+			title: "canceled",
 			color: "bg-red-200",
 		},
 		{
@@ -202,7 +204,6 @@ function ViewOption({
 	name: string;
 	color: string;
 }) {
-	
 	return (
 		<button
 			className={

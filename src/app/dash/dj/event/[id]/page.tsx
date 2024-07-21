@@ -32,6 +32,7 @@ function DjView({params}: {params: {id: number}}) {
 		userHasRightToManage: 0,
 		msuggestions: 0,
 		genreVote: 0,
+		userIsDJ: false
 	});
 	const [updated, setUpdated] = useState(true);
 
@@ -43,10 +44,12 @@ function DjView({params}: {params: {id: number}}) {
 	useEffect(() => {
 		addLoadingItem();
 		axios
-			.get("/api/event/" + params.id + "?isLive=true")
+			.get("/api/event/" + params.id + "isLive=true")
 			.then((response) => {
 				if (response.data.userHasRightToManage === 0) window.location.replace("/dash");
 				setData(parseEventForView(response.data));
+				console.log(response.data);
+				
 				finishedLoadingItem();
 			})
 			.catch(handleAxiosError);
@@ -90,7 +93,7 @@ function DjView({params}: {params: {id: number}}) {
 	return (
 		<div className="flex flex-wrap w-11/12 mx-auto">
 			<div className="w-full md:w-1/3 text-center font-mono max-w-lg mx-auto ">
-				{data.userHasRightToManage > 0 && (
+				{data.userHasRightToManage || data.userIsDJ && (
 					<div className="my-2 bg-yellow-900 bg-opacity-50 dark:bg-gray-900 rounded-lg p-3">
 						<h1 className="text-center text-2xl text-white font-mono font-bold">Menu</h1>
 						<h2 className="font-mono text-xl">{data.name}</h2>
