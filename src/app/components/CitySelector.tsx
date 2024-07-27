@@ -41,7 +41,7 @@ function CitySelector({
 	}, []);
 
 	useEffect(() => {
-		if (state?.isoCode && country.isoCode) setCities(City.getCitiesOfState(country.isoCode, state.isoCode));
+		if (state?.isoCode && country?.isoCode) setCities(City.getCitiesOfState(country.isoCode, state.isoCode));
 		else if (country?.isoCode) {
 			setStates(State.getStatesOfCountry(country.isoCode));
 			setState(null);
