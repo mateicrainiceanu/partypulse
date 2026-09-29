@@ -3,12 +3,13 @@ import { cookies } from "next/headers"
 import { getUserFromToken } from "../../../_lib/token";
 import User from "@/app/api/_lib/models/user";
 
-export async function GET(req: NextRequest) {
+export async function PATCH(req: NextRequest) {
 
     const url = new URL(req.url)
     const token = cookies().get("token")?.value || url.searchParams.get("token");
 
-    const newStatus = url.searchParams.get("enabled")
+    const { enabled } = await req.json()
+    const newStatus = enabled ? "true" : "false"
 
     if (token) {
         const user = getUserFromToken(token)

@@ -23,17 +23,13 @@ class SongRequest {
     }
 
     async save() {
-        let sql = `INSERT INTO requests (eventId, userId, songId) VALUES (
-            ${this.eventId},
-            ${this.userId},
-            ${this.songId}
-        );`
+        let sql = `INSERT INTO requests (eventId, userId, songId) VALUES (?, ?, ?);`
 
-        return db.execute(sql)
+        return db.safeexe(sql, [this.eventId, this.userId, this.songId])
     }
 
     static changeReqStatus(id: string, newstatus: string, evId: string) {
-        return db.execute(`UPDATE requests SET status = ${newstatus} WHERE songId = ${id} AND eventId = ${evId};`)
+        return db.safeexe(`UPDATE requests SET status = ? WHERE songId = ? AND eventId = ?;`, [newstatus, id, evId])
     }
 }
 

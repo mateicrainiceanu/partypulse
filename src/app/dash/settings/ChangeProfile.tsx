@@ -53,7 +53,7 @@ function ChangeProfile() {
 				type="text"
 				value={data.uname}
 				handleChange={handleChange}></FormElement>
-			{user.uname !== data.uname && <p className="text-center">Avalabile: {avalabile ? "YES" : "NO"}</p>}
+			{user.uname !== data.uname && <p className="text-center">Available: {avalabile ? "YES" : "NO"}</p>}
 			<FormElement
 				label="Donations Page URL"
 				name="donations"

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers"
 import { getUserFromToken } from "../_lib/token";
-import random from "random-string-alphanumeric-generator"
+import { randomAlphanumericCode } from "../_lib/randomCode"
 import User from "../_lib/models/user";
 import Location from "../_lib/models/location";
 import { RowDataPacket } from "mysql2";
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
         const user = getUserFromToken(token)
         if (user.id) {
 
-            let code = random.randomAlphanumeric(20, "lowercase");
+            let code = randomAlphanumericCode(20);
 
             var codes: Array<{}> = []
 
@@ -25,6 +25,9 @@ export async function GET(req: NextRequest) {
                 await User.addCode(user.id, code)
                 codes = (await User.getCodes(user.id) as Array<RowDataPacket>)[0] as Array<{}>
             } else {
+                if (!locid || !(await Location.userHasRights(Number(locid), user.id)))
+                    return new NextResponse("Permission denied", { status: 403 })
+
                 await Location.addCode(Number(locid), code)
                 codes = (await Location.getCodes(Number(locid)) as any) [0]
             }
@@ -49,6 +52,17 @@ export async function DELETE(req: NextRequest) {
     if (token && codeId) {
         const user = getUserFromToken(token)
         if (user.id) {
+            const [codeRows] = await User.getCodeById(codeId) as Array<RowDataPacket>
+            const codeRow = codeRows[0]
+
+            if (!codeRow) return new NextResponse("Code not found", { status: 404 })
+
+            const owned =
+                (codeRow.usedFor === "user" && Number(codeRow.itemId) === Number(user.id)) ||
+                (codeRow.usedFor === "location" && await Location.userHasRights(Number(codeRow.itemId), user.id))
+
+            if (!owned) return new NextResponse("Permission denied", { status: 403 })
+
             await User.deleteCode(codeId)
 
             const [resp] = await User.getCodes(user.id)

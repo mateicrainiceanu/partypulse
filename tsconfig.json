@@ -22,6 +22,6 @@
 			"@/*": ["./src/*"]
 		}
 	},
-	"include": ["next-env.d.ts", "next-auth-extentions.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/auth/[...nextauth]/route.ts"],
-	"exclude": ["node_modules"]
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/auth/[...nextauth]/route.ts"],
+	"exclude": ["node_modules", "claude-skills", "graphify-out"]
 }

@@ -32,7 +32,7 @@ function BecomeDJ() {
 
 	async function handleSubmit() {
 		if (!avalabile) {
-			alert("username not avalabile");
+			alert("username not available");
 			return;
 		}
 		addLoadingItem();
@@ -58,7 +58,7 @@ function BecomeDJ() {
 					value={username}
 					label={"New Username: dj_" + username}></FormElement>
 
-				<p>Avalabile: {avalabile ? "YES" : "NO"}</p>
+				<p>Available: {avalabile ? "YES" : "NO"}</p>
 				<FormBtn onClick={handleSubmit} name="Become a DJ"></FormBtn>
 			</div>
 		</div>

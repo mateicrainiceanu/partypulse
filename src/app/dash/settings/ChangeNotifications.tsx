@@ -19,7 +19,7 @@ function ChangeNotifications() {
 	function handleChange(_: any, newVal: boolean) {
 		setEnabled(newVal);
 		axios
-			.get("/api/user/notification/change?enabled=" + newVal)
+			.patch("/api/user/notification/change", {enabled: newVal})
 			.then((_) => {
 				handleError("Successfuly changed setting.", "success");
                 setCookie("emailNotif", (newVal ? "1" : "0"))

@@ -197,6 +197,10 @@ class User {
         return db.safeexe(`SELECT * FROM codes WHERE usedFor = 'user' AND itemId = ?;`, [uid])
     }
 
+    static getCodeById(codeId: string) {
+        return db.safeexe(`SELECT * FROM codes WHERE id = ?;`, [codeId])
+    }
+
     static deleteCode(codeId: string) {
         return db.safeexe(`DELETE FROM codes WHERE id = ?;`, [codeId])
     }

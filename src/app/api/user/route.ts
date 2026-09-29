@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 import { getUserFromToken } from "../_lib/token";
 import User from "../_lib/models/user";
 import { RowDataPacket } from "mysql2";
+import { setUserCookies } from "../_lib/authCookies";
 
 export async function GET(req: NextRequest) {
     console.log("GET USER : " + new Date(Date.now()));
@@ -14,14 +15,11 @@ export async function GET(req: NextRequest) {
         const user = getUserFromToken(token)
         if (user.id) {
             let [dbuser] = (await User.findById(user.id))[0] as Array<RowDataPacket>;
-            cookies().set("userId", dbuser.id)
-            cookies().set("uname", dbuser.uname)
-            cookies().set("fname", dbuser.fname)
-            cookies().set("lname", dbuser.lname)
-            cookies().set("role", dbuser.role)
-            cookies().set("email", dbuser.email)
-            cookies().set("donations", dbuser.donations)
-            return NextResponse.json({ ...dbuser, hash: "xxx" , token: token});
+            setUserCookies({
+                id: dbuser.id, uname: dbuser.uname, fname: dbuser.fname, lname: dbuser.lname,
+                role: dbuser.role, email: dbuser.email, donations: dbuser.donations
+            })
+            return NextResponse.json({ ...dbuser, hash: "xxx" });
         } else {
             return new NextResponse("UserNotLoggedIn", { status: 403 })
         }

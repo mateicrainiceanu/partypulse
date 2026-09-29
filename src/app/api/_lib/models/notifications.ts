@@ -35,27 +35,23 @@ export default class UserNotification {
     }
 
     async save() {
-        let sql = `INSERT INTO users_notifications (forUserId, fromUserId 
-            ${this.nottype ? ", nottype" : ""}
-            ${this.text ? ", text" : ""}
-            ${this.itemType ? ", itemType" : ""}
-            ${this.itemId ? ", itemId" : ""}
-        ) VALUES (
-            '${this.forUserId}',
-            '${this.fromUserId}'
-            ${this.nottype ? ", '" + this.nottype + "'" : ""}
-            ${this.text ? ", '" + this.text + "'" : ""}
-            ${this.itemType ? ", '" + this.itemType + "'" : ""}
-            ${this.itemId ? ", '" + this.itemId + "'" : ""}
-        );`
+        const columns = ["forUserId", "fromUserId"]
+        const values: (string | number)[] = [this.forUserId, this.fromUserId]
+
+        if (this.nottype) { columns.push("nottype"); values.push(this.nottype) }
+        if (this.text) { columns.push("text"); values.push(this.text) }
+        if (this.itemType) { columns.push("itemType"); values.push(this.itemType) }
+        if (this.itemId) { columns.push("itemId"); values.push(this.itemId) }
+
+        let sql = `INSERT INTO users_notifications (${columns.join(", ")}) VALUES (${columns.map(() => "?").join(", ")});`
 
         const [users] = (await User.findById(this.forUserId) as any)
-        
+
         if (users.length) {
             const [user] = users;
             const mail = new Email(user.email)
-            const resp = (await db.execute(sql))[0]      
-            
+            const resp = (await db.safeexe(sql, values))[0]
+
             if (user.emailNotif === 1)
                 mail.notification({ ...this, id: resp.insertId })
         }
@@ -190,8 +186,8 @@ ORDER BY users_notifications.id DESC;
 
     static updateStatus(notid: number, newstatus: number, markAllAsRead: boolean, userId?: number) {
         if (!markAllAsRead)
-            return db.execute(`UPDATE users_notifications SET status = ${newstatus} WHERE id = ${notid};`)
+            return db.safeexe(`UPDATE users_notifications SET status = ? WHERE id = ?;`, [newstatus, notid])
         else
-            return db.execute(`UPDATE users_notifications SET status = 1 WHERE forUserId = ${userId};`)
+            return db.safeexe(`UPDATE users_notifications SET status = 1 WHERE forUserId = ?;`, [userId as number])
     }
 }

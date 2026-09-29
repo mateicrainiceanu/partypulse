@@ -39,12 +39,6 @@ class Location {
         return (await db.safeexe(sql, [name, adress, city]) as Array<RowDataPacket>)[0].insertId
     }
 
-    static getFromIds(idrange: string) {
-        let sql = `
-        SELECT * FROM locations WHERE id IN (${idrange});`
-        return db.execute(sql);
-    }
-
     async updateWhereId(id: number) {
         let sql = `
         UPDATE locations SET 
@@ -116,16 +110,16 @@ class Location {
                         'reltype', users_locations.reltype
                     )
                 ) AS userInteractions
-            FROM 
+            FROM
                 locations
-            JOIN 
+            JOIN
                 users_locations ON locations.id = users_locations.locationId
-                WHERE locations.id = ${id}
-            GROUP BY 
+                WHERE locations.id = ?
+            GROUP BY
                 locations.id;
             `
 
-        const locations = (await db.execute(sql))[0]
+        const locations = (await db.safeexe(sql, [id]))[0]
 
         if (locations.length > 0) {
             let [location] = locations

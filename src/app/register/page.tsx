@@ -23,7 +23,7 @@ function Register() {
 	const {handleAxiosError, dialogToUser} = useContext(AlertContext);
 
 	useEffect(() => {
-		if (getCookie("token") != undefined) {
+		if (getCookie("userId") != undefined) {
 			window.location.replace("/dash");
 		}
 	}, []);
@@ -55,9 +55,9 @@ function Register() {
 
 		if (!avalabile) {
 			dialogToUser({
-				title: "Unavalabile usename",
+				title: "Unavailable username",
 				content:
-					"In order to ensure our users experience, the usernames on our platform should be unique. Please choose another username and check the below avalability checker if the username is avalabile.",
+					"In order to ensure our users experience, the usernames on our platform should be unique. Please choose another username and check the below availability checker if the username is available.",
 			});
 			return;
 		}
@@ -67,8 +67,8 @@ function Register() {
 		axios
 			.post("/api/user/register", formData)
 			.then((response) => {
-				const {newuser, id, token} = response.data;
-				setUser({...newuser, logged: true, id: id, token: token});
+				const {newuser, id} = response.data;
+				setUser({...newuser, logged: true, id: id});
 				window.location.replace("/dash/verify");
 			})
 			.catch(handleAxiosError);
@@ -95,7 +95,7 @@ function Register() {
 							value={formData.lname}
 						/>
 						<FormElement name="uname" type="name" label="Username" handleChange={handleChange} value={formData.uname} />
-						<p>Avalabile: {avalabile ? "YES" : "NO"}</p>
+						<p>Available: {avalabile ? "YES" : "NO"}</p>
 					</div>
 					<div className="md:basis-1/2 basis-full px-2 flex justify-center items-center">
 						<div className="w-full">

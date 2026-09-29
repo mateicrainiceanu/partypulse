@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import User from "../../_lib/models/user";
 import { RowDataPacket } from "mysql2";
 import { signtoken } from "../../_lib/token";
-import { cookies } from "next/headers";
-import random from "random-string-alphanumeric-generator"
+import { randomNumericCode } from "../../_lib/randomCode"
 import Email from "../../_lib/models/Email";
+import { setTokenCookie, setUserCookies } from "../../_lib/authCookies";
 
 export async function POST(req: NextRequest) {
     const { fname, lname, uname, email, password } = await req.json()
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         return new NextResponse("Already used this email adress", { status: 400 })
     }
 
-    const newuser = new User(fname, lname, uname, email, password, random.randomNumber(6));
+    const newuser = new User(fname, lname, uname, email, password, randomNumericCode(6));
     const [result] = (await newuser.save()) as Array<RowDataPacket>;
 
     if (!result.waringStatus) {
@@ -27,19 +27,14 @@ export async function POST(req: NextRequest) {
         const mail = new Email(newuser.email)
         mail.SendRegisterVerif(newuser.verified)
 
-        cookies().set("token", token, { secure: false })
-        cookies().set("userId", id)
-        cookies().set("uname", newuser.uname)
-        cookies().set("fname", newuser.fname)
-        cookies().set("lname", newuser.lname)
-        cookies().set("role", '0')
-        cookies().set("verified", '0')
-        cookies().set("email", newuser.email)
-        cookies().set("donations", '')
-        cookies().set("emailNotif", '1')
+        setTokenCookie(token)
+        setUserCookies({
+            id, uname: newuser.uname, fname: newuser.fname, lname: newuser.lname,
+            role: 0, email: newuser.email, donations: '', verified: 0, emailNotif: 1
+        })
 
 
-        return Response.json({ id: id, newuser: { ...newuser, password: "" }, token: token });
+        return Response.json({ id: id, newuser: { ...newuser, password: "" } });
     } else {
         return new NextResponse("Server Error", { status: 500 })
     };

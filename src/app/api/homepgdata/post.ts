@@ -20,5 +20,4 @@ export default async function GET(req: NextRequest) {
     } else {
         return new NextResponse("Failed To authenticate user", { status: 403 })
     }
-    return new NextResponse("Not returning anything yet", { status: 500 })
 }

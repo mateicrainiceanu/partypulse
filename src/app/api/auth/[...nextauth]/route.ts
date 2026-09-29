@@ -5,8 +5,10 @@ import User from "../../_lib/models/user";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { RowDataPacket } from "mysql2";
-import { cookies } from "next/headers";
 import { signtoken } from "../../_lib/token";
+import { randomPassword } from "../../_lib/randomCode";
+import { rateLimit } from "../../_lib/rateLimit";
+import { setTokenCookie, setUserCookies } from "../../_lib/authCookies";
 
 const authOptions = {
     providers: [
@@ -23,30 +25,19 @@ const authOptions = {
                 if (users.length > 0) {
                     const user = users[0]
                     const token = signtoken(user.id, user.email)
-                    cookies().set("token", token)
-                    cookies().set("userId", user.id)
-                    cookies().set("uname", user.uname)
-                    cookies().set("fname", user.fname)
-                    cookies().set("lname", user.lname)
-                    cookies().set("role", user.role)
-                    cookies().set("email", user.email)
-                    cookies().set("donations", user.donations)
-                    cookies().set("verified", "1")
+                    setTokenCookie(token)
+                    setUserCookies({ ...user, verified: 1 })
 
                     return user as any
                 } else {
-                    const user = new User(display_name, "", email.split("@")[0], email, id, 1)
+                    // Password must never be derived from the OAuth account id — that value
+                    // (Spotify user id) is often publicly visible and would let anyone who
+                    // knows it log in via the Credentials provider as this user.
+                    const user = new User(display_name, "", email.split("@")[0], email, randomPassword(), 1)
                     const { insertId } = (await user.save() as RowDataPacket[])[0]
                     const token = signtoken(insertId, user.email)
-                    cookies().set("token", token)
-                    cookies().set("userId", insertId)
-                    cookies().set("uname", user.uname)
-                    cookies().set("fname", user.fname)
-                    cookies().set("lname", user.lname)
-                    cookies().set("role", '0')
-                    cookies().set("email", user.email)
-                    cookies().set("donations", '')
-                    cookies().set("verified", "1")
+                    setTokenCookie(token)
+                    setUserCookies({ id: insertId, uname: user.uname, fname: user.fname, lname: user.lname, role: 0, email: user.email, donations: '', verified: 1 })
 
                     return { id: insertId, role: 0, ...user, password: "xxx" }
                 }
@@ -62,30 +53,18 @@ const authOptions = {
                 if (users.length > 0) {
                     const user = users[0]
                     const token = signtoken(user.id, user.email)
-                    cookies().set("token", token)
-                    cookies().set("userId", user.id)
-                    cookies().set("uname", user.uname)
-                    cookies().set("fname", user.fname)
-                    cookies().set("lname", user.lname)
-                    cookies().set("role", user.role)
-                    cookies().set("email", user.email)
-                    cookies().set("donations", user.donations)
-                    cookies().set("verified", '1')
+                    setTokenCookie(token)
+                    setUserCookies({ ...user, verified: 1 })
 
                     return user as any
                 } else {
-                    const user = new User(given_name, family_name, email.split("@")[0], email, at_hash, 1)
+                    // Same reasoning as the Spotify branch above: never derive the password
+                    // placeholder from an OAuth-provided value.
+                    const user = new User(given_name, family_name, email.split("@")[0], email, randomPassword(), 1)
                     const { insertId } = (await user.save() as RowDataPacket[])[0]
                     const token = signtoken(insertId, user.email)
-                    cookies().set("token", token)
-                    cookies().set("userId", insertId)
-                    cookies().set("uname", user.uname)
-                    cookies().set("fname", user.fname)
-                    cookies().set("lname", user.lname)
-                    cookies().set("role", '0')
-                    cookies().set("email", user.email)
-                    cookies().set("donations", '')
-                    cookies().set("verified", '1')
+                    setTokenCookie(token)
+                    setUserCookies({ id: insertId, uname: user.uname, fname: user.fname, lname: user.lname, role: 0, email: user.email, donations: '', verified: 1 })
 
                     return { id: insertId, role: 0, ...user, password: "xxx" }
                 }
@@ -94,6 +73,11 @@ const authOptions = {
         CredentialsProvider({
             credentials: { email: {}, password: {} },
             async authorize(credentials, req) {
+                const fwd = req.headers?.["x-forwarded-for"]
+                const ip = (Array.isArray(fwd) ? fwd[0] : fwd?.split(",")[0].trim()) || "unknown"
+                if (!rateLimit(`login:${ip}`, 10, 60_000))
+                    throw new Error("Too many attempts, try again later.")
+
                 const result = (await User.findByMail(credentials?.email || ""))[0] as any
 
                 if (result.length) {
@@ -112,9 +96,6 @@ const authOptions = {
         })
     ],
     callbacks: {
-        singIn() {
-            return true
-        },
         session: ({ session, token }: any) => {
 
             if (session?.user) {

@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import User from "../../_lib/models/user";
 import { RowDataPacket } from "mysql2";
 import bcrypt from "bcrypt";
-import { cookies } from "next/headers"
 import { signtoken } from "../../_lib/token";
+import { rateLimit, clientKey } from "../../_lib/rateLimit";
+import { setTokenCookie, setUserCookies } from "../../_lib/authCookies";
 
 export async function POST(req: NextRequest) {
 
-    const { email, password } = await req.json();    
+    if (!rateLimit(`login:${clientKey(req)}`, 10, 60_000))
+        return new NextResponse("Too many attempts, try again later.", { status: 429 })
+
+    const { email, password } = await req.json();
 
     const result = (await User.findByMail(email))[0] as Array<RowDataPacket>
 
@@ -18,18 +22,10 @@ export async function POST(req: NextRequest) {
 
         if (match) {
             const token = signtoken(user.id, user.email)
-            cookies().set("token", token)
-            cookies().set("userId", user.id)
-            cookies().set("uname", user.uname)
-            cookies().set("fname", user.fname)
-            cookies().set("lname", user.lname)
-            cookies().set("role", user.role)
-            cookies().set("email", user.email)
-            cookies().set("donations", user.donations)
-            cookies().set("verified", user.verified)
-            cookies().set("emailNotif", user.emailNotif)
+            setTokenCookie(token)
+            setUserCookies(user)
 
-            return NextResponse.json({ token: token, ...user, hash: "xxx" })
+            return NextResponse.json({ ...user, hash: "xxx" })
         } else {
             return new NextResponse("Wrong Password", { status: 403 })
         }

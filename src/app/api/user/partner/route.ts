@@ -5,6 +5,7 @@ import User from "../../_lib/models/user";
 import { getUserFromToken } from "../../_lib/token";
 import { cookies } from "next/headers";
 import { RowDataPacket } from "mysql2";
+import { setTokenCookie, setUserCookies } from "../../_lib/authCookies";
 
 export async function POST(req: NextRequest) {
     const { username, ptype, donations } = await req.json();
@@ -30,15 +31,8 @@ export async function POST(req: NextRequest) {
             }
             if (warnings === 0) {
                 const [updatedUser] = (await User.findById(user.id) as RowDataPacket[][])[0]
-                cookies().set("token", token)
-                cookies().set("userId", updatedUser.id)
-                cookies().set("uname", updatedUser.uname)
-                cookies().set("fname", updatedUser.fname)
-                cookies().set("lname", updatedUser.lname)
-                cookies().set("role", updatedUser.role)
-                cookies().set("email", updatedUser.email)
-                cookies().set("donations", updatedUser.donations)
-                cookies().set("verified", updatedUser.verified)
+                setTokenCookie(token)
+                setUserCookies(updatedUser)
 
                 return NextResponse.json({ ...updatedUser, hash: "xxx" })
             } else {

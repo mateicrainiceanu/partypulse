@@ -15,8 +15,8 @@ function Login() {
 	const {addLoadingItem, finishedLoadingItem} = useContext(LoadManContext);
 	const {handleAxiosError} = useContext(AlertContext);
 
-	useEffect(() => {		
-		if (getCookie("token") != undefined) {
+	useEffect(() => {
+		if (getCookie("userId") != undefined) {
 			window.location.replace("/dash");
 		}
 	}, []);

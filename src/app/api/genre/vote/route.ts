@@ -2,6 +2,7 @@ import { cookies } from "next/headers"
 import { getUserFromToken } from "../../_lib/token"
 import { NextRequest, NextResponse } from "next/server"
 import { GenreVote } from "../../_lib/models/Genre"
+import Events from "../../_lib/models/event"
 
 export async function POST(req: NextRequest) {
     const url = new URL(req.url)
@@ -12,6 +13,10 @@ export async function POST(req: NextRequest) {
     if (token && evId && genreId) {
         const user = getUserFromToken(token)
         if (user.id) {
+            const [relations] = await Events.getUsersPermission(evId, user.id) as Array<any>
+            if (relations.length === 0)
+                return new NextResponse("Permission denied", { status: 402 })
+
             if (await GenreVote.userHasVoted(user.id, evId))
                 await GenreVote.changeVote(user.id, evId, genreId)
             else
@@ -28,8 +33,6 @@ export async function POST(req: NextRequest) {
     }
 }
 
-//TODO: Figure out if something is missing
-
 export async function GET(req: NextRequest) {
     const url = new URL(req.url)
 
@@ -41,10 +44,9 @@ export async function GET(req: NextRequest) {
     if (token && evId) {
         const user = getUserFromToken(token)
         if (user.id) {
-
-
-            //return NextResponse.json(suggestions)
-
+            // Not implemented — the client only ever POSTs a vote and re-reads results
+            // via the event/genre data already included in the event payload.
+            return new NextResponse("Not implemented", { status: 501 })
         } else {
             return new NextResponse("UserNotLoggedIn", { status: 403 })
         }

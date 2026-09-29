@@ -34,3 +34,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code tooling working directories (not app code)
+/claude-skills
+/graphify-out

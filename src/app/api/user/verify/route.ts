@@ -4,8 +4,13 @@ import { cookies } from "next/headers";
 import { getUserFromToken } from "../../_lib/token";
 import Mail from "nodemailer/lib/mailer";
 import UserNotification from "../../_lib/models/notifications";
+import { rateLimit, clientKey } from "../../_lib/rateLimit";
+import { cookieOpts } from "../../_lib/authCookies";
 
 export async function POST(req: NextRequest) {
+    if (!rateLimit(`verify:${clientKey(req)}`, 10, 60_000))
+        return new NextResponse("Too many attempts, try again later.", { status: 429 })
+
     const { code } = await req.json();
 
     const url = new URL(req.url)
@@ -17,7 +22,7 @@ export async function POST(req: NextRequest) {
             const [fullUser] = (await User.findById(user.id) as any)[0]        
             if (fullUser.verified == 1 || fullUser.verified == code) {
                 await User.update(user.id, "verified", '1')
-                cookies().set("verified", '1')
+                cookies().set("verified", '1', cookieOpts)
                 const notif = new UserNotification({fromUserId: 1, forUserId: fullUser.id, text: " whishes you a warm welcome!"})
                 await notif.save()
                 return new NextResponse("Success!", { status: 200 })

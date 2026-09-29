@@ -9,7 +9,6 @@ interface IUser {
 	fname: string;
 	lname: string;
 	email: string;
-	token: string;
 }
 
 const UserContext = createContext(null as any);
@@ -21,7 +20,6 @@ function UserProvider({children}: {children: ReactNode}) {
 		lname: "",
 		uname: "",
 		email: "",
-		token: "",
 		logged: false,
 		donations: "",
 		emailNotif: 1
@@ -38,7 +36,6 @@ function UserProvider({children}: {children: ReactNode}) {
 			lname: getCookie("lname") || "",
 			uname: getCookie("uname") || "",
 			email: getCookie("email") || "",
-			token: getCookie("token") || "",
 			logged: getCookie("fname") != undefined ? true : false,
 			role: Number(getCookie("role")) || 0,
 			verified: Number(getCookie("verified")) || 0,

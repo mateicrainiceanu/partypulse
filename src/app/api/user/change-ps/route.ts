@@ -6,8 +6,13 @@ import User from "../../_lib/models/user";
 import { getUserFromToken, signtoken } from "../../_lib/token";
 import bcrypt from "bcrypt";
 import { saltRounds } from "../../_lib/types";
+import { rateLimit, clientKey } from "../../_lib/rateLimit";
+import { setTokenCookie, setUserCookies } from "../../_lib/authCookies";
 
 export async function POST(req: NextRequest) {
+    if (!rateLimit(`change-ps:${clientKey(req)}`, 10, 60_000))
+        return new NextResponse("Too many attempts, try again later.", { status: 429 })
+
     const { newPassword, oldPassword, code } = await req.json();
     if (code) {
         const [users] = await User.getForRecoveryCode(code)
@@ -21,16 +26,8 @@ export async function POST(req: NextRequest) {
         await User.update(user.id, "hash", hash)
 
         const token = signtoken(user.id, user.email)
-        cookies().set("token", token)
-        cookies().set("userId", user.id)
-        cookies().set("uname", user.uname)
-        cookies().set("fname", user.fname)
-        cookies().set("lname", user.lname)
-        cookies().set("role", user.role)
-        cookies().set("email", user.email)
-        cookies().set("donations", user.donations)
-        cookies().set("verified", user.verified)
-        cookies().set("emailNotif", user.emailNotif)
+        setTokenCookie(token)
+        setUserCookies(user)
 
         User.deleteCode(code)
 

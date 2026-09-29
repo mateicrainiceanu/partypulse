@@ -37,20 +37,15 @@ class Song {
 
     async save() {
         let sql = `INSERT INTO songs (title, artists, spotifyId, spotifyURL, imgsrc, preview) VALUES (
-            "${this.title}",
-            "${this.artists}",
-            '${this.spotifyId}',
-            '${this.spotifyURL}',
-            '${this.imgsrc}',
-            '${this.preview}'
+            ?, ?, ?, ?, ?, ?
         );`
 
-        return await db.execute(sql) as Array<RowDataPacket>[0]
+        return await db.safeexe(sql, [this.title, this.artists, this.spotifyId, this.spotifyURL, this.imgsrc, this.preview]) as Array<RowDataPacket>[0]
     }
 
     static async getForExternalId(id: string) {
-        let s = `SELECT * FROM songs WHERE spotifyId = '${id}' OR youtubeId = '${id}';`
-        return (await db.execute(s) as Array<RowDataPacket>[0])
+        let s = `SELECT * FROM songs WHERE spotifyId = ? OR youtubeId = ?;`
+        return (await db.safeexe(s, [id, id]) as Array<RowDataPacket>[0])
     }
 }
 

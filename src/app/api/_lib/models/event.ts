@@ -49,13 +49,13 @@ class Events {
         const duration = Number(dur.split(":")[0]) + ((Number(dur.split(":")[1])) * (10 / 6) / 100)
 
         let sql = `UPDATE events SET
-        name = '${this.name}',
-        privateev = ${this.privateev ? 1 : 0},
-        dateStart =  '${this.date + " " + this.time}:00',
-        duration = ${duration}
-        WHERE id = ${id};
+        name = ?,
+        privateev = ?,
+        dateStart = ?,
+        duration = ?
+        WHERE id = ?;
         `
-        return db.execute(sql);
+        return db.safeexe(sql, [this.name, (this.privateev ? 1 : 0), (this.date + " " + this.time + ":00"), duration, id]);
     }
 
     static setLocation(eventId: number, locId: number) {
@@ -110,10 +110,6 @@ class Events {
 
     static getForId(eventId: number, isNotOver?: boolean) {
         return db.safeexe(`SELECT * FROM events WHERE id = ? ${(isNotOver ? "AND status < 2" : "")};`, [eventId])
-    }
-
-    static getForLocations(locString: number) {
-        return db.execute(`SELECT * FROM events WHERE locationId IN (${locString})`);
     }
 
     static async getForCity(city: string, uid?: number) {
@@ -228,7 +224,7 @@ class Events {
     }
 
     static changeStatus(id: number, newStatus: number) {
-        return db.execute(`UPDATE events SET status = ${newStatus} WHERE id = ${id}`)
+        return db.safeexe(`UPDATE events SET status = ? WHERE id = ?`, [newStatus, id])
     }
 
     static getUsersPermission(eventId: number, userId: number) {

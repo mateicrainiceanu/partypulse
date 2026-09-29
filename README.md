@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# partypulse
 
-## Getting Started
+A Next.js 14 (App Router) app backed by MySQL, with email/password auth (custom JWT + bcrypt) and Google/Spotify OAuth via next-auth.
 
-First, run the development server:
+## Getting started
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Copy `.env.example` to `.env.local` and fill in real values (DB credentials, `TOKEN_KEY`, `NEXTAUTH_SECRET`, OAuth client IDs/secrets, SMTP credentials, etc).
+3. Point `D_HOST`/`D_NAME`/`D_USER`/`D_PASS` at a MySQL database with the app's schema already created (there is currently no migration tooling in this repo — the schema has to be created by hand from the queries in `src/app/api/_lib/models/*.ts`).
+4. Run the dev server:
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `npm run dev` — start the Next.js dev server
+- `npm run build` / `npm run start` — production build and start
+- `npm run lint` — ESLint
+- `npm test` / `npm run test:watch` — Jest
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Project layout
 
-## Learn More
+- `src/app/api/` — all backend route handlers (App Router `route.ts` files)
+- `src/app/api/_lib/models/` — DB access layer (raw SQL via `mysql2`, no ORM)
+- `src/app/api/_lib/token.ts` — the app's own JWT session token (separate from next-auth's session, used by every API route for auth)
+- `src/app/dash/` — the authenticated dashboard area
+- `src/app/components/` — shared UI components
 
-To learn more about Next.js, take a look at the following resources:
+## Learn more about Next.js
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Learn Next.js](https://nextjs.org/learn)

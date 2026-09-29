@@ -18,6 +18,10 @@ export async function POST(req: NextRequest) {
             if (!(await Events.userHasPermissons(evid, user.id)))
                 return new NextResponse("Permission denied", { status: 402 })
 
+            const [targetUsers] = await User.findById(userToAdd) as Array<any>
+            if (!targetUsers.length)
+                return new NextResponse("User not found", { status: 404 })
+
             await User.addEventRelation(userToAdd, evid, 4)
 
             new UserNotification({ forUserId: userToAdd, fromUserId: user.id, nottype: "invitation-to-event", text: " invited you to an event ", itemType: 'event', itemId: evid }).save()
