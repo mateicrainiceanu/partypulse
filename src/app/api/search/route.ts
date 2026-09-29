@@ -24,12 +24,12 @@ export async function POST(req: NextRequest) {
     }
 
     if (category === "locations" && searchQuery != "") {
-        const locations = await Location.getContaining(searchQuery, userId)        
+        const locations = await Location.getContaining(searchQuery, userId)
         return NextResponse.json({ category: "locations", results: locations })
     }
 
     if (category === "events" && searchQuery != "") {
-        const full = await Events.searchByName(searchQuery, userId)        
+        const full = await Events.searchByName(searchQuery, userId)
         return NextResponse.json({ category: "events", results: full })
     }
 

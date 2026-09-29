@@ -29,6 +29,7 @@ class Location {
         INSERT INTO locations (name, useForAdress, adress, city, lat, lon) VALUES (
             ?,?,?,?,?,?
         );
+        
         `
         return db.safeexe(sql, [this.name, this.useForAdress, this.adress, this.city, this.lat, this.lon]);
     }
@@ -82,7 +83,7 @@ class Location {
                 locations
             JOIN 
                 users_locations ON locations.id = users_locations.locationId
-                WHERE locations.name LIKE ? ${userId ? "AND users_locations.reltype = 1 AND users_locations.userId = " + userId : ""}
+                WHERE locations.name LIKE ? AND (locations.private = 0 OR ${userId ? "(users_locations.reltype = 1 AND users_locations.userId = " + userId +")" : ""})
             GROUP BY 
                 locations.id;
             `

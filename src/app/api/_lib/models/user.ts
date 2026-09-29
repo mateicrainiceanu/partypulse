@@ -92,7 +92,7 @@ class User {
 
     static getFromUname(uname: string, userId?: number) {
         const q = `%${uname}%`
-        return db.safeexe(`SELECT uname, role, id FROM users 
+        return db.safeexe(`SELECT uname, role, id, lname, fname, donations FROM users 
         WHERE (uname LIKE ? OR email LIKE ?) ${userId ? "AND id != " + userId : ""};`, [q, q])
     }
 
@@ -146,7 +146,7 @@ class User {
         return db.safeexe(`INSERT INTO codes (usedFor, itemId, code) VALUES('${recovery ? "recovery" : "user"}' , ?, ?);`, [uid, code])
     }
 
-    static getForRecoveryCode(code: string){
+    static getForRecoveryCode(code: string) {
         return db.safeexe(`SELECT users.*, codes.code FROM codes JOIN users ON users.id = codes.itemId WHERE codes.usedFor = 'recovery' AND codes.code = ?; `, [code])
     }
 
@@ -227,6 +227,8 @@ class User {
     }
 
     static async getRelUsers(uid: number) {
+
+        //OPTIMISE QUERY
         let str = ""
 
         const [likedUsers] = (await db.safeexe(`SELECT * FROM users_users WHERE userId = ?;`, [uid]) as any)
@@ -234,7 +236,7 @@ class User {
             likedUsers.map((r: { secUserId: number }) => {
                 str += r.secUserId + ", "
             })
-            return db.execute(`SELECT role, uname, fname, lname, donations, created FROM users WHERE id in (${str.substring(0, str.length - 2)}); `)
+            return db.execute(`SELECT id, role, uname, fname, lname, donations, created FROM users WHERE id in (${str.substring(0, str.length - 2)}); `)
         } else {
             return [[]]
         }

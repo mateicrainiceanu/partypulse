@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
             cookies().set("role", dbuser.role)
             cookies().set("email", dbuser.email)
             cookies().set("donations", dbuser.donations)
-            return NextResponse.json({ ...dbuser, hash: "xxx" });
+            return NextResponse.json({ ...dbuser, hash: "xxx" , token: token});
         } else {
             return new NextResponse("UserNotLoggedIn", { status: 403 })
         }

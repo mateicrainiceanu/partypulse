@@ -7,7 +7,7 @@ import { signtoken } from "../../_lib/token";
 
 export async function POST(req: NextRequest) {
 
-    const { email, password } = await req.json();
+    const { email, password } = await req.json();    
 
     const result = (await User.findByMail(email))[0] as Array<RowDataPacket>
 
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
             cookies().set("verified", user.verified)
             cookies().set("emailNotif", user.emailNotif)
 
-            return new NextResponse("ok")
+            return NextResponse.json({ token: token, ...user, hash: "xxx" })
         } else {
             return new NextResponse("Wrong Password", { status: 403 })
         }

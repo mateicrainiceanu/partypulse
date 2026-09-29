@@ -25,12 +25,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: number
                 if (ongoing.length > 0) {
                     return new NextResponse("There is an ongoing event!", { status: 400 })
                 } else {
-                    const [res] = await Events.changeStatus(params.id, status) as Array<RowDataPacket>
+                    const [_] = await Events.changeStatus(params.id, status) as Array<RowDataPacket>
                     const event = await Events.getFullForId(params.id, user.id)
                     return NextResponse.json({ ...event })
                 }
             } else {
-                const [res] = await Events.changeStatus(params.id, status) as Array<RowDataPacket>
+                const [_] = await Events.changeStatus(params.id, status) as Array<RowDataPacket>
                 const event = await Events.getFullForId(params.id, user.id)
                 return NextResponse.json({ ...event })
             }
